@@ -86,13 +86,3 @@ This component is a fully-fledged powershell script and can be run from the powe
 ./DateAdder.ps1 -days 14
 ```
 It will output the date in 2 weeks as: `2016-11-26`.
-
-#TODO
-* We need to create the pipeline.ps1 file from the pipeline definition in pipeline.json
-* We need to create the step files from components
-** from a metadata JSON description of component.ps1?
-** by parsing component.ps1? -> will exclude standard CmdLets we don't have the source for
-** by inspecting component.ps1 with Get-Command?
-* We need to deal with not passing on empty parameters
-* Pipeline parameters
-* Change Write-Debug to Write-Verbose?
