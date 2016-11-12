@@ -1,0 +1,35 @@
+﻿{
+	"id": "pipeline1",
+	"name": "Send mail to young voters",
+	"description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
+	"parameters": [],
+	"input": {},
+	"output": {},
+	"components": [
+		{
+			"id":"A",
+			"name":"Read Voters File",
+			"reference":"../components/ReadFile.ps1",
+			"parameters": {
+				"Path": "./data/voters.txt"
+			}
+		},
+		{
+			"id":"B",
+			"name":"Convert2JSON",
+			"reference":"../components/CSV2JSON.ps1",
+			"parameters": {
+				"FieldSeparator": "|"
+			}
+		},
+		{
+			"id":"C",
+			"name":"Select Name and Email",
+			"reference":"../components/SelectFields.ps1",
+			"parameters": {
+				"Fields": "name,age,gender"
+			}
+		}
+	]
+	
+}

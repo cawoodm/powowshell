@@ -1,0 +1,24 @@
+PARAMETERS:
+	a static list of fields which the user must provide
+	if you want dynamic input, use an input object provided by a preceding component
+
+INPUT: 
+	data passed to this component by a preceding component
+	can be a simple value called a Scalar like 1 or "hello"
+	can be a JSON object like {name:"John", age:21, smoker: false}
+	can be an Array of objects 
+{
+	type: Scalar/Array/Object,
+	subtype: string/number/boolean/date/datetime/"ClassName",
+	sample: ...
+}
+
+
+Do we insist all components MUST be powershell scripts?
+	PRO:
+		We only have one runtime to worry about.
+		Good prospects for reflection
+		PowerShell is cool and can call anything
+	CONTRA:
+		Cannot just run a .BAT file or DIR command
+		
