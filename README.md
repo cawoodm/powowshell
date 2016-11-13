@@ -26,8 +26,14 @@ The result of the build `compile.ps1` is a powershell script `runner.ps1`. Runni
 The pipeline does the following:
 * Step A: Read a list of "voters" from the file in `data\voters.txt` as text
 * Step B: Convert the text to JSON
-* Step C: Select only the name and email fields and output them
-  The result is a JSON Array of voters.
+* Step C: Select only the name. age and email fields
+
+The result is a JSON string representing a list of voters.
+
+We'll be developing this pipeline by adding new steps like:
+
+* Filtering only young voters (age < 30)
+* Sending each voter an email
 
 ##PowerShell
 PowerShell is a cross platform, open source shell designed by Microsoft which
