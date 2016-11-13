@@ -8,15 +8,19 @@
  .Parameter FieldSeparator
   Specifies the field separator. Default is a comma ",")
 
+ .Outputs
+ String
+
 #>
+[OutputType([String])]
 param(
-		[Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,
+    [Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,
     [String]$Delimiter=",",
     [String[]]$Header
 )
 
-<#$params = @{}
-$MyInvocation.BoundParameters.Keys | Where {$_} | % {$params.Add($_, (Get-Variable $_).Value )}
+$params = @{}
+$MyInvocation.BoundParameters.Keys | Where {$_ -and $_ -ne "InputObject"} | % {$params.Add($_, (Get-Variable $_).Value )}
 Write-Debug $params
-#>
-$InputObject | ConvertFrom-Csv @PSBoundParameters | ConvertTo-JSON
+
+$InputObject | ConvertFrom-Csv @params | ConvertTo-JSON

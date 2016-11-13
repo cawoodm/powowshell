@@ -19,7 +19,8 @@
 			"name":"Convert2JSON",
 			"reference":"../components/CSV2JSON.ps1",
 			"parameters": {
-				"FieldSeparator": "|"
+				"Delimiter": "|",
+				"Header": "name,age,email"
 			}
 		},
 		{
@@ -27,9 +28,14 @@
 			"name":"Select Name and Email",
 			"reference":"../components/SelectFields.ps1",
 			"parameters": {
-				"Fields": "name,age,gender"
+				"Fields": "name,email"
 			}
 		}
+	],
+	"flow": [
+		{"id":"A"},
+		{"id":"B"},
+		{"id":"C"}
 	]
 	
 }

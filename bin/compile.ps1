@@ -12,10 +12,13 @@
 #>
 [CmdletBinding()]
 param(
-    [String]$Pipeline="pipeline1" # DEBUG
+    [String]$Pipeline
 )
 function Main() {
-    #$VerbosePreference = "Continue"
+    If ("DEBUG" -eq "DEBUG") {
+        $Pipeline="pipeline1"
+        $VerbosePreference = "Continue"
+    }
     Push-Location $PSScriptRoot
     CompilingPipeline($Pipeline)
     Pop-Location
@@ -23,7 +26,7 @@ function Main() {
 
 function CompilingPipeline($PipelineId) {
 
-    #try {
+    try {
 
     # TODO: Check pipeline exists
     Push-Location $PipelineId/
@@ -41,23 +44,21 @@ function CompilingPipeline($PipelineId) {
     # Transform definition of pipeline into run.ps1
 
     # Cleanup
-    <# This method hides who caused the error as we only see
-    } catch [System.ArgumentException] {
-        Write-Error ("!!!Error Parsing Pipeline Definition!!!`n" + $_)
+    <# This method hides who caused the error as we only see#>
     } catch {
-        Write-Error ("Some other error: " + $_)
-
+        If ($_.Exception.Message -ne "") {
+            Write-Error ("Unhandled Excption`n" + $_)
+        }
     } finally {
         Pop-Location
-    }#>
+    }
 }
 
 function ReadingPipelineDefinition($Path) {
 
     trap [System.ArgumentException] {
-        Write-Error "Error Parsing Pipeline Definition: $Path"
-        #$_ | gm
-        Break
+        Write-Error ("Error Parsing Pipeline Definition: $Path" + $_)
+        throw [Exception] ""
     }
 
     Return Get-Content -Raw ./pipeline.json | ConvertFrom-Json
@@ -82,35 +83,48 @@ function CheckingComponents($components) {
         # TODO: Check parameters against component definition?
      }
 
-     Write-Verbose "Components checked out OK."
+     Write-Verbose "Components checked out OK"
 
 }
 
 function CreatingComponentSteps($pipelineDef) {
 
-    $stepTemplate = @'
-. .\globals.ps1
-
-$params = @{{
-{0}
-}}
-
-{1}
-'@;
+    $stepTemplate = ". .\globals.ps1`n`$params = @{{`n{0}`n}}`n{1}"
+    $Count = 0
+    $validOutputs = @{"System.String"=$true;"System.Array"=$true;"System.Object"=$true}
 
     $pipelineDef.components | ForEach-Object {
         $id = $_.id
         $ref = $_.reference
+        
+        # Inspect definition from component script
+        $cmd = Get-Command $_.reference
+        If (-not $cmd.Parameters) {
+            If ($_.parameters.PSObject.Properties.Count -gt 0) {
+                Write-Error "No parameters found for component '$ref'!"
+                Throw [Exception] ""
+            } Else {
+                Write-Warning "No parameters found for component '$ref'!"
+            }
+        }
         $params0 = ""
         $_.parameters.PSObject.Properties | ForEach-Object {
             # TODO: We need the parameter types from the component definition...
-            $params0 += "`t$($_.Name) = `"$($_.Value)`""
+            $params0 += "`t$($_.Name) = `"$($_.Value)`"`n"
         }
-        $cmd1 = "$ref @params >.\trace\tmp_$id_output.txt 2>.\trace\tmp_$id_errors.txt 5>>.\trace\tmp_debug.txt"
-        $step = $stepTemplate -f $params0, $cmd1
-        $step
+        # Validate OUTPUT of Component
+        $outputType = $cmd.OutputType.Name
+        If (-not $outputType) {
+            Write-Warning "No OutputType found for component '$ref'!"
+        } ElseIf ($outputType -and -not $validOutputs.ContainsKey($outputType)) {
+            Write-Error "Invalid OutputType '$outputType' found for component '$ref'!"
+            Throw [Exception] ""
+        }
+        $cmd1 = "$ref @params >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
+        $stepTemplate -f $params0, $cmd1 > "step_$id.ps1"
+        $Count++
     }
+    Write-Verbose "$Count steps created"
 
 }
-
 Main

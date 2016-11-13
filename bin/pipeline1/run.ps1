@@ -8,7 +8,7 @@
 
 # Clear trace folder
 New-Item -Path .\trace -Type directory -Force | Out-Null
-Remove-Item .\trace\tmp_*.txt
+Remove-Item -Path .\trace\tmp_*.txt
 
 # We must start in the folder of the pipeline
 #  or relative paths to steps won't work
