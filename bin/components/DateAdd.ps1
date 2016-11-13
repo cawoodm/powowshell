@@ -1,15 +1,22 @@
 ﻿<#
     .Synopsis
-    Add some days to today's date and return the date
+    Add a field to each object in an array
 
-    .Parameter days
-    The number of days (integer) to add (or subtract) to todays date
+    .Parameter Name
+    Name of the field to add
+		
+		.Parameter Value
+		Value of the field to add
 
-    .Outputs
-    System.DateTime
 #>
+[OutputType([Object])]
 param(
-    [int]$days=0
+	[Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,
+	[Parameter(Mandatory=$true)][string]$Name,
+	[Parameter(Mandatory=$true)][string]$Value
 )
-Write-Output (Get-Date).AddDays($days).toString('yyyy-MM-dd')
-#Write-Output (Get-Date).AddDays($days) | ConvertTo-JSON
+$obj = $InputObject | ConvertFrom-JSON
+$obj | % {
+	Add-Member -InputObject $_ -NotePropertyName $Name -NotePropertyValue $Value
+}
+$obj | ConvertTo-Json

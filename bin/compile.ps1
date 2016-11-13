@@ -15,7 +15,7 @@ param(
     [String]$Pipeline
 )
 function Main() {
-    If ("DEBUG" -eq "DEBUG") {
+    if ("DEBUG" -eq "DEBUG") {
         $Pipeline="pipeline1"
         $VerbosePreference = "Continue"
     }
@@ -28,25 +28,23 @@ function CompilingPipeline($PipelineId) {
 
     try {
 
-    # TODO: Check pipeline exists
-    Push-Location $PipelineId/
+			# Ensure we run from the pipeline's directory
+			Push-Location $PipelineId/
 
-    # Read pipeline.json definition
-    $pipelineDef = ReadingPipelineDefinition("pipeline.json")
-    #$pipeline = Get-Content -Raw "$Pipeline/pipeline.json" | ConvertFrom-Json
+			# Read pipeline.json definition
+			$pipelineDef = ReadingPipelineDefinition("pipeline.json")
 
-    # Validate definition
-    CheckingComponents($pipelineDef.components)
+			# Validate definition
+			CheckingComponents($pipelineDef.components)
 
-    # Transform definition of components into Steps
-    CreatingComponentSteps($pipelineDef)
+			# Transform definition of components into Steps
+			CreatingComponentSteps($pipelineDef)
 
-    # Transform definition of pipeline into run.ps1
+			# TODO: Transform definition of pipeline into run.ps1
+			CreatingPipeline($pipelineDef)
 
-    # Cleanup
-    <# This method hides who caused the error as we only see#>
     } catch {
-        If ($_.Exception.Message -ne "") {
+        if ($_.Exception.Message -ne "") {
             Write-Error ("Unhandled Excption`n" + $_)
         }
     } finally {
@@ -67,7 +65,7 @@ function ReadingPipelineDefinition($Path) {
 function CheckingComponents($components) {
 
     # Make sure we have at least one component
-    If (-not $components -or -not $components.Count -or $components.Count -eq 0) {
+    if (-not $components -or -not $components.Count -or $components.Count -eq 0) {
         Write-Error "No components found!"
         Return
     }
@@ -76,11 +74,11 @@ function CheckingComponents($components) {
     # Check each component
     $components | ForEach-Object {
         # TODO: Support Cmdlets and maybe use Get-Command?
-        If (-not (Test-Path $_.reference)) {
+        if (-not (Test-Path $_.reference)) {
             Write-Error "Component Id $($_.id) reference $($_.reference) not found!"
         }
         # TODO: Check mandatory fields (e.g. id)
-        # TODO: Check parameters against component definition?
+        # TODO: Check parameters against component definition? -> Done in CreatingComponentSteps()
      }
 
      Write-Verbose "Components checked out OK"
@@ -94,37 +92,84 @@ function CreatingComponentSteps($pipelineDef) {
     $validOutputs = @{"System.String"=$true;"System.Array"=$true;"System.Object"=$true}
 
     $pipelineDef.components | ForEach-Object {
-        $id = $_.id
-        $ref = $_.reference
+        
+        $step = $_
+        $id = $step.id
+        $ref = $step.reference
         
         # Inspect definition from component script
-        $cmd = Get-Command $_.reference
-        If (-not $cmd.Parameters) {
-            If ($_.parameters.PSObject.Properties.Count -gt 0) {
+        $cmd = Get-Command $step.reference
+        if (-not $cmd.Parameters) {
+            if ($step.parameters.PSObject.Properties.Count -gt 0) {
                 Write-Error "No parameters found for component '$ref'!"
                 Throw [Exception] ""
-            } Else {
+            } else {
                 Write-Warning "No parameters found for component '$ref'!"
             }
         }
-        $params0 = ""
-        $_.parameters.PSObject.Properties | ForEach-Object {
-            # TODO: We need the parameter types from the component definition...
-            $params0 += "`t$($_.Name) = `"$($_.Value)`"`n"
+
+        # Pass PARAMETERS to the Component
+        $params0 = ""; $step.parameters.PSObject.Properties | ForEach-Object {
+            $pVal = $_.Value; $pName = $_.Name
+            if ($pVal.StartsWith("{") -and $pVal.StartsWith("{")) {
+                # Parameter is a PowerShell Expression
+                $params0 += "`t$($pName) = " + $pVal.SubString(1, $pVal.Length-2) + "`n"
+                # TODO: Escape expression for PS
+            # TODO: {Pass integer, date, array?}
+            } else {
+                # Parameter is a String
+                $params0 += "`t$($pName) = `"$($pVal)`"`n"
+                # TODO: Escape String for PS
+            }
         }
+
+        # Pass INPUT to the Component
+        $inputSrc = if($step.input){'$input | '}else{''}
+
         # Validate OUTPUT of Component
         $outputType = $cmd.OutputType.Name
-        If (-not $outputType) {
+        if (-not $outputType) {
             Write-Warning "No OutputType found for component '$ref'!"
         } ElseIf ($outputType -and -not $validOutputs.ContainsKey($outputType)) {
             Write-Error "Invalid OutputType '$outputType' found for component '$ref'!"
             Throw [Exception] ""
         }
-        $cmd1 = "$ref @params >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
+
+        # Build Step code
+        $cmd1 = "$inputSrc$ref @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
         $stepTemplate -f $params0, $cmd1 > "step_$id.ps1"
+
         $Count++
+
     }
+
     Write-Verbose "$Count steps created"
 
 }
+
+function CreatingPipeline($pipelineDef) {
+
+		$cmd = ""
+		
+		$pipelineDef.components | ForEach-Object {$component = $_;
+		
+			$id = $component.id
+			
+			if ($component.input) {
+				# Pass INPUT to step
+				$cmd += "Get-Content -Raw .\trace\tmp_$($component.input)_output.txt | "
+			}
+			
+			# Run step LOGIC and capture OUTPUT
+			$cmd += ".\step_$($id).ps1 >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt`n`n"
+			
+		}
+		
+		# Return OUTPUT
+		$cmd += "Get-Content -Raw .\trace\tmp_$($id)_output.txt"
+		
+		$cmd > ".\runner.ps1"
+		
+}
+
 Main

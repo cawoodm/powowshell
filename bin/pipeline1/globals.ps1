@@ -1,6 +1,7 @@
 ﻿#  This will be included in all steps and thus executed multiple times
-
-# Some variables
-$PIPELINE = "Cool Pipeline"
-$DEBUG = $true
-$ROOT = $PSScriptRoot
+$globals = @{
+	PPRoot = $PSScriptRoot
+    PPDebug = $true
+    PPNow = (Get-Date).toString("yyyy-MM-dd hh:mm:ss")
+	Foo = "Bar"
+}
