@@ -10,7 +10,7 @@
 			"id":"A",
 			"name":"Read Voters File",
 			"reference":"../components/ReadFile.ps1",
-			"input":"",
+      "input":"",
 			"parameters": {
 				"Path": "./data/voters.txt"
 			}
@@ -22,7 +22,7 @@
       "input": "A",
 			"parameters": {
 				"Delimiter": "|",
-				"Header": "{\"name\", \"age\", \"email\"}"
+				"Header": "{\"name\", \"age\", \"email\", \"source\"}"
 			}
 		},
 		{
@@ -31,14 +31,9 @@
 			"reference":"../components/SelectFields.ps1",
       "input": "B",
 			"parameters": {
-				"Fields": "{\"name\", \"email\"}"
+				"Fields": "{\"name\", \"age\", \"email\"}"
 			}
 		}
-	],
-	"flow": [
-		{"id":"A"},
-		{"id":"B"},
-		{"id":"C"}
 	]
 	
 }

@@ -1,6 +1,6 @@
 #PowowShell
 
-Ever dreamed of drawing a visual data flow and pressing "Play" to see it run.
+Ever dreamed of drawing a visual data flow and pressing "Play" to see it run?
 I have, and that's why I dreamed up PowowShell: a graphical designer powered
 by PowerShell.
 
@@ -10,6 +10,24 @@ Database component and pressing "Play" to load data into your database. What
 about getting an email out if some records don't load? Drag in an Email component
 and connect it to the Errors output of your Database component. Call a web service?
 Sure, just use a Transform component to map your data to the format required.
+
+##Install and Run
+There is no GUI yet. Download the repository and compile and run the sample pipeline as follows:
+```
+git clone git@github.com:cawoodm/powowshell.git
+cd powowshell/bin
+powershell
+./compile.ps1
+./pipeline1/runner.ps1
+```
+
+This builds and runs a pipeline based on it's definition in `pipeline.json`.
+The result of the build `compile.ps1` is a powershell script `runner.ps1`. Running this runs the pipeline.
+The pipeline does the following:
+* Step A: Read a list of "voters" from the file in `data\voters.txt` as text
+* Step B: Convert the text to JSON
+* Step C: Select only the name and email fields and output them
+  The result is a JSON Array of voters.
 
 ##PowerShell
 PowerShell is a cross platform, open source shell designed by Microsoft which
@@ -37,12 +55,7 @@ A component is just a script with some basic requirements
 * It writes any errors to the pipeline (stderr) with Write-Error
 * It has annotated help describing it's function and parameters
 
-As you can see, PowowShell expects components to behave in a certain way. This may be a pain but it makes 
-things easier later. One of the weaknesses of PowerShell is that very few CmdLets can interact because most have their own
-special object types. You can't pass the output of one object type to another easily. PowowShell ensures each 
-component can only write a String. This may sound limiting but since you can put JSON (or whatever) into
-that string, you retain all of the flexibility of objects. Of course if one component outputs JSON, the
-next component downstream needs to accept JSON or you need to put a Transform component in between.
+As you can see, PowowShell expects components to behave in a certain way. This may be a pain but it makes things easier later. One of the weaknesses of PowerShell is that very few CmdLets can interact because most have their own special object types. You can't pass the output of one object type to another easily. PowowShell ensures each component can only write a String. This may sound limiting but since you can put JSON (or whatever) into that string, you retain all of the flexibility of objects. Of course if one component outputs JSON, the next component downstream needs to accept JSON or you need to put a Transform component in between.
 
 Let's look at some components:
 
@@ -52,8 +65,11 @@ The most simple component could accept no input and just return a string like th
 Write-Output "hello, world"
 ```
 
+I like to call such components, which take no input "Source Components". Examples would be file or database readers.
+
 ###DOS Wrapper Component
-You don't have to run powershell, you can call OS commands. You can also pass parameters:
+
+Although your components must be PowerShell scripts, you can call OS commands easily from PowerShell. This means you can easily wrap your favorite shell commands (like AWK or curl) or your favorite Perl, Python or WhatHaveYou Scripts. You can also pass parameters:
 ```powershell
 param(
     [String]$Path
@@ -62,8 +78,8 @@ CMD /C "DIR /B $Path"
 ```
 
 ###Example Component
-Suppose you want a component which returns today's date plus N days. Your DateAdder.ps1 component could look
-like this (with full annotation):
+Let's look at a more interesting component. Suppose you want something which returns today's date plus N days. Your `DateAdder.ps1` component could look
+like this (with full annotations):
 ```powershell
 <#
     .Synopsis
@@ -71,9 +87,7 @@ like this (with full annotation):
 
     .Parameter days
     The number of days (integer) to add (or subtract) to todays date
-		
-		.Output
-		
+
 #>
 param(
     [int]$days=0

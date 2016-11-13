@@ -1,5 +1,5 @@
-John Doe|22|john@doe.com
-Jim Doe|100|jim@doe.com
-Jane Doe|20|jane@doe.com
-Janet Doe|18|janet@doe.com
-Marc Bobson|22|marc@bobson.com
+John Doe|22|john@doe.com|phone
+Jim Doe|100|jim@doe.com|website
+Jane Doe|20|jane@doe.com|phone
+Janet Doe|18|janet@doe.com|phone
+Marc Bobson|22|marc@bobson.com|phone
