@@ -7,6 +7,12 @@
 
  .Parameter Path
   Specifies full literal (no wildcards) path to the file to be read.
+	
+ .inputs
+ none
+ 
+ .outputs
+ text
 
 #>
 [OutputType([String])]

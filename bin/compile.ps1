@@ -6,30 +6,24 @@
     Will read and parse the pipeline.json file inside the pipeline folder.
     Next, each component listed is verified.
    
-    .Parameter Pipeline
+    .Parameter Path
     The ID of a pipeline to compile
 
 #>
 [CmdletBinding()]
 param(
-    [String]$Pipeline
+    [Parameter(Mandatory=$true)][String]$Path
 )
-function Main() {
-    if ("DEBUG" -eq "DEBUG") {
-        $Pipeline="pipeline1"
-        $VerbosePreference = "Continue"
-    }
-    Push-Location $PSScriptRoot
-    CompilingPipeline($Pipeline)
+function main() {
+		$FullPath = (Resolve-Path -Path $Path).Path
+    Push-Location $FullPath
+    CompilingPipeline
     Pop-Location
 }
 
-function CompilingPipeline($PipelineId) {
+function CompilingPipeline() {
 
     try {
-
-			# Ensure we run from the pipeline's directory
-			Push-Location $PipelineId/
 
 			# Read pipeline.json definition
 			$pipelineDef = ReadingPipelineDefinition("pipeline.json")
@@ -40,15 +34,22 @@ function CompilingPipeline($PipelineId) {
 			# Transform definition of components into Steps
 			CreatingComponentSteps($pipelineDef)
 
-			# TODO: Transform definition of pipeline into run.ps1
-			CreatingPipeline($pipelineDef)
+			# Transform definition of pipeline into run_trace.ps1
+			CreatingPipeline_trace($pipelineDef)
+
+			# Transform definition of pipeline into run_prod.ps1
+			CreatingPipeline_prod($pipelineDef)
+			
+			"Pipeline compiles successfully!"
+			"Usage:`n  POW run $Path"
+			"OR`n  POW run $Path -Trace"
 
     } catch {
         if ($_.Exception.Message -ne "") {
             Write-Error ("Unhandled Excption`n" + $_)
         }
     } finally {
-        Pop-Location
+        
     }
 }
 
@@ -86,7 +87,8 @@ function CheckingComponents($components) {
 }
 
 function CreatingComponentSteps($pipelineDef) {
-
+		
+		#TODO: We need to check if globals.ps1 exists first!
     $stepTemplate = ". .\globals.ps1`n`$params = @{{`n{0}`n}}`n{1}"
     $Count = 0
     $validOutputs = @{"System.String"=$true;"System.Array"=$true;"System.Object"=$true}
@@ -147,17 +149,71 @@ function CreatingComponentSteps($pipelineDef) {
 
 }
 
-function CreatingPipeline($pipelineDef) {
+<#
+	CreatingPipeline_prod
+	Create pipeline for production
+	 * No trace files are used
+	 * Performance is better
+#>
+function CreatingPipeline_prod($pipelineDef) {
 
+		# Can be run from anywhere, change to pipeline path
 		$cmd = ""
+		$cmd += "Push-Location `$PSScriptRoot`n"
+		$cmd += "`n"
 		
-		$pipelineDef.components | ForEach-Object {$component = $_;
+		$pipelineDef.components | ForEach-Object {$step = $_;
 		
-			$id = $component.id
+			$id = $step.id
 			
-			if ($component.input) {
+			$cmd += "# Run Step $($id): $($step.name)`n"
+			
+			# Capture step OUTPUT
+			$cmd += "`$OP_$id = "
+			
+			# Pass INPUT to step
+			if ($step.input) {$cmd += "`$OP_$($step.input) | "}
+			
+			# Run step LOGIC
+			$cmd += ".\step_$($id).ps1`n`n"
+			
+		}
+		
+		# Return OUTPUT
+		$cmd += "`$OP_$($id)`n"
+		
+		# Clean up
+		$cmd += "`n"
+		$cmd += "Pop-Location"
+		
+		$cmd > ".\run_prod.ps1"
+		
+}
+
+<#
+	CreatingPipeline_trace
+	Create pipeline for tracing
+	 * Trace files are generated
+	 * Better for debugging
+#>
+function CreatingPipeline_trace($pipelineDef) {
+
+		# Can be run from anywhere, change to pipeline path
+		$cmd = ""
+		$cmd = "Push-Location `$PSScriptRoot`n"
+		$cmd += "`$VerbosePreference='Continue'`n"
+		$cmd += "`n"
+		
+		$pipelineDef.components | ForEach-Object {$step = $_;
+		
+			$id = $step.id
+			
+			$cmd += "# Run Step $($id): $($step.name)`n"
+			$cmd += "Write-Verbose `"Running step $($id): $($step.name)`"`n"
+			
+			if ($step.input) {
 				# Pass INPUT to step
-				$cmd += "Get-Content -Raw .\trace\tmp_$($component.input)_output.txt | "
+				$cmd += "Get-Content -Raw .\trace\tmp_$($step.input)_output.txt | "
 			}
 			
 			# Run step LOGIC and capture OUTPUT
@@ -166,10 +222,15 @@ function CreatingPipeline($pipelineDef) {
 		}
 		
 		# Return OUTPUT
-		$cmd += "Get-Content -Raw .\trace\tmp_$($id)_output.txt"
+		$cmd += "# Return Output`n"
+		$cmd += "Get-Content -Raw .\trace\tmp_$($id)_output.txt`n"
 		
-		$cmd > ".\runner.ps1"
+		# Clean up
+		$cmd += "`n"
+		$cmd += "Pop-Location"
+		
+		$cmd > ".\run_trace.ps1"
 		
 }
-
-Main
+Set-StrictMode -Version 3.0
+main

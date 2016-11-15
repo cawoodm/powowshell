@@ -4,6 +4,13 @@
 
     .Parameter Path
     The path to the directory to be listed
+		
+		.Inputs
+		none
+		
+		.Outputs
+		text
+		
 #>
 param(
     [String]$Path

@@ -10,7 +10,7 @@
 			"id":"A",
 			"name":"Read Voters File",
 			"reference":"../components/ReadFile.ps1",
-      "input":"",
+			"input":"",
 			"parameters": {
 				"Path": "./data/voters.txt"
 			}
@@ -19,7 +19,7 @@
 			"id":"B",
 			"name":"Convert2JSON",
 			"reference":"../components/CSV2JSON.ps1",
-      "input": "A",
+			"input": "A",
 			"parameters": {
 				"Delimiter": "|",
 				"Header": "{\"name\", \"age\", \"email\", \"source\"}"
@@ -29,7 +29,7 @@
 			"id":"C",
 			"name":"Select Name and Email",
 			"reference":"../components/SelectFields.ps1",
-      "input": "B",
+			"input": "B",
 			"parameters": {
 				"Fields": "{\"name\", \"age\", \"email\"}"
 			}

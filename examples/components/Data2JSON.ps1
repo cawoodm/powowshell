@@ -12,10 +12,10 @@
   Data2JSON.ps1 -Delimiter ";"
  
  .INPUTS
-  String (Text Data)
+  text
 	
  .OUTPUTS
-  String (JSON)
+  json[]
 
 #>
 param(

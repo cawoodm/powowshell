@@ -15,10 +15,15 @@ Sure, just use a Transform component to map your data to the format required.
 There is no GUI yet. Download the repository and compile and run the sample pipeline as follows:
 ```
 git clone git@github.com:cawoodm/powowshell.git
-cd powowshell/bin
+cd powowshell/
 powershell
-./compile.ps1
-./pipeline1/runner.ps1
+.\bin\install.cmd
+```
+This will create `pow.cmd` which you should copy to your PATH so you can run it from anywhere.
+Now we'll compile and run the example pipeline:
+```
+pow compile examples\pipeline1
+pow run examples\pipeline1
 ```
 
 This builds and runs a pipeline based on it's definition in `pipeline.json`.
@@ -55,7 +60,7 @@ the full power of the .NET framework very easily to do just about anything.
 
 ##Components
 A component is just a script with some basic requirements
-* It must declares it's PARAMETERS with types
+* It must declare its PARAMETERS with types
 * If it accepts INPUT, it gets the data as a String from the pipeline (stdin) with parameter $InputObject
 * If it provides OUTPUT, it writes it's output as a String to the pipeline (stdout) with Write-Output
 * It writes any errors to the pipeline (stderr) with Write-Error

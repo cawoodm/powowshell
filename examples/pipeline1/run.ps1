@@ -31,9 +31,7 @@ Get-Content -Raw .\trace\tmp_C_output.txt
     # This mode shows the errors in the console if we don't redirect them
     #$OP=@{}
     $OP_A = .\step_A.ps1 #2>.\trace\tmp_A_errors.txt
-    #$OP_A
     $OP_B = $OP_A | .\step_B.ps1 #2>.\trace\tmp_B_errors.txt
-    #$OP_B
     #$OP_B2 = $OPA | .\step_B2.ps1
     $OP_C = $OP_B | .\step_C.ps1 #2>.\trace\tmp_C_errors.txt
     $OP_C
