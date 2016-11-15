@@ -16,10 +16,13 @@ There is no GUI yet. Download the repository and compile and run the sample pipe
 ```
 git clone git@github.com:cawoodm/powowshell.git
 cd powowshell/
-powershell
 .\bin\install.cmd
 ```
 This will create `pow.cmd` which you should copy to your PATH so you can run it from anywhere.
+Let's check if we're up and running by displaying the version:
+```
+pow version
+```
 Now we'll compile and run the example pipeline:
 ```
 pow compile examples\pipeline1
