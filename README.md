@@ -82,5 +82,5 @@ A component is just a script with some basic requirements
 
 As you can see, PowowShell expects components to behave in a certain way. This may be a pain but it makes things easier later. One of the weaknesses of PowerShell is that very few CmdLets can interact because most have their own special object types. You can't pass the output of one object type to another easily. PowowShell ensures each component can only write a String. This may sound limiting but since you can put JSON (or whatever) into that string, you retain all of the flexibility of objects. Of course if one component outputs JSON, the next component downstream needs to accept JSON or you need to put a Transform component in between.
 
-Let's look at some [component examples](Component-Examples.md).
+Let's look at some [component examples](docs/Component-Examples.md).
 
