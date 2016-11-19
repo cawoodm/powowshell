@@ -15,7 +15,7 @@ Sure, just use a Transform component to map your data to the format required.
 
 Pipelines are where the magic happens. Here you connect your components together in a sequence. The pipeline is run in columns: Column A is run, then B etc. In each column the components are executed from top to bottom so you'd have: A1 -> B1 -> B2 -> C1 -> C2 -> C3 -> D1
 
- ![pipeline](docs\pipeline.png)
+ ![pipeline](.\docs\pipeline.png)
 
 The diagram shows the 4 types of components (source, transform, destination and script) and how data can flow between them.
 
