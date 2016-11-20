@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href='css/bootstrap.css' rel='stylesheet' type='text/css' />
+	<link href='css/bootstrap-theme.css' rel='stylesheet' type='text/css' />
+<style>
+.drophere {box-sizing: border-box; border:1px dotted #CCC; min-height:100px; padding:0px;}
+.pw_comp {white-space: nowrap; color: #5bc0de}
+.pw_comp span.icon {padding-right:5px;}
+.pw_step {height:100px; width: 90%; margin:5%; padding: 0px;}
+.spacer {color: #eee; border-radius: 6px;border:3px #eee dotted; text-align:center; }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">Visual PowowShell</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="#">Home</a></li>
+				<li><a href="#about">About</a></li>
+				<li><a href="#contact">Contact</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Issues</a></li>
+						<li><a href="#">Feedback</a></li>
+						<li role="separator" class="divider"></li>
+						<li class="dropdown-header">Help</li>
+						<li><a href="#">Wiki</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+
+<div class="container" style="margin-top:70px">
+	
+	<div class="row">
+		<div class="col-sm-2">
+			<ul class="list-group">
+				<li class="list-group-item pw_comp" id="comp_1" draggable="true" data='{"component":"ReadFile", "icon": "open-file", "type": "source"}'><span class="icon glyphicon glyphicon-open-file"></span>Read File</li>
+				<li class="list-group-item pw_comp" id="comp_2" draggable="true" data='{"component":"Data2JSON", "icon": "random", "type": "transform"}'><span class="icon glyphicon glyphicon-random"></span>Data2JSON</li>
+				<li class="list-group-item pw_comp" id="comp_3" draggable="true" data='{"component":"WriteFile", "icon": "save-file", "type": "destination"}'><span class="icon glyphicon glyphicon-save-file"></span>Write File</li>
+				<li class="list-group-item pw_comp" id="comp_4" draggable="true" data='{"component":"JavaScript", "icon": "edit", "type": "script"}'><span class="icon glyphicon glyphicon-edit"></span>JavaScript</li>
+				<li class="list-group-item pw_comp" id="comp_5" draggable="true" data='{"component":"Filter", "icon": "filter", "type": "transform"}'><span class="icon glyphicon glyphicon-filter"></span>Filter</li>
+				<li class="list-group-item pw_comp" id="comp_6" draggable="true" data='{"component":"Sort", "icon": "sort-by-alphabet", "type": "transform"}'><span class="icon glyphicon glyphicon-sort-by-alphabet"></span>Sort</li>
+			</ul>
+		</div>
+		<div class="col-sm-2 nopadding drophere" id="col_A"></div>
+		<div class="col-sm-2 nopadding drophere" id="col_B"></div>
+		<div class="col-sm-2 nopadding drophere" id="col_C"></div>
+		<div class="col-sm-2 nopadding drophere" id="col_D"></div>
+		<!--<div class="col-sm-2 nopadding drophere" id="col_B" ondrop="drop(event)" ondragover="allowDrop(event)"></div>-->
+	</div>
+	<!--
+	<a href="#" class="btnsq"><i class="icon glyphicon glyphicon-file"></i><p>Comments</p><span class="indicator-dot">6</span></a>
+	-->
+</div>
+
+<script src='js/jquery.js'></script>
+<script src='js/jquery-ui.js'></script>
+<script src='js/bootstrap.js'></script>
+<script type="text/javascript">
+$(".pw_comp").draggable({helper: "clone"});
+function dropStep(event, ui) {
+console.log('dropStep');
+	var src = ui.draggable[0];
+	var dest = event.target;
+	console.log("dest="+dest)
+	var el;
+	console.log("source="+src.id)
+	if (src.id.match(/^comp_/)) {
+		// Component
+		var data = JSON.parse(src.getAttribute("data"));
+		el = comp2Step(data);
+	} else {
+		// STEP: Move, don't copy steps
+		src.remove();
+		el = $(src).clone()[0];
+	}
+	first = 1;
+	el.id = dest.id.replace('col_', 'step_');
+	el.id += dest.childNodes.length;
+	dest.append(el);
+	$(el).draggable({cancel:false, helper: "clone"});
+	spacers()
+	//TODO: Add new columns if required
+}
+function spacers() {
+	$('.drophere').each(function(i, el) {
+		$(el).find('.spacer').remove();
+		$(el).append('<div class="spacer pw_step">...<div>');
+	});
+}
+spacers()
+$(".drophere").droppable({
+	accept: ".pw_comp,.pw_step",
+	classes: {
+		"ui-droppable-active": "ui-state-default"
+	},
+	drop: dropStep
+});
+function comp2Step(data) {
+	// Make a Step from a Component
+	var el = $.parseHTML('<button type="button" class="btn btn-lg btn-info icon glyphicon"></button>')[0];
+	
+	var i = document.createElement('span');
+	$(i).addClass("glyphicon-"+data.icon);
+	i.innerText = data.component;
+	console.log(data.component)
+	if (data.type == "destination" || data.type == "transform") {
+		i2 = document.createElement('span');
+		$(i2).addClass("glyphicon-chevron-right");
+		el.appendChild(i2);
+	}
+	el.appendChild(i);
+	if (data.type == "source" || data.type == "transform") {
+		i1 = document.createElement('span');
+		$(i1).addClass("glyphicon-chevron-right");
+		el.appendChild(i1);
+	}
+	$(el).removeClass('pw_comp')
+	$(el).addClass('pw_step')
+	return el;
+}
+</script>
+</body>
+</html>
