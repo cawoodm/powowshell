@@ -3,7 +3,10 @@
   Convert input data to JSON format
 
  .DESCRIPTION
-  Accepts tabular data (e.g. CSV) and return contents as a JSON Array
+  Accepts custom tabular data about people and return contents as a JSON Array
+	The data must be in the format:
+	NAME|AGE|GENDER
+	However, the separator can be different and specified by the -Delimiter parameter
 
  .PARAMETER Delimiter
   Specifies the field separator. Default is a comma ",")
@@ -18,6 +21,8 @@
   json[]
 
 #>
+[CmdLetBinding()]
+[OutputType([String])]
 param(
   [Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,
 	[Parameter(Mandatory=$false)][String]$RecordSeparator,
