@@ -1,12 +1,15 @@
 !TODO
-* Dynamically compile the pipeline.ps1 file from the pipeline definition in pipeline.json
-** Compile each of the step files
-* Inspect/reflect the definition of component
-** from a separate MyComponent.json file?
-** by parsing MyComponent.ps1? -> will exclude standard CmdLets we don't have the source for
-** by inspecting/reflecting MyComponent.ps1 with Get-Command?
+* IDE
+  * Generate pipeline.json from diagram
+  * Read list of components from components/ folder
+  * Read list of installed modules from profile?
+    * List cmdlets by module
 * We need to deal with not passing on empty parameters
 * Handling parameters for the pipeline as a whole
-* Using Write-Debug or Write-Verbose?
+  * Calling pipeline with params
+  * Running pipeline as a step
 * Progress Bar?
-** Write-Progress -Activity "Search in Progress" -Status "$I% Complete:" -PercentComplete $I;
+  * `Write-Progress -Activity "Search in Progress" -Status "$I% Complete:" -PercentComplete $I;`
+* Package Manager
+  * `Invoke-WebRequest http://PoshCode.org/i -OutF PC.ps1; .\PC; rm .\PC.ps1`
+  * Dealing with PS vs Component compatability/versions
