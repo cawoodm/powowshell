@@ -93,7 +93,7 @@ console.log('dropStep');
 	first = 1;
 	el.id = dest.id.replace('col_', 'step_');
 	el.id += dest.childNodes.length;
-	dest.append(el);
+	dest.appendChild(el);
 	$(el).draggable({cancel:false, helper: "clone"});
 	spacers()
 	//TODO: Add new columns if required
