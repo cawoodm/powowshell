@@ -1,6 +1,4 @@
 #PowowShell
-boo
-
 Ever dreamed of drawing a visual data flow and pressing "Play" to see it run?
 I have, and that's why I dreamed up PowowShell: a graphical designer powered
 by PowerShell.
@@ -11,6 +9,16 @@ Database component and pressing "Play" to load data into your database. What
 about getting an email out if some records don't load? Drag in an Email component
 and connect it to the Errors output of your Database component. Call a web service?
 Sure, just use a Transform component to map your data to the format required.
+
+### IDE
+
+Check out an early version of the IDE here:
+
+https://cawoodm.github.io/powowshell/ide/
+
+![ide](./docs/ide.png)
+
+The IDE demo is basically just look and feel. There is no loading, running and saving of pipelines.
 
 ### Pipelines
 
