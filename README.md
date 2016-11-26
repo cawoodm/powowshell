@@ -1,4 +1,5 @@
 #PowowShell
+boo
 
 Ever dreamed of drawing a visual data flow and pressing "Play" to see it run?
 I have, and that's why I dreamed up PowowShell: a graphical designer powered
@@ -23,7 +24,7 @@ The diagram shows the 4 types of components (source, transform, destination and 
 
 ##Installation
 
-There is no GUI yet. Download the repository and compile and run the sample pipeline as follows:
+Download the repository and compile and run the sample pipeline as follows:
 ```
 git clone git@github.com:cawoodm/powowshell.git
 cd powowshell/bin
