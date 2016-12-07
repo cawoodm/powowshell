@@ -94,7 +94,7 @@ function comp2Step(data) {
 	i.innerText = data.component;
 	//if (data.type == "destination" || data.type == "transform") {i2 = document.createElement('span');$(i2).addClass("glyphicon-chevron-right");	el.appendChild(i2);	}
 	$(el).find('.stepHead').text(data.component);
-	$(el).find('.stepBody')[0].append(i);
+	$(el).find('.stepBody').append(i);
 	//if (data.type == "source" || data.type == "transform") {i1 = document.createElement('span');$(i1).addClass("glyphicon-chevron-right");el.appendChild(i1);	}
 	$(el).removeClass('pw_comp')
 	$(el).addClass('pw_step')
