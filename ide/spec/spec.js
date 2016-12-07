@@ -2,8 +2,10 @@ const fs = require('fs'),
 			stripBom = require('strip-bom');
 
 describe("IDE", function() {
+	
 	var path1 = '../examples/pipeline1/pipeline.json',
 	    def;
+			
   it("could find a valid pipeline file", function() {
 			expect(fs.existsSync(path1)).toBe(true, 'Pipeline description not found at:' + path1);
 		var str = fs.readFileSync(path1, 'utf8');
@@ -19,4 +21,7 @@ describe("IDE", function() {
 		expect(def.name).toBeTruthy("name should be provided");
 		expect(def.parameters.length).not.toBe(null, "parameters should be an array, even if empty");
 	});
+	
+	
+	
 });
