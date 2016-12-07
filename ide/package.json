@@ -1,0 +1,28 @@
+{
+  "name": "powowshell-ide",
+  "version": "0.0.1",
+  "description": "The GUI or Development Environment for PowowShell",
+  "main": "index.html",
+  "dependencies": {
+    "strip-bom": "^3.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cawoodm/powowshell.git"
+  },
+  "keywords": [
+    "powershell",
+    "etl",
+    "gui"
+  ],
+  "author": "Marc Cawood <cawoodm@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cawoodm/powowshell/issues"
+  },
+  "homepage": "https://github.com/cawoodm/powowshell#readme"
+}

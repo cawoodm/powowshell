@@ -12,29 +12,62 @@
  .Parameter Filter
   The wildcard for matching files (e.g. *.csv)
 	
+ .Parameter Recurse
+  If $true, will search all sub-folders
+	
+ .Example
+ .\FileList.ps1 -Path C:\windows -Filter *.exe
+	
  .Inputs
  none
  
  .Outputs
- json[]
+ json[name,fullName,size(int)]
 
 #>
-[OutputType([String])]
+[CmdletBinding(DefaultParametersetName="Standard")]
+[OutputType([string])]
 param(
-		[Parameter(Mandatory=$true,HelpMessage="The path to the files")][string]$Path,
-		[string]$Filter
+
+	[Parameter(ParameterSetName="PWTest")]
+		[Switch]$PWTest,
+
+	[Parameter(ParameterSetName="PWOutput")]
+		[Switch]$PWOutput,
+		
+	[Parameter(ParameterSetName="Standard",Mandatory=$true,HelpMessage="The path to the files",Position=0)]
+		[string]$Path,
+		[string]$Filter,
+		[switch]$Recurse
+		
 )
-function main() { 
+Set-StrictMode -Version 3.0
+function main() {
 	$files = @()
-	Get-ChildItem -Path $Path -Filter $Filter -Recurse:$Recurse |
+	Get-ChildItem -Path $Path -File -Filter $Filter -Recurse:$Recurse|
 	  ForEach-Object {
+		$f = $null
+		$len = 0
+		if ($_.PSobject.Properties.Name -match "Length") {$len = $_.Length}
 		$f = @{
 			name=$_.Name
 			fullName=$_.FullName
-			size=$_.Length
+			size=$len
 		}
-		$files += New-Object -TypeName PSObject -Property $f
+		if ($f) {$files += New-Object -TypeName PSObject -Property $f}
 	}
-	$files | ConvertTo-JSON
+	$files | ConvertTo-Json
 }
-main
+function PWTest() {
+	Push-Location $PSScriptRoot
+	If ((.\FileList.ps1 -Path "C:\Windows" | ConvertFrom-Json).length -gt 0) {"FileList: OK"} Else {Write-Error "FileList: FAIL"}
+	Pop-Location
+}
+function PWOutput() {
+	'[{"name":"one.txt","fullName":"C:\\temp\\one.txt","size":1},{"name":"two.txt","fullName":"C:\\temp\\two.txt","size":2}]'
+}
+switch ($PsCmdlet.ParameterSetName) {
+	PWTest {PWTest}
+	PWOutput {PWOutput}
+	default {main}
+}
