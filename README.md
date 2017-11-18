@@ -1,10 +1,10 @@
-#PowowShell
+# PowowShell
 
 Ever dreamed of drawing a visual data flow and pressing "Play" to see it run?
 I have, and that's why I dreamed up PowowShell: a graphical designer powered
 by PowerShell.
 
-##The Vision
+## The Vision
 
 Imagine dragging a CSV File component into your pipeline, connecting it to a 
 Database component and pressing "Play" to load data into your database. What
@@ -32,7 +32,7 @@ Pipelines are where the magic happens. Here you connect your components together
 
 The diagram shows the 4 types of components (source, transform, destination and script) and how data can flow between them. It also shows how script components just run, needing no input and producing no output. Indeed you can use a pipeline to just run some commands in sequence.
 
-##Installation
+## Installation
 
 Download the repository and compile and run the sample pipeline as follows:
 ```
@@ -65,7 +65,7 @@ We'll be developing this pipeline by adding new steps like:
 * Filtering only young voters (age < 30)
 * Sending each voter an email
 
-##PowerShell
+## PowerShell
 
 PowerShell is a cross platform, open source shell designed by Microsoft which
 runs on Windows, Mac and Linux. It's powerful and fun to use and becoming much
@@ -73,7 +73,7 @@ more than a utility merely for IT departments. It's designed around discreet
 functionality called "CmdLets" which generally accept and provide input and 
 output on the pipeline.
 
-##What does PowowShell do?
+## What does PowowShell do?
 
 PowowShell aims to let you design and run workflows (called Pipelines) which
 consist of individual powershell components. These components are joined together
@@ -85,7 +85,7 @@ you like curl, awk, batch files, what every you have. Because components are wri
 in powershell (yes you do have to write code to make components) you can also tap into
 the full power of the .NET framework very easily to do just about anything.
 
-##Component Definition
+## Component Definition
 
 A component is just a script with some basic requirements
 * It must declare its PARAMETERS with types
