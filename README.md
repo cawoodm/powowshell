@@ -1,9 +1,11 @@
 #PowowShell
+
 Ever dreamed of drawing a visual data flow and pressing "Play" to see it run?
 I have, and that's why I dreamed up PowowShell: a graphical designer powered
 by PowerShell.
 
 ##The Vision
+
 Imagine dragging a CSV File component into your pipeline, connecting it to a 
 Database component and pressing "Play" to load data into your database. What
 about getting an email out if some records don't load? Drag in an Email component
@@ -64,6 +66,7 @@ We'll be developing this pipeline by adding new steps like:
 * Sending each voter an email
 
 ##PowerShell
+
 PowerShell is a cross platform, open source shell designed by Microsoft which
 runs on Windows, Mac and Linux. It's powerful and fun to use and becoming much
 more than a utility merely for IT departments. It's designed around discreet
@@ -71,6 +74,7 @@ functionality called "CmdLets" which generally accept and provide input and
 output on the pipeline.
 
 ##What does PowowShell do?
+
 PowowShell aims to let you design and run workflows (called Pipelines) which
 consist of individual powershell components. These components are joined together
 in a sequence of steps with data from one step feeding into another.
@@ -82,6 +86,7 @@ in powershell (yes you do have to write code to make components) you can also ta
 the full power of the .NET framework very easily to do just about anything.
 
 ##Component Definition
+
 A component is just a script with some basic requirements
 * It must declare its PARAMETERS with types
 * If it accepts INPUT, it gets the data as a String from the pipeline (stdin) with parameter $InputObject
