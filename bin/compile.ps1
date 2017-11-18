@@ -15,7 +15,9 @@ param(
     [Parameter(Mandatory=$true)][String]$Path
 )
 function main() {
-		$FullPath = (Resolve-Path -Path $Path).Path
+    Write-Verbose "Path=$Path"
+	$FullPath = (Resolve-Path -Path $Path).Path
+    if (-not $FullPath) {return "ERROR: Unable to find your pipeline!"}
     Push-Location $FullPath
     CompilingPipeline
     Pop-Location
@@ -202,6 +204,7 @@ function CreatingPipeline_trace($pipelineDef) {
 		$cmd = ""
 		$cmd = "Push-Location `$PSScriptRoot`n"
 		$cmd += "`$VerbosePreference='Continue'`n"
+		$cmd += "New-Item -Path .\trace -ItemType Directory -ErrorAction SilentlyContinue | Out-Null`n"
 		$cmd += "`n"
 		
 		$pipelineDef.components | ForEach-Object {$step = $_;
@@ -232,5 +235,5 @@ function CreatingPipeline_trace($pipelineDef) {
 		$cmd > ".\run_trace.ps1"
 		
 }
-Set-StrictMode -Version 3.0
+Set-StrictMode -Version 5.0
 main
