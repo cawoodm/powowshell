@@ -66,5 +66,6 @@ If ($PsCmdlet.ParameterSetName -eq "PWOutput") {
 	Pop-Location
 	return
 }
+"ExecuteTemplate=" + $ExecuteTemplate
 $command = $ExecuteTemplate -f $p0, $p1, $p2
 Invoke-Expression -Command $command | ConvertTo-Json -Depth $Depth
