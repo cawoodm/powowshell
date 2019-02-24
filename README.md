@@ -38,7 +38,7 @@ Download the repository and compile and run the sample pipeline as follows:
 ```
 git clone git@github.com:cawoodm/powowshell.git
 cd powowshell
-bin\install.cmd
+install
 ```
 This will create `pow.cmd` which you should copy to your PATH so you can run it from anywhere.
 Let's check if we're up and running by displaying the version:
