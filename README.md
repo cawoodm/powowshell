@@ -37,8 +37,8 @@ The diagram shows the 4 types of components (source, transform, destination and 
 Download the repository and compile and run the sample pipeline as follows:
 ```
 git clone git@github.com:cawoodm/powowshell.git
-cd powowshell/bin
-install
+cd powowshell
+bin\install.cmd
 ```
 This will create `pow.cmd` which you should copy to your PATH so you can run it from anywhere.
 Let's check if we're up and running by displaying the version:
