@@ -7,7 +7,7 @@ DEL /Q pow.cmd 2>nul
 WHERE /Q pow.cmd
 IF %ERRORLEVEL% EQU 0 GOTO ERR_POWI
 
-POWERSHELL -File %~dp0\installer.ps1
+POWERSHELL -File "%~dp0\installer.ps1"
 IF %ERRORLEVEL% GTR 0 GOTO ERR_PSF
 
 GOTO:eof
