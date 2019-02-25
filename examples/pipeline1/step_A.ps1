@@ -1,9 +1,9 @@
-﻿[CmdletBinding(SupportsShouldProcess)]
+﻿param($PipelineParams=@{})
 $params = @{
-	Path = "./data/voters.txt"
+	Path = $PipelineParams.DataSource
 };
 $globals = @{
-	Foo = "Bar"
+	foo = "bar"
 };
 
 ../components/ReadFile.ps1 @params

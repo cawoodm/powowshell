@@ -1,5 +1,8 @@
 #Thoughts
 
+# Globals
+* How do we 
+
 ##IDE Technology
 * Vue/Vuetify: Modern, good look and works with NWJS
 * HTML5: no OS; good look and JS; could add node.js server (or NW.js)

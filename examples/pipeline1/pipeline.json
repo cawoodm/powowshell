@@ -3,11 +3,11 @@
 	"name": "Send mail to young voters",
 	"description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
 	"parameters": {
-		"p1": "",
+		"DataSource": ".\\data\\voters.txt",
 		"p2": "{Get-Date}"
 	},
 	"globals": {
-		"Foo": "Bar"
+		"foo": "bar"
 	},
 	"checks": {
 		"run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?"
@@ -21,7 +21,7 @@
 			"reference":"../components/ReadFile.ps1",
 			"input":"",
 			"parameters": {
-				"Path": "./data/voters.txt"
+				"Path": "{$PipelineParams.DataSource}"
 			}
 		},
 		{

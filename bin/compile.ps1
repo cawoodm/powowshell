@@ -108,7 +108,9 @@ function CreatingComponentSteps($pipelineDef) {
 		
     # Pass GLOBALS to the Component
     $globals = "`$globals = " + (ReSerializeObject $pipelineDef.globals) + "`n";
-    $stepTemplate += "[CmdletBinding(SupportsShouldProcess)]`n`{0}`n{1}`n{2}";
+    $stepTemplate = "[CmdletBinding(SupportsShouldProcess)]`n"
+    $PipelineParams = "param(`$PipelineParams=@{})"
+    $PipelineParamsI = "param([Parameter(Mandatory=`$true,ValueFromPipeline=`$true)][String]`$InputObject,`$PipelineParams=@{})"
 
     $Count = 0
     $validOutputs = @{"System.String"=$true;"System.Array"=$true;"System.Object"=$true}
@@ -133,6 +135,9 @@ function CreatingComponentSteps($pipelineDef) {
         # Pass PARAMETERS to the Component
         $params0 = "`$params = " + (ReSerializeObject $step.parameters);
 
+        
+        if($step.input){$PipelineParams2 = $PipelineParamsI} else {$PipelineParams2 = $PipelineParams}
+
         # Pass INPUT to the Component
         $inputSrc = if($step.input){'$input | '}else{''}
 
@@ -149,7 +154,7 @@ function CreatingComponentSteps($pipelineDef) {
         $cmd1 = "$inputSrc$ref @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
         
         # Build Step code
-        $stepTemplate -f $params0, $globals, $cmd1 > "$OutputPath\step_$id.ps1"
+        $PipelineParams2, $params0, $globals, $cmd1 -join "`n" > "$OutputPath\step_$id.ps1"
 
         $Count++
 
@@ -171,6 +176,7 @@ function CreatingPipeline_prod($pipelineDef) {
 
     # Can be run from anywhere, change to pipeline path
     $cmd = ReSerializeParams $pipelineDef.parameters;
+    $cmd += ReSerializePipelineParams $pipelineDef.parameters;
     $cmd += "Push-Location `$PSScriptRoot`n"
     $cmd += "`n"
     $cmd += "try {`n`n"
@@ -180,6 +186,7 @@ function CreatingPipeline_prod($pipelineDef) {
         $id = $step.id
         
         $cmd += "`t# Run Step $($id): $($step.name)`n"
+        $cmd += "`tWrite-Verbose `"Running step $($id): $($step.name)`"`n"
         
         # Capture step OUTPUT
         $cmd += "`t`$OP_$id = "
@@ -187,8 +194,8 @@ function CreatingPipeline_prod($pipelineDef) {
         # Pass INPUT to step
         if ($step.input) {$cmd += "`$OP_$($step.input) | "}
         
-        # Run step LOGIC
-        $cmd += ".\step_$($id).ps1`n`n"
+        # Run step LOGIC (passing all PipelineParams)
+        $cmd += ".\step_$($id).ps1 -PipelineParams `$PipelineParams`n`n"
         
     }
     
@@ -220,7 +227,8 @@ function CreatingPipeline_trace($pipelineDef) {
     # Can be run from anywhere, change to pipeline path
     $cmd = "[CmdletBinding(SupportsShouldProcess)]"
     $cmd = "Push-Location `$PSScriptRoot`n"
-    $cmd += "`$VerbosePreference='Continue'`n"
+    #$cmd += "`$VerbosePreference='Continue'`n"
+    $cmd += "#Create folder for trace files`n"
     $cmd += "New-Item -Path .\trace -ItemType Directory -ErrorAction SilentlyContinue | Out-Null`n"
     $cmd += "`n"
     
@@ -243,7 +251,8 @@ function CreatingPipeline_trace($pipelineDef) {
     
     # Return OUTPUT
     $cmd += "# Return Output`n"
-    $cmd += "Get-Content -Raw .\trace\tmp_$($id)_output.txt`n"
+    #$cmd += "Get-Content -Raw .\trace\tmp_$($id)_output.txt`n"
+    $cmd += "Write-Host `"Trace output is in the trace\ folder of your pipeline`""
     
     # Clean up
     $cmd += "`n"
@@ -272,7 +281,7 @@ function ReSerializeObject($obj) {
 }
 function ReSerializeParams($obj) {
     Write-Verbose "COMPILER ReSerializeParams"
-    if ($obj -is [array]) {throw "Parameters object is not an array!"}
+    if ($obj -is [array]) {throw "Parameters object should not be an array!"}
     $res = "[CmdletBinding(SupportsShouldProcess)]`n"
     $res += "param(`n"
     $obj.PSObject.Properties | ForEach-Object {
@@ -290,6 +299,20 @@ function ReSerializeParams($obj) {
     }
     $res = $res -replace ',\n$', "`n"
     $res += ")`n"
+    return $res
+}
+function ReSerializePipelineParams($obj) {
+    Write-Verbose "COMPILER ReSerializePipelineParams"
+    if ($obj -is [array]) {throw "Parameters object should not be an array!"}
+    $res = "`$PipelineParams = @{`n";
+    $obj.PSObject.Properties | ForEach-Object {
+        Write-Verbose $_.Name
+        $pVal = $_.Value; $pName = $_.Name
+        # TODO: Escape String for PS
+        $res += "`t$($pName) = `$$($pName);`n"
+    }
+    $res = $res -replace ',\n$', "`n"
+    $res += "};`n"
     return $res
 }
 Set-StrictMode -Version 5.0
