@@ -18,7 +18,7 @@ param(
     [Parameter(Mandatory=$true)][String]$Path,
 		[switch]$Trace=$false
 )
-function Main() {
+function main() {
   $Path = (Resolve-Path -Path $Path).Path
 	Push-Location $Path
 	if ($Trace) {

@@ -13,11 +13,12 @@
 param(
     [Parameter(Mandatory=$true)][String]$Path
 )
-function Main() {
+function main() {
   $Path = (Resolve-Path -Path $Path).Path
 	Push-Location $Path
 	DEL step_*.ps1
 	DEL run_*.ps1
+	DEL *.log
 	DEL .\trace\*.txt
 	Pop-Location
 }

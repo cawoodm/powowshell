@@ -20,7 +20,9 @@ param(
 )
 $OutputPath=".\"
 function main() {
-    Write-Verbose "Path=$Path"
+    
+    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+
     $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 	if ($FullPath -eq $null) {throw "Path to pipeline $Path not found!"}
     if ($Output) {$OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue}
@@ -106,7 +108,7 @@ function CreatingComponentSteps($pipelineDef) {
 		
     # Pass GLOBALS to the Component
     $globals = "`$globals = " + (ReSerializeObject $pipelineDef.globals) + "`n";
-    $stepTemplate += "`{0}`n{1}`n{2}";
+    $stepTemplate += "[CmdletBinding(SupportsShouldProcess)]`n`{0}`n{1}`n{2}";
 
     $Count = 0
     $validOutputs = @{"System.String"=$true;"System.Array"=$true;"System.Object"=$true}
@@ -216,7 +218,7 @@ function CreatingPipeline_trace($pipelineDef) {
     Write-Verbose "COMPILER CreatingPipeline_prod"
 
     # Can be run from anywhere, change to pipeline path
-    $cmd = "[CmdletBinding()]"
+    $cmd = "[CmdletBinding(SupportsShouldProcess)]"
     $cmd = "Push-Location `$PSScriptRoot`n"
     $cmd += "`$VerbosePreference='Continue'`n"
     $cmd += "New-Item -Path .\trace -ItemType Directory -ErrorAction SilentlyContinue | Out-Null`n"
@@ -271,7 +273,7 @@ function ReSerializeObject($obj) {
 function ReSerializeParams($obj) {
     Write-Verbose "COMPILER ReSerializeParams"
     if ($obj -is [array]) {throw "Parameters object is not an array!"}
-    $res = "[CmdletBinding()]`n"
+    $res = "[CmdletBinding(SupportsShouldProcess)]`n"
     $res += "param(`n"
     $obj.PSObject.Properties | ForEach-Object {
         Write-Verbose $_.Name

@@ -1,6 +1,0 @@
-[1481142501] [error] [client 0.0.0.0] p: duplicate option
-[1481142502] [error] [client 127.0.0.1] GET /favicon.ico: Error 404: Not Found
-[1481142513] [error] [client 127.0.0.1] GET /ide/css/bootstrap.css.map: Error 404: Not Found
-[1481142513] [error] [client 127.0.0.1] GET /ide/css/bootstrap-theme.css.map: Error 404: Not Found
-[1481142651] [error] [client 127.0.0.1] GET /ide/css/bootstrap-theme.css.map: Error 404: Not Found
-[1481142651] [error] [client 127.0.0.1] GET /ide/css/bootstrap.css.map: Error 404: Not Found

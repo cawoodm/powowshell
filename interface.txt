@@ -32,6 +32,8 @@ Rules:
 * Has powershell help/comments describing (for humans) the function and interface (.Parameter, .Inputs, .Outputs)
 ** .Inputs and .Outputs will always be `text` or `text/*` (e.g. `text/json`)
 ** .Inputs and/or .Outputs can also be `none`
+* 1.6 Should support dry runs with -WhatIf (SupportsShouldProcess)
+** This means a pipeline can be verified (using `pow verify`) by running it without any side-effects
 
 * 2. PIPELINES
 Pipelines are ultimately powershell scripts which wire various components together

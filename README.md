@@ -69,7 +69,9 @@ We'll be developing this pipeline by adding new steps like:
 * `pow version`: Print version information
 * `pow compile <path to pipeline directory>`: Build a pipeline (creates .ps1 file)
 * `pow clean <path to pipeline directory>`: Delete a compiled pipeline (i.e. all .ps1 files and the trace\ subdirectory)
+* `pow verify <path to pipeline directory>`: Verify a pipeline by running it in PowerShell's "dry run" (-WhatIf) mode
 * `pow run <path to pipeline directory>`: Run a pipeline
+* `pow clean <path to pipeline directory>`: Delete a compiled pipeline (i.e. all .ps1 files and the trace\ subdirectory)
 * `pow inspect <path to component .ps1>`: Inspects a component (TODO: validate, check and test component)
 * `pow components <path to components directory>`: List components in a folder
 
