@@ -106,10 +106,9 @@ function CheckingComponents($components) {
 
 function CreatingComponentSteps($pipelineDef) {
 		
-    # Pass GLOBALS to the Component
-    $globals = "`$globals = " + (ReSerializeObject $pipelineDef.globals) + "`n";
-    $stepTemplate = "[CmdletBinding(SupportsShouldProcess)]`n"
-    $PipelineParams = "param(`$PipelineParams=@{})"
+    # Step template
+    $stepHeader = "[CmdletBinding(SupportsShouldProcess)]"
+    $PipelineParamsS = "param(`$PipelineParams=@{})"
     $PipelineParamsI = "param([Parameter(Mandatory=`$true,ValueFromPipeline=`$true)][String]`$InputObject,`$PipelineParams=@{})"
 
     $Count = 0
@@ -136,7 +135,7 @@ function CreatingComponentSteps($pipelineDef) {
         $params0 = "`$params = " + (ReSerializeObject $step.parameters);
 
         
-        if($step.input){$PipelineParams2 = $PipelineParamsI} else {$PipelineParams2 = $PipelineParams}
+        if($step.input){$PipelineParams = $PipelineParamsI} else {$PipelineParams = $PipelineParamsS}
 
         # Pass INPUT to the Component
         $inputSrc = if($step.input){'$input | '}else{''}
@@ -154,7 +153,7 @@ function CreatingComponentSteps($pipelineDef) {
         $cmd1 = "$inputSrc$ref @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
         
         # Build Step code
-        $PipelineParams2, $params0, $globals, $cmd1 -join "`n" > "$OutputPath\step_$id.ps1"
+        $stepHeader, $PipelineParams, $params0, $cmd1 -join "`n" > "$OutputPath\step_$id.ps1"
 
         $Count++
 
@@ -177,6 +176,7 @@ function CreatingPipeline_prod($pipelineDef) {
     # Can be run from anywhere, change to pipeline path
     $cmd = ReSerializeParams $pipelineDef.parameters;
     $cmd += ReSerializePipelineParams $pipelineDef.parameters;
+    $cmd += ("`$PipelineGlobals = " + (ReSerializeObject $pipelineDef.globals) + "`n");
     $cmd += "Push-Location `$PSScriptRoot`n"
     $cmd += "`n"
     $cmd += "try {`n`n"

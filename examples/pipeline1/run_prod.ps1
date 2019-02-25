@@ -7,6 +7,9 @@ $PipelineParams = @{
 	DataSource = $DataSource;
 	p2 = $p2;
 };
+$PipelineGlobals = @{
+	foo = "bar"
+};
 Push-Location $PSScriptRoot
 
 try {

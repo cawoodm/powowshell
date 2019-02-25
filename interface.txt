@@ -38,8 +38,10 @@ Rules:
 * 2. PIPELINES
 Pipelines are ultimately powershell scripts which wire various components together
 As such, they are similar to components in that they
-* Have parameters which can be supplied at runtime and which can have defaults set at design time (TODO)
-* Have globals defined which all components can read (but currently not write)
+* Have PARAMETERS which can be supplied at runtime and which can have defaults set at design time (TODO)
+** These can be passed to components in the step by defining e.g. `stepParameter: "{$PipelineParams.DataSource}"
+** These values are effectively readonly to the steps and won't be changed
+* Have GLOBALS defined which all components can read and write!
 * Can produce text output on stdout
 * Pipelines should accept piped input as well
 * Pipelines run and end - no continuous operation (streaming) mode supported

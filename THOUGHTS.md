@@ -1,7 +1,11 @@
 #Thoughts
 
 # Globals
-* How do we 
+* How do we let steps/components write globals
+** In theoriy, components don't know about the pipeline they are running in and hence don't know specific globals
+** However, it might be nice to have a general purpose "context" to write to which persists among steps...
+** $PipelineParams is readonly for steps and the pipeline maps these to the component parameters
+** $PipelineGlobals is writeable for steps (and components!) because it's a global in the pipeline context
 
 ##IDE Technology
 * Vue/Vuetify: Modern, good look and works with NWJS
