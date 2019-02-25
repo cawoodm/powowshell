@@ -10,15 +10,17 @@
 
  .PARAMETER Delimiter
   Specifies the field separator. Default is a comma ",")
-	
+
  .EXAMPLE
   Data2JSON.ps1 -Delimiter ";"
  
  .INPUTS
-  text
+  text/xsv
+  Any separated data (e.g. CSV) with newlines between records
 	
  .OUTPUTS
-  json[]
+  text/json
+  An array of JSON objects corresponding to the rows of the input data
 
 #>
 [CmdLetBinding()]

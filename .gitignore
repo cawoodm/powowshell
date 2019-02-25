@@ -1,6 +1,8 @@
 node_modules/
 trace/
+dist/
 bak/
+*.log
 pow.cmd
 powowshell.UZMDQU.U29730.pui
 powowshell.prj

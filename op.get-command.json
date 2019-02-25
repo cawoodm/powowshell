@@ -1,0 +1,208 @@
+{
+    "ScriptBlock":  {
+                        "Attributes":  [
+                                           "System.Management.Automation.CmdletBindingAttribute",
+                                           "System.Management.Automation.OutputTypeAttribute"
+                                       ],
+                        "File":  "D:\\Google Drive\\Work\\PowerShell\\powowshell\\examples\\components\\Data2JSON.ps1",
+                        "IsFilter":  false,
+                        "IsConfiguration":  false,
+                        "Module":  null,
+                        "StartPosition":  {
+                                              "Content":  "\u003c#\r\n .SYNOPSIS\r\n  Convert input data to JSON format\r\n\r\n .DESCRIPTION\r\n  Accepts custom tabular data about people and return contents as a JSON Array\r\n\tThe data must be in the format:\r\n\tNAME|AGE|GENDER\r\n\tHowever, the separator can be different and specified by the -Delimiter parameter\r\n\r\n .PARAMETER Delimiter\r\n  Specifies the field separator. Default is a comma \",\")\r\n\t\r\n .EXAMPLE\r\n  Data2JSON.ps1 -Delimiter \";\"\r\n \r\n .INPUTS\r\n  text\r\n\t\r\n .OUTPUTS\r\n  json[]\r\n\r\n#\u003e\r\n[CmdLetBinding()]\r\n[OutputType([String])]\r\nparam(\r\n  [Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,\r\n\t[Parameter(Mandatory=$false)][String]$RecordSeparator,\r\n  [Parameter(Mandatory=$true)][String]$Delimiter=\",\"\r\n)\r\n\r\n# The Magic Happens Here...\r\n$result = \"\"\r\n$r = 0\r\n$str = [string]$InputObject\r\n\r\nIf ($RecordSeparator) {\r\n\t$sep = $RecordSeparator\r\n} Else {\r\n\tIf ($str.IndexOf(\"`r`n\") -ge 0) {$sep = \"`r`n\"}\r\n\tElseIf ($str.IndexOf(\"`r\") -ge 0) {$sep = \"`r\"}\r\n\tElse {$sep = \"`n\"}\r\n}\r\n\r\n$rows = $str -split $sep\r\n$rows | ForEach-Object {\r\n    $row = $_ -split $Delimiter, 0, \"SimpleMatch\"\r\n    If ($row.Length -gt 1) {\r\n        $result += \u0027{\"name\":\"\u0027 + $row[0] + \u0027\", \"age\":\u0027 + $row[1] + \u0027, \"gender\":\"\u0027 + $row[2] + \u0027\"}\u0027\r\n        $r++\r\n    }\r\n}\r\n\r\n# Format as a JSON Array\r\n$result = $result.Replace(\"}{\", \"},{\")\r\n$result = \"[$result]\"\r\n\r\n# Return JSON serialized\r\n$result\r\n\r\n# Should we return JSON Object?\r\n#  -\u003e No, we want serialized data we can redirect into a text file!\r\n# $result | ConvertFrom-Json",
+                                              "Type":  19,
+                                              "Start":  0,
+                                              "Length":  1496,
+                                              "StartLine":  1,
+                                              "StartColumn":  1,
+                                              "EndLine":  63,
+                                              "EndColumn":  29
+                                          },
+                        "DebuggerHidden":  false,
+                        "Id":  "3772531d-e23b-4e81-b33b-d19916cbd7a8",
+                        "Ast":  {
+                                    "Attributes":  "",
+                                    "UsingStatements":  "",
+                                    "ParamBlock":  "param(\r\n  [Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,\r\n\t[Parameter(Mandatory=$false)][String]$RecordSeparator,\r\n  [Parameter(Mandatory=$true)][String]$Delimiter=\",\"\r\n)",
+                                    "BeginBlock":  null,
+                                    "ProcessBlock":  null,
+                                    "EndBlock":  "param(\r\n  [Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,\r\n\t[Parameter(Mandatory=$false)][String]$RecordSeparator,\r\n  [Parameter(Mandatory=$true)][String]$Delimiter=\",\"\r\n)\r\n\r\n# The Magic Happens Here...\r\n$result = \"\"\r\n$r = 0\r\n$str = [string]$InputObject\r\n\r\nIf ($RecordSeparator) {\r\n\t$sep = $RecordSeparator\r\n} Else {\r\n\tIf ($str.IndexOf(\"`r`n\") -ge 0) {$sep = \"`r`n\"}\r\n\tElseIf ($str.IndexOf(\"`r\") -ge 0) {$sep = \"`r\"}\r\n\tElse {$sep = \"`n\"}\r\n}\r\n\r\n$rows = $str -split $sep\r\n$rows | ForEach-Object {\r\n    $row = $_ -split $Delimiter, 0, \"SimpleMatch\"\r\n    If ($row.Length -gt 1) {\r\n        $result += \u0027{\"name\":\"\u0027 + $row[0] + \u0027\", \"age\":\u0027 + $row[1] + \u0027, \"gender\":\"\u0027 + $row[2] + \u0027\"}\u0027\r\n        $r++\r\n    }\r\n}\r\n\r\n# Format as a JSON Array\r\n$result = $result.Replace(\"}{\", \"},{\")\r\n$result = \"[$result]\"\r\n\r\n# Return JSON serialized\r\n$result",
+                                    "DynamicParamBlock":  null,
+                                    "ScriptRequirements":  null,
+                                    "Extent":  "\u003c#\r\n .SYNOPSIS\r\n  Convert input data to JSON format\r\n\r\n .DESCRIPTION\r\n  Accepts custom tabular data about people and return contents as a JSON Array\r\n\tThe data must be in the format:\r\n\tNAME|AGE|GENDER\r\n\tHowever, the separator can be different and specified by the -Delimiter parameter\r\n\r\n .PARAMETER Delimiter\r\n  Specifies the field separator. Default is a comma \",\")\r\n\t\r\n .EXAMPLE\r\n  Data2JSON.ps1 -Delimiter \";\"\r\n \r\n .INPUTS\r\n  text\r\n\t\r\n .OUTPUTS\r\n  json[]\r\n\r\n#\u003e\r\n[CmdLetBinding()]\r\n[OutputType([String])]\r\nparam(\r\n  [Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,\r\n\t[Parameter(Mandatory=$false)][String]$RecordSeparator,\r\n  [Parameter(Mandatory=$true)][String]$Delimiter=\",\"\r\n)\r\n\r\n# The Magic Happens Here...\r\n$result = \"\"\r\n$r = 0\r\n$str = [string]$InputObject\r\n\r\nIf ($RecordSeparator) {\r\n\t$sep = $RecordSeparator\r\n} Else {\r\n\tIf ($str.IndexOf(\"`r`n\") -ge 0) {$sep = \"`r`n\"}\r\n\tElseIf ($str.IndexOf(\"`r\") -ge 0) {$sep = \"`r\"}\r\n\tElse {$sep = \"`n\"}\r\n}\r\n\r\n$rows = $str -split $sep\r\n$rows | ForEach-Object {\r\n    $row = $_ -split $Delimiter, 0, \"SimpleMatch\"\r\n    If ($row.Length -gt 1) {\r\n        $result += \u0027{\"name\":\"\u0027 + $row[0] + \u0027\", \"age\":\u0027 + $row[1] + \u0027, \"gender\":\"\u0027 + $row[2] + \u0027\"}\u0027\r\n        $r++\r\n    }\r\n}\r\n\r\n# Format as a JSON Array\r\n$result = $result.Replace(\"}{\", \"},{\")\r\n$result = \"[$result]\"\r\n\r\n# Return JSON serialized\r\n$result\r\n\r\n# Should we return JSON Object?\r\n#  -\u003e No, we want serialized data we can redirect into a text file!\r\n# $result | ConvertFrom-Json",
+                                    "Parent":  null
+                                }
+                    },
+    "OutputType":  [
+                       {
+                           "Name":  "System.String",
+                           "Type":  "string",
+                           "TypeDefinitionAst":  null
+                       }
+                   ],
+    "ScriptContents":  "\u003c#\r\n .SYNOPSIS\r\n  Convert input data to JSON format\r\n\r\n .DESCRIPTION\r\n  Accepts custom tabular data about people and return contents as a JSON Array\r\n\tThe data must be in the format:\r\n\tNAME|AGE|GENDER\r\n\tHowever, the separator can be different and specified by the -Delimiter parameter\r\n\r\n .PARAMETER Delimiter\r\n  Specifies the field separator. Default is a comma \",\")\r\n\t\r\n .EXAMPLE\r\n  Data2JSON.ps1 -Delimiter \";\"\r\n \r\n .INPUTS\r\n  text\r\n\t\r\n .OUTPUTS\r\n  json[]\r\n\r\n#\u003e\r\n[CmdLetBinding()]\r\n[OutputType([String])]\r\nparam(\r\n  [Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,\r\n\t[Parameter(Mandatory=$false)][String]$RecordSeparator,\r\n  [Parameter(Mandatory=$true)][String]$Delimiter=\",\"\r\n)\r\n\r\n# The Magic Happens Here...\r\n$result = \"\"\r\n$r = 0\r\n$str = [string]$InputObject\r\n\r\nIf ($RecordSeparator) {\r\n\t$sep = $RecordSeparator\r\n} Else {\r\n\tIf ($str.IndexOf(\"`r`n\") -ge 0) {$sep = \"`r`n\"}\r\n\tElseIf ($str.IndexOf(\"`r\") -ge 0) {$sep = \"`r\"}\r\n\tElse {$sep = \"`n\"}\r\n}\r\n\r\n$rows = $str -split $sep\r\n$rows | ForEach-Object {\r\n    $row = $_ -split $Delimiter, 0, \"SimpleMatch\"\r\n    If ($row.Length -gt 1) {\r\n        $result += \u0027{\"name\":\"\u0027 + $row[0] + \u0027\", \"age\":\u0027 + $row[1] + \u0027, \"gender\":\"\u0027 + $row[2] + \u0027\"}\u0027\r\n        $r++\r\n    }\r\n}\r\n\r\n# Format as a JSON Array\r\n$result = $result.Replace(\"}{\", \"},{\")\r\n$result = \"[$result]\"\r\n\r\n# Return JSON serialized\r\n$result\r\n\r\n# Should we return JSON Object?\r\n#  -\u003e No, we want serialized data we can redirect into a text file!\r\n# $result | ConvertFrom-Json",
+    "OriginalEncoding":  {
+                             "BodyName":  "utf-8",
+                             "EncodingName":  "Unicode (UTF-8)",
+                             "HeaderName":  "utf-8",
+                             "WebName":  "utf-8",
+                             "WindowsCodePage":  1200,
+                             "IsBrowserDisplay":  true,
+                             "IsBrowserSave":  true,
+                             "IsMailNewsDisplay":  true,
+                             "IsMailNewsSave":  true,
+                             "IsSingleByte":  false,
+                             "EncoderFallback":  {
+                                                     "DefaultString":  "�",
+                                                     "MaxCharCount":  1
+                                                 },
+                             "DecoderFallback":  {
+                                                     "DefaultString":  "�",
+                                                     "MaxCharCount":  1
+                                                 },
+                             "IsReadOnly":  true,
+                             "CodePage":  65001
+                         },
+    "Name":  "Data2JSON.ps1",
+    "CommandType":  16,
+    "Version":  null,
+    "ModuleName":  "",
+    "Module":  null,
+    "RemotingCapability":  1,
+    "Parameters":  {
+                       "InputObject":  {
+                                           "Name":  "InputObject",
+                                           "ParameterType":  "string",
+                                           "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                           "IsDynamic":  false,
+                                           "Aliases":  "",
+                                           "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.ArgumentTypeConverterAttribute",
+                                           "SwitchParameter":  false
+                                       },
+                       "RecordSeparator":  {
+                                               "Name":  "RecordSeparator",
+                                               "ParameterType":  "string",
+                                               "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                               "IsDynamic":  false,
+                                               "Aliases":  "",
+                                               "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.ArgumentTypeConverterAttribute",
+                                               "SwitchParameter":  false
+                                           },
+                       "Delimiter":  {
+                                         "Name":  "Delimiter",
+                                         "ParameterType":  "string",
+                                         "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                         "IsDynamic":  false,
+                                         "Aliases":  "",
+                                         "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.ArgumentTypeConverterAttribute",
+                                         "SwitchParameter":  false
+                                     },
+                       "Verbose":  {
+                                       "Name":  "Verbose",
+                                       "ParameterType":  "switch",
+                                       "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                       "IsDynamic":  false,
+                                       "Aliases":  "vb",
+                                       "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.AliasAttribute",
+                                       "SwitchParameter":  true
+                                   },
+                       "Debug":  {
+                                     "Name":  "Debug",
+                                     "ParameterType":  "switch",
+                                     "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                     "IsDynamic":  false,
+                                     "Aliases":  "db",
+                                     "Attributes":  "System.Management.Automation.AliasAttribute System.Management.Automation.ParameterAttribute",
+                                     "SwitchParameter":  true
+                                 },
+                       "ErrorAction":  {
+                                           "Name":  "ErrorAction",
+                                           "ParameterType":  "System.Management.Automation.ActionPreference",
+                                           "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                           "IsDynamic":  false,
+                                           "Aliases":  "ea",
+                                           "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.AliasAttribute",
+                                           "SwitchParameter":  false
+                                       },
+                       "WarningAction":  {
+                                             "Name":  "WarningAction",
+                                             "ParameterType":  "System.Management.Automation.ActionPreference",
+                                             "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                             "IsDynamic":  false,
+                                             "Aliases":  "wa",
+                                             "Attributes":  "System.Management.Automation.AliasAttribute System.Management.Automation.ParameterAttribute",
+                                             "SwitchParameter":  false
+                                         },
+                       "InformationAction":  {
+                                                 "Name":  "InformationAction",
+                                                 "ParameterType":  "System.Management.Automation.ActionPreference",
+                                                 "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                                 "IsDynamic":  false,
+                                                 "Aliases":  "infa",
+                                                 "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.AliasAttribute",
+                                                 "SwitchParameter":  false
+                                             },
+                       "ErrorVariable":  {
+                                             "Name":  "ErrorVariable",
+                                             "ParameterType":  "string",
+                                             "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                             "IsDynamic":  false,
+                                             "Aliases":  "ev",
+                                             "Attributes":  "System.Management.Automation.AliasAttribute System.Management.Automation.ParameterAttribute System.Management.Automation.Internal.CommonParameters+ValidateVariableName",
+                                             "SwitchParameter":  false
+                                         },
+                       "WarningVariable":  {
+                                               "Name":  "WarningVariable",
+                                               "ParameterType":  "string",
+                                               "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                               "IsDynamic":  false,
+                                               "Aliases":  "wv",
+                                               "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.AliasAttribute System.Management.Automation.Internal.CommonParameters+ValidateVariableName",
+                                               "SwitchParameter":  false
+                                           },
+                       "InformationVariable":  {
+                                                   "Name":  "InformationVariable",
+                                                   "ParameterType":  "string",
+                                                   "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                                   "IsDynamic":  false,
+                                                   "Aliases":  "iv",
+                                                   "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.AliasAttribute System.Management.Automation.Internal.CommonParameters+ValidateVariableName",
+                                                   "SwitchParameter":  false
+                                               },
+                       "OutVariable":  {
+                                           "Name":  "OutVariable",
+                                           "ParameterType":  "string",
+                                           "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                           "IsDynamic":  false,
+                                           "Aliases":  "ov",
+                                           "Attributes":  "System.Management.Automation.ParameterAttribute System.Management.Automation.AliasAttribute System.Management.Automation.Internal.CommonParameters+ValidateVariableName",
+                                           "SwitchParameter":  false
+                                       },
+                       "OutBuffer":  {
+                                         "Name":  "OutBuffer",
+                                         "ParameterType":  "int",
+                                         "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                         "IsDynamic":  false,
+                                         "Aliases":  "ob",
+                                         "Attributes":  "System.Management.Automation.AliasAttribute System.Management.Automation.ValidateRangeAttribute System.Management.Automation.ParameterAttribute",
+                                         "SwitchParameter":  false
+                                     },
+                       "PipelineVariable":  {
+                                                "Name":  "PipelineVariable",
+                                                "ParameterType":  "string",
+                                                "ParameterSets":  "System.Collections.Generic.Dictionary`2[System.String,System.Management.Automation.ParameterSetMetadata]",
+                                                "IsDynamic":  false,
+                                                "Aliases":  "pv",
+                                                "Attributes":  "System.Management.Automation.AliasAttribute System.Management.Automation.ParameterAttribute System.Management.Automation.Internal.CommonParameters+ValidateVariableName",
+                                                "SwitchParameter":  false
+                                            }
+                   },
+    "ParameterSets":  [
+                          {
+                              "Name":  "__AllParameterSets",
+                              "IsDefault":  false,
+                              "Parameters":  "System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo System.Management.Automation.CommandParameterInfo"
+                          }
+                      ],
+    "HelpUri":  ""
+}

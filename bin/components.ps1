@@ -1,6 +1,8 @@
 <#
     .Synopsis
-    Generate a JSON definition from the components/ directory
+    Run through all components in a directory and:
+     * Validate OUTPUT
+     * TODO: Generate a JSON definition from the components/ directory
 
     .Description
     Will list each .ps1 file inside the components/ folder and
@@ -52,14 +54,17 @@ function LoadComponents($Path) {
         throw [Exception] ""
     }
 
-		# Get list of .ps1 scripts components (1 level)
-		$scripts = Get-ChildItem -Path $Path -File -Filter *.ps1
+    # Get list of .ps1 scripts components (1 level)
+    $scripts = Get-ChildItem -Path $Path -File -Filter *.ps1
 
-		# Process each folder
-		ForEach($script in $scripts) {
-			LoadComponent($script)
-		}
-    
+    # Process each folder
+    ForEach($script in $scripts) {
+        #LoadComponent($script)
+        Push-Location $PSScriptRoot
+        & .\inspect.ps1 $script.Fullname
+        Pop-Location
+    }
+
 }
 
 function LoadComponent($File) {
@@ -87,10 +92,10 @@ function LoadComponent($File) {
     }
 
     # Build Step code
-    $cmd1 = "$inputSrc$ref @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
-    $stepTemplate -f $params0, $cmd1 > "step_$id.ps1"
+    #$cmd1 = "$inputSrc$ref @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
+    #$stepTemplate -f $params0, $cmd1 > "step_$id.ps1"
 
-    $Count++
+    #$Count++
 
 }
 

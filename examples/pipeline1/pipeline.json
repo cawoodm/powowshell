@@ -2,7 +2,16 @@
 	"id": "pipeline1",
 	"name": "Send mail to young voters",
 	"description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
-	"parameters": [],
+	"parameters": {
+		"p1": "",
+		"p2": "{Get-Date}"
+	},
+	"globals": {
+		"Foo": "Bar"
+	},
+	"checks": {
+		"run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?"
+	},
 	"input": {},
 	"output": {},
 	"components": [

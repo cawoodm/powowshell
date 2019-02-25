@@ -52,7 +52,7 @@ pow run examples\pipeline1
 ```
 
 This builds and runs a pipeline based on it's definition in `pipeline.json`.
-The result of the build `compile.ps1` is a powershell script `runner.ps1`. Running this runs the pipeline.
+The result of `compile` is a powershell script `run_prod.ps1`. Running this runs the pipeline.
 The pipeline does the following:
 * Step A: Read a list of voters from the file in `data\voters.txt` as text
 * Step B: Convert the text to JSON
@@ -64,6 +64,14 @@ We'll be developing this pipeline by adding new steps like:
 
 * Filtering only young voters (age < 30)
 * Sending each voter an email
+
+## POW commands
+* `pow version`: Print version information
+* `pow compile <path to pipeline directory>`: Build a pipeline (creates .ps1 file)
+* `pow clean <path to pipeline directory>`: Delete a compiled pipeline (i.e. all .ps1 files and the trace\ subdirectory)
+* `pow run <path to pipeline directory>`: Run a pipeline
+* `pow inspect <path to component .ps1>`: Inspects a component (TODO: validate, check and test component)
+* `pow components <path to components directory>`: List components in a folder
 
 ## PowerShell
 

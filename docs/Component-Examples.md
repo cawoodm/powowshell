@@ -35,7 +35,7 @@ like this (with full annotations):
     The number of days (integer) to add (or subtract) to todays date
     
     .Outputs
-    date
+    text/date
 
 #>
 param(
@@ -87,7 +87,7 @@ Here's the code for `DATA2JSON.ps1`:
   text
 	
  .OUTPUTS
-  json[]
+  text/json
 
 #>
 [CmdLetBinding()]

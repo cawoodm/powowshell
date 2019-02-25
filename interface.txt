@@ -1,5 +1,5 @@
 PARAMETERS:
-	a static list of fields which the user must provide
+	a static list of fields which the pipeline designer must provide at design time
 	if you want dynamic input, use an input object provided by a preceding component
 
 INPUT: 
@@ -14,11 +14,33 @@ INPUT:
 }
 
 
-Do we insist all components MUST be powershell scripts?
-	PRO:
-		We only have one runtime to worry about.
-		Good prospects for reflection
-		PowerShell is cool and can call anything
-	CONTRA:
-		Cannot just run a .BAT file or DIR command
-		
+Rules:
+1. COMPONENTS
+* 1.1 All components MUST be powershell scripts
+** Don't worry, powerShell is cool and can call anything (DOS, Node, Python etc...)
+* 1.2
+* It must declare its PARAMETERS with types
+* If it accepts piped INPUT, it gets the data as a String from the pipeline (stdin) with parameter $InputObject
+* If it provides piped OUTPUT, it writes it's output as a String to the pipeline (stdout) with Write-Output
+** Annotate scriptlet with `[OutputType([String])]`
+* 1.3 Component is movable
+** should run and work regardless of where it is located (no $PSScriptRoot)
+** should not include any scriptlets from a relative path
+* 1.4 Handles errors correctly:
+** Write error messages to the pipeline (stderr) with Write-Error
+* 1.5 Documentation
+* Has powershell help/comments describing (for humans) the function and interface (.Parameter, .Inputs, .Outputs)
+** .Inputs and .Outputs will always be `text` or `text/*` (e.g. `text/json`)
+** .Inputs and/or .Outputs can also be `none`
+
+* 2. PIPELINES
+Pipelines are ultimately powershell scripts which wire various components together
+As such, they are similar to components in that they
+* Have parameters which can be supplied at runtime and which can have defaults set at design time (TODO)
+* Have globals defined which all components can read (but currently not write)
+* Can produce text output on stdout
+* Pipelines should accept piped input as well
+* Pipelines run and end - no continuous operation (streaming) mode supported
+
+* Input?
+* Output?

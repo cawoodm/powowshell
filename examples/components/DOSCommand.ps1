@@ -1,18 +1,18 @@
 ﻿<#
-    .Synopsis
-    Run any command with DOS CMD
+ .Synopsis
+ Run any command with DOS CMD
 
-    .Parameter Command
-    The command string to be executed
+ .Parameter Command
+ The command string to be executed
 		
-		.Inputs
-		none
-		
-		.Outputs
-		text
+ .Inputs
+ none
+
+ .Outputs
+ text
 		
 #>
 param(
-    [String]$Path
+    [String]$Command
 )
-CMD /C "DIR /B $Path"
+CMD /C $Command

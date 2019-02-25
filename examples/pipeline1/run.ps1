@@ -1,4 +1,10 @@
-﻿param(
+﻿<#
+ .Synopsis
+ Me testing different ways of running a pipeline
+
+#>
+[CmdletBinding()]
+param(
     [int]$runMode=3
 )
 Set-PSDebug -Strict

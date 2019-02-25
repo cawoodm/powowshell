@@ -1,0 +1,86 @@
+{
+    "inputTypes":  {
+                       "inputType":  {
+                                         "type":  {
+                                                      "value":  "",
+                                                      "name":  "text"
+                                                  }
+                                     }
+                   },
+    "parameters":  {
+                       "parameter":  [
+                                         {
+                                             "value":  "",
+                                             "defaultValue":  "",
+                                             "parameterValue":  {
+                                                                    "value":  "String",
+                                                                    "required":  "true"
+                                                                },
+                                             "name":  "InputObject",
+                                             "type":  {
+                                                          "value":  "",
+                                                          "name":  "String"
+                                                      },
+                                             "required":  "true",
+                                             "globbing":  "false",
+                                             "pipelineInput":  "true (ByValue)",
+                                             "position":  "1"
+                                         },
+                                         {
+                                             "value":  "",
+                                             "defaultValue":  "",
+                                             "parameterValue":  {
+                                                                    "value":  "String",
+                                                                    "required":  "true"
+                                                                },
+                                             "name":  "RecordSeparator",
+                                             "type":  {
+                                                          "value":  "",
+                                                          "name":  "String"
+                                                      },
+                                             "required":  "false",
+                                             "globbing":  "false",
+                                             "pipelineInput":  "false",
+                                             "position":  "2"
+                                         },
+                                         {
+                                             "value":  "",
+                                             "description":  "",
+                                             "defaultValue":  ",",
+                                             "parameterValue":  {
+                                                                    "value":  "String",
+                                                                    "required":  "true"
+                                                                },
+                                             "name":  "Delimiter",
+                                             "type":  {
+                                                          "value":  "",
+                                                          "name":  "String"
+                                                      },
+                                             "required":  "true",
+                                             "globbing":  "false",
+                                             "pipelineInput":  "false",
+                                             "position":  "3"
+                                         }
+                                     ]
+                   },
+    "details":  {
+                    "name":  "D:\\Google Drive\\Work\\PowerShell\\powowshell\\examples\\components\\Data2JSON.ps1",
+                    "description":  [
+                                        "@{Text=Convert input data to JSON format}"
+                                    ]
+                },
+    "description":  [
+                        {
+                            "Text":  "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the separator can be different and specified by the -Delimiter parameter"
+                        }
+                    ],
+    "returnValues":  {
+                         "returnValue":  {
+                                             "type":  {
+                                                          "value":  "",
+                                                          "name":  "json[]"
+                                                      }
+                                         }
+                     },
+    "ModuleName":  ""
+}
