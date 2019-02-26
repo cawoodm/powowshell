@@ -1,9 +1,9 @@
 ﻿<#
  .Synopsis
- Delete compiled pipeline
+ Delete built pipeline
 
  .Description
- Delete all compiled elements of a pipeline folder
+ Delete all built elements of a pipeline folder (including logs and traces)
    
  .Parameter Path
  The path to the pipeline folder

@@ -14,7 +14,7 @@
 	},
 	"input": {},
 	"output": {},
-	"components": [
+	"steps": [
 		{
 			"id":"A",
 			"name":"Read Voters File",
