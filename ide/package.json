@@ -2,9 +2,9 @@
   "name": "powowshell-ide",
   "version": "0.0.1",
   "description": "The GUI or Development Environment for building and running PowowShell pipelines",
-  "main": "main.js",
+  "main": "index.html",
   "scripts": {
-    "start": "electron ."
+    "start": "serve"
   },
   "repository": "https://github.com/cawoodm/powowshell",
   "keywords": [
@@ -16,9 +16,6 @@
     "url": "https://github.com/cawoodm/powowshell/issues"
   },
   "homepage": "https://github.com/cawoodm/powowshell#readme",
-  "devDependencies": {
-    "electron": "^1.8.4"
-  },
   "dependencies": {
     "bootstrap3": "^3.3.5",
     "jquery": "^3.3.1",

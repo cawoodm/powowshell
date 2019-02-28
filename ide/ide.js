@@ -1,6 +1,6 @@
-var jQuery = $ = require("jquery");
+/*var jQuery = $ = require("jquery");
 require("jquery-ui-bundle");
-require("bootstrap3");
+require("bootstrap3");*/
 
 // Our pipeline data model
 var pw = {

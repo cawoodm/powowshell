@@ -1,4 +1,4 @@
-var jQuery = require("jquery");
+//var jQuery = require("jquery");
 (function($){
 	$.fn.form2JSON = function() {
 		return this.serializeArray().reduce(function(a, x) { a[x.name] = x.value; return a; }, {});
