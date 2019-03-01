@@ -1,6 +1,10 @@
 ﻿[CmdletBinding(SupportsShouldProcess)]
-param([Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,$PipelineParams=@{})
+param([Parameter(ValueFromPipeline=$true)][String]$InputObject,$PipelineParams=@{})
+function main() {
 $params = @{
 	Fields = "name", "age", "email"
 };
-$input | ../components/SelectFields.ps1 @params
+$InputObject | & ../components/SelectFields.ps1 @params
+}
+Set-StrictMode -Version Latest
+main

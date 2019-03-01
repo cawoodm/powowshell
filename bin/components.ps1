@@ -1,15 +1,15 @@
 <#
-    .Synopsis
-    Run through all components in a directory and:
-     * Validate OUTPUT
-     * TODO: Generate a JSON definition from the components/ directory
+ .Synopsis
+ Run through all components in a directory and:
+ * Validate OUTPUT
+ * TODO: Generate a JSON definition from the components/ directory
 
-    .Description
-    Will list each .ps1 file inside the components/ folder and
-    generate a list with each component's definition
-   
-    .Parameter Path
-    Path to the components directory
+ .Description
+ Will list each .ps1 file inside the components/ folder and
+ generate a list with each component's definition
+
+ .Parameter Path
+ Path to the components directory
 
 #>
 [CmdletBinding()]
@@ -98,6 +98,5 @@ function LoadComponent($File) {
     #$Count++
 
 }
-
-Set-StrictMode -Version 3.0
+Set-StrictMode -Version Latest
 main

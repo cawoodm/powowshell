@@ -2,6 +2,8 @@
 
 ## IDE
 
+* Revisit NWJS (is it maintained) vs Electron...
+
 * Pipeline from Scratch
   * Drag dummy components around the matrix -> DONE
   * Load components list and configuration

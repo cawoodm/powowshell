@@ -10,7 +10,11 @@ function main() {
 	@"
 @ECHO OFF
 IF "%POWERSHELL%" == "" SET POWERSHELL=POWERSHELL
-%POWERSHELL% -File "$path\%1.ps1" %2 %3 %4
+IF "%1" == "run" (
+	%POWERSHELL% -Command "& '$path\run.ps1' %2 %3 %4 %5"
+) ELSE (
+	%POWERSHELL% -File "$path\%1.ps1" %2 %3 %4 %5
+)
 "@ |
 	  Out-File -FilePath .\pow.cmd -Encoding ASCII
 	$path = $env:path -split ';'
@@ -21,7 +25,7 @@ IF "%POWERSHELL%" == "" SET POWERSHELL=POWERSHELL
 
 Type 'pow version' to verify this...
 NOTE: It's a good idea to now copy pow.cmd to a location on your system PATH e.g.:
-	COPY .\pow.cmd `"$($path[1])`"
+	COPY .\pow.cmd `"$($path[$path.length-1])`"
 "@
 	}
 main

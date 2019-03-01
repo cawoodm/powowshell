@@ -1,19 +1,13 @@
 ﻿<#
- .Synopsis
- Run a powowshell command
+.Synopsis
+A module which exposes the POW Cmdlet (CLI)
 
- .Description
- Calls one or more <command>.ps1 to
+.Description
+Place in your powershell modules directory so you can run "POW" from anywhere in powershell
 
- .Example
- Clea, build and verify a pipeline
- .\pow.ps1 "clean", "build", "verify" .\examples\pipeline1
-
- .Parameter Command
- One or more (array) of commands to execute
-
- .Parameter p1
- An optional first pass-thru parameter
+.Example
+Clean, build and verify a pipeline
+POW "clean", "build", "verify" .\examples\pipeline1
 
 #>
 [CmdletBinding()]
@@ -30,4 +24,4 @@ function main() {
 	}
 }
 Set-StrictMode -Version Latest
-main
+Export-ModuleMember main

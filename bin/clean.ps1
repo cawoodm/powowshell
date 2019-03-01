@@ -22,4 +22,5 @@ function main() {
 	DEL .\trace\*.txt
 	Pop-Location
 }
-Main
+Set-StrictMode -Version Latest
+main

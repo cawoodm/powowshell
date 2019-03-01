@@ -88,14 +88,20 @@ We'll be developing this pipeline by adding new steps like:
 
 ## POW commands
 * `pow version`: Print version information
-* `pow build <path to pipeline directory>`: Build a pipeline (creates .ps1 file)
-* `pow clean <path to pipeline directory>`: Delete a buildd pipeline (i.e. all .ps1 files and the trace\ subdirectory)
-* `pow verify <path to pipeline directory>`: Verify a pipeline by running it in PowerShell's "dry run" (-WhatIf) mode
-* `pow run <path to pipeline directory>`: Run a pipeline
-* `pow run <path to pipeline directory> -Trace -Verbose`: Run a pipeline with verbose output and each step's output logged to trace directory
-* `pow clean <path to pipeline directory>`: Delete a buildd pipeline (i.e. all .ps1 files and the trace\ subdirectory)
+* `pow build <path to pipeline>`: Build a pipeline (creates .ps1 file)
+* `pow verify <path to pipeline>`: Verify a pipeline by running it in PowerShell's "dry run" (-WhatIf) mode
+* `pow run <path to pipeline>`: Run a pipeline
+* `pow run <path to pipeline> -Trace -Verbose`: Run a pipeline with verbose output and each step's output logged to trace directory
+* `pow run <path to pipeline> @params`: Run a pipeline passing in parameters (using splatting)
+* `pow clean <path to pipeline>`: Delete a built pipeline (i.e. all .ps1 files and the trace\ subdirectory)
 * `pow inspect <path to component .ps1>`: Inspects a component (TODO: validate, check and test component)
 * `pow components <path to components directory>`: List components in a folder
+
+## POW Command Examples
+
+Run a pipeline, passing in parameters
+`pow run .\examples\pipeline1 "@{DataSource='.\data\names.txt'}"`
+
 
 ## PowerShell
 

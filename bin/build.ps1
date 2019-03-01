@@ -1,4 +1,4 @@
-﻿<#
+<#
  .Synopsis
  Build a pipeline from it's definition into runnable run.ps1 script
 
@@ -56,7 +56,8 @@ function BuildingPipeline() {
 			# Transform definition of pipeline into run_prod.ps1
 			CreatingPipeline_prod($pipelineDef)
 			
-			"Pipeline built successfully!"
+            Write-Host "BUILD successful" -ForegroundColor Green
+
             $p=$Path; if ($Output) {$p=$Output}
             "Usage:`n  POW run $p"
             "OR`n  POW run $p -Trace"
@@ -100,7 +101,7 @@ function CheckingComponents($components) {
         # TODO: Check parameters against component definition? - Done in CreatingComponentSteps()
      }
 
-     Write-Verbose "Components checked out OK"
+     Write-Host "`tComponents checked out OK" -ForegroundColor Green
 
 }
 
@@ -109,7 +110,9 @@ function CreatingComponentSteps($pipelineDef) {
     # Step template
     $stepHeader = "[CmdletBinding(SupportsShouldProcess)]"
     $PipelineParamsS = "param(`$PipelineParams=@{})"
-    $PipelineParamsI = "param([Parameter(Mandatory=`$true,ValueFromPipeline=`$true)][String]`$InputObject,`$PipelineParams=@{})"
+    $PipelineParamsI = "param([Parameter(ValueFromPipeline=`$true)][String]`$InputObject,`$PipelineParams=@{})"
+    $stepHeader2 = "function main() {"
+    $stepFooter = "}`nSet-StrictMode -Version Latest`nmain"
 
     $Count = 0
     $validOutputs = @{"System.String"=$true;"System.Array"=$true;"System.Object"=$true}
@@ -137,8 +140,8 @@ function CreatingComponentSteps($pipelineDef) {
         
         if($step.input){$PipelineParams = $PipelineParamsI} else {$PipelineParams = $PipelineParamsS}
 
-        # Pass INPUT to the Component
-        $inputSrc = if($step.input){'$input | '}else{''}
+        # Pass piped INPUT to the Component
+        $inputSrc = if($step.input){'$InputObject | & '}else{'& '}
 
         # Validate OUTPUT of Component
         $outputType = $cmd.OutputType.Name
@@ -153,7 +156,7 @@ function CreatingComponentSteps($pipelineDef) {
         $cmd1 = "$inputSrc$ref @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
         
         # Build Step code
-        $stepHeader, $PipelineParams, $params0, $cmd1 -join "`n" > "$OutputPath\step_$id.ps1"
+        $stepHeader, $PipelineParams, $stepHeader2, $params0, $cmd1, $stepFooter -join "`n" > "$OutputPath\step_$id.ps1"
 
         $Count++
 
@@ -315,5 +318,5 @@ function ReSerializePipelineParams($obj) {
     $res += "};`n"
     return $res
 }
-Set-StrictMode -Version 5.0
+Set-StrictMode -Version Latest
 main

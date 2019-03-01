@@ -1,2 +1,2 @@
-Marc Cawood|28|M
-Susanne Cawood|29|F
+John Smith|28|M
+Jane Doe|29|F

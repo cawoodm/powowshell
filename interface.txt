@@ -16,18 +16,26 @@ INPUT:
 
 Rules:
 1. COMPONENTS
+A component is the building block of a pipeline: pipelines wire together components as steps.
+Technicall components are reusable powershell scriptlets which obey certain rules and recommendations.
+For example they accept and produce piped text input (not powershell objects or other primitives).
+If they have parameters then these are typed and described properly.
+
+In detail these are the rules:
 * 1.1 All components MUST be powershell scripts
 ** Don't worry, powerShell is cool and can call anything (DOS, Node, Python etc...)
-* 1.2
-* It must declare its PARAMETERS with types
+* 1.2 Component Input is defined as fixed PARAMETERS and/or piped INPUT:
+* It must declare its PARAMETERS with types, which can be mandatory or optional with or without defaults.
 * If it accepts piped INPUT, it gets the data as a String from the pipeline (stdin) with parameter $InputObject
 * If it provides piped OUTPUT, it writes it's output as a String to the pipeline (stdout) with Write-Output
-** Annotate scriptlet with `[OutputType([String])]`
+** Annotate scriptlet with `[OutputType([String])]` and document INPUT/OUTPUT properly in powershell header (See documentation below)
 * 1.3 Component is movable
 ** should run and work regardless of where it is located (no $PSScriptRoot)
 ** should not include any scriptlets from a relative path
+** if it uses modules/includes these are not (cannot be) managed or garanteed by the powowshell framework
 * 1.4 Handles errors correctly:
 ** Write error messages to the pipeline (stderr) with Write-Error
+** throw helpful errors with correct line numbers
 * 1.5 Documentation
 * Has powershell help/comments describing (for humans) the function and interface (.Parameter, .Inputs, .Outputs)
 ** .Inputs and .Outputs will always be `text` or `text/*` (e.g. `text/json`)

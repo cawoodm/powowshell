@@ -34,5 +34,5 @@ function OPType($cmd) {return $cmd.returnValues[0].returnValue[0].type.name.ToLo
 function IPMode($cmd) {
 	#$cmd.parameters.parameter.name.Contains("InputObject");
 }
-Set-StrictMode -Version 3.0
+Set-StrictMode -Version Latest
 main

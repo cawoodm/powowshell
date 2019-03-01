@@ -9,10 +9,11 @@
  The path to the pipeline folder
 
 #>
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory=$true)][String]$Path,
-		[switch]$Trace=$false
+    $Parameters=@{},
+	[switch]$Trace=$false
 )
 function main() {
     $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
@@ -43,4 +44,5 @@ function main() {
         Pop-Location
     }
 }
-Main
+Set-StrictMode -Version Latest
+main

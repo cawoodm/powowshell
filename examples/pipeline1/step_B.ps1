@@ -1,8 +1,11 @@
 ﻿[CmdletBinding(SupportsShouldProcess)]
-param([Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,$PipelineParams=@{})
+param([Parameter(ValueFromPipeline=$true)][String]$InputObject,$PipelineParams=@{})
+function main() {
 $params = @{
 	Delimiter = "|"
 	Header = "name", "age", "email", "source"
 };
-Write-Verbose "STEP B: PipelineGlobals=$($PipelineGlobals.foo)"
-$input | ../components/CSV2JSON.ps1 @params
+$InputObject | & ../components/CSV2JSON.ps1 @params
+}
+Set-StrictMode -Version Latest
+main
