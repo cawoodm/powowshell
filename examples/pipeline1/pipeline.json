@@ -5,8 +5,7 @@
 	"parameters": {
 		"DataSource": {
 			"default": ".\\data\\voters.txt",
-			"type": "string",
-			"mandatory": true
+			"type": "string"
 		},
 		"p2": {
 			"default": "{Get-Date}"

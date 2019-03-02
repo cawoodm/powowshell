@@ -26,6 +26,22 @@ param(
 		[switch]$Trace=$false
 )
 function main() {
+	if ($Parameters -is [string]) {
+			if ($Parameters -like '@*') {
+					$Parameters = Invoke-Expression $Parameters
+			} else {
+					# Parameters in the form of "p1=x"
+					Write-Verbose $Parameters
+					$Parameters = ($Parameters -replace ";", "`n") # Newlines separate parameters
+					# If the user doesn't escape backspaces
+					if ($Parameters -notlike "*\\*") {
+							# Escape them
+							$Parameters = $Parameters.replace("\", "\\")
+					}
+					$Parameters = ConvertFrom-StringData $Parameters
+			}
+			#$p = $ExecutionContext.InvokeCommand.ExpandString($Parameters)
+	}
 	$Path = (Resolve-Path -Path $Path).Path
 	Push-Location $Path
 	try {

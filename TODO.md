@@ -1,5 +1,9 @@
 # TODO
 
+## POW CLI
+* Drop DOS support?
+* Enable CVS Paramaters in DOS => PowerShell HashTable
+
 ## IDE
 
 * Revisit NWJS (is it maintained) vs Electron...

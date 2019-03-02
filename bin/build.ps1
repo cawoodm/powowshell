@@ -292,28 +292,34 @@ function ReSerializeObject($obj) {
 function ReSerializeParams($parameters) {
     Write-Verbose "BUILDER ReSerializeParams"
     if ($parameters -is [array]) {throw "Parameters object should not be an array!"}
-    $res = "[CmdletBinding(SupportsShouldProcess)]`n"
-    $res += "param(`n"
-    $parameters.PSObject.Properties | ForEach-Object {
-        Write-Verbose $_.Name
-        $param = $_.Value
-        $pVal = $param.default; $pName = $_.Name
-        $pType=""; if ($param.PSObject.Properties["type"]) {$pType = "[$($param.type)]";}
-        if ($param.PSObject.Properties["mandatory"]) {Write-Host ($param.mandatory -eq $true); $pMust = $param.mandatory;}
-        if ($pMust -eq $true) {$pMust = "[Parameter(Mandatory=`$true)]"} else {$pMust=""}
-        if ($pVal.Contains("`{") -and $pVal.EndsWith("}")) {
-            # Parameter is code (a PowerShell Expression)
-            # TODO: Escape code for PS
-            $res += "`t$pMust$pType`$$($pName) = (" + $pVal.SubString(1, $pVal.Length-2) + "),`n"
-        } else {
-            # Parameter is a String
-            # TODO: Escape String for PS
-            $res += "`t$pMust$pType`$$($pName) = `"$($pVal)`",`n"
+    try {
+        $res = "[CmdletBinding(SupportsShouldProcess)]`n"
+        $res += "param(`n"
+        foreach ($param in $parameters.PSObject.Properties) {
+            $pName = $param.Name
+            $pVal = HDef $param "default" "";
+            $pType = HDef $param "type" ""; #if ($pType) {$pType="[$pType]"}
+            $pMust = HDef $param "mandatory" ""
+            if ($pMust -eq $true) {$pMust = "[Parameter(Mandatory=`$true)]"} else {$pMust=""}
+            if ($pVal.Contains("`{") -and $pVal.EndsWith("}")) {
+                # Parameter is code (a PowerShell Expression)
+                # TODO: Escape code for PS
+                $res += "`t$pMust$pType`$$($pName) = (" + $pVal.SubString(1, $pVal.Length-2) + "),`n"
+            } else {
+                # Parameter is a String
+                # TODO: Escape String for PS
+                $res += "`t$pMust$pType`$$($pName) = `"$($pVal)`",`n"
+            }
         }
+        $res = $res -replace ',\n$', "`n"
+        $res += ")`n"
+        return $res
+    } catch {
+        throw ("ERROR in Builder in Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
     }
-    $res = $res -replace ',\n$', "`n"
-    $res += ")`n"
-    return $res
+}
+function HDef($HashMap, $Field, $Default) {
+    if ($HashMap.PSObject.Properties[$Field]) {return $HashMap[$Field]} else {return $Default}
 }
 function ReSerializePipelineParams($obj) {
     Write-Verbose "BUILDER ReSerializePipelineParams"
