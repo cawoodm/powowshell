@@ -61,7 +61,8 @@ git clone git@github.com:cawoodm/powowshell.git
 cd powowshell
 install
 ```
-This will create `pow.cmd` which you should copy to your PATH so you can run it from anywhere.
+This will create the `pow` CmdLet which you can run from PowerShell.
+It also creates a `pow.cmd` wrapper which you can copy to your PATH so you can run it from a normal "DOS" command prompt.
 Let's check if we're up and running by displaying the version:
 ```
 pow version
@@ -88,12 +89,13 @@ We'll be developing this pipeline by adding new steps like:
 
 ## POW commands
 * `pow version`: Print version information
-* `pow build <path to pipeline>`: Build a pipeline (creates .ps1 file)
-* `pow verify <path to pipeline>`: Verify a pipeline by running it in PowerShell's "dry run" (-WhatIf) mode
-* `pow run <path to pipeline>`: Run a pipeline
-* `pow run <path to pipeline> -Trace -Verbose`: Run a pipeline with verbose output and each step's output logged to trace directory
-* `pow run <path to pipeline> @params`: Run a pipeline passing in parameters (using splatting)
-* `pow clean <path to pipeline>`: Delete a built pipeline (i.e. all .ps1 files and the trace\ subdirectory)
+* `pow help <command>`: Help using a command
+* `pow build <pipeline>`: Build a pipeline (creates .ps1 file)
+* `pow verify <pipeline>`: Verify a pipeline by running it in PowerShell's "dry run" (-WhatIf) mode (supports -Verbose)
+* `pow run <pipeline>`: Run a pipeline
+* `pow run <pipeline> -Trace -Verbose`: Run a pipeline with verbose output and each step's output logged to trace directory
+* `pow run <pipeline> @params`: Run a pipeline passing in parameters (using splatting)
+* `pow clean <pipeline>`: Delete a built pipeline (i.e. all .ps1 files and the trace\ subdirectory)
 * `pow inspect <path to component .ps1>`: Inspects a component (TODO: validate, check and test component)
 * `pow components <path to components directory>`: List components in a folder
 

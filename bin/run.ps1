@@ -16,7 +16,7 @@
  This can be useful for debugging
 
  .Example
- ./bin/run.ps1 ./examples/pipeline1 @{DataSource="C:\data\myfile.txt"}
+ pow run ./examples/pipeline1 @{DataSource="./data/names.txt"}
 
 #>
 [CmdletBinding(SupportsShouldProcess)]

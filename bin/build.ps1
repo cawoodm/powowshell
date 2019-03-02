@@ -297,11 +297,11 @@ function ReSerializeParams($parameters) {
         $res += "param(`n"
         foreach ($param in $parameters.PSObject.Properties) {
             $pName = $param.Name
-            $pVal = HDef $param "default" "";
-            
-            Write-Verbose "$pName=$pVal"
-            $pType = HDef $param "type" ""; #if ($pType) {$pType="[$pType]"}
-            $pMust = HDef $param "mandatory" ""
+            $pObj = $param.Value
+            $pVal = HDef $pObj "default" ""
+            $pType = HDef $pObj  "type" ""
+            if ($pType) {$pType="[$pType]"}
+            $pMust = HDef $pObj  "mandatory" ""
             if ($pMust -eq $true) {$pMust = "[Parameter(Mandatory=`$true)]"} else {$pMust=""}
             if ($pVal.Contains("`{") -and $pVal.EndsWith("}")) {
                 # Parameter is code (a PowerShell Expression)
@@ -321,7 +321,7 @@ function ReSerializeParams($parameters) {
     }
 }
 function HDef($HashMap, $Field, $Default) {
-    if ($HashMap.PSObject.Properties[$Field]) {return $HashMap[$Field]} else {return $Default}
+    if ($HashMap.PSObject.Properties[$Field]) {return $HashMap."$Field"} else {return $Default}
 }
 function ReSerializePipelineParams($obj) {
     Write-Verbose "BUILDER ReSerializePipelineParams"
