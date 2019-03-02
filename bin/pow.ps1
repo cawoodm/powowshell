@@ -26,7 +26,8 @@ function main() {
 		Write-Verbose "`"$PSScriptRoot\$_.ps1`" $p1 $p2 $p3"
 		if ($p3) {& "$PSScriptRoot\$_.ps1" $p1 $p2 $p3}
 		elseif ($p2) {& "$PSScriptRoot\$_.ps1" $p1 $p2}
-		else {& "$PSScriptRoot\$_.ps1" $p1}
+		elseif($p1) {& "$PSScriptRoot\$_.ps1" $p1}
+		else {& "$PSScriptRoot\$_.ps1"}
 	}
 }
 Set-StrictMode -Version Latest
