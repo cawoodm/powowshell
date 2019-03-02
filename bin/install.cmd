@@ -1,5 +1,5 @@
 @ECHO OFF
-POWERSHELL -Command "'PowerShell version: ' + $PSVersionTable.PSVersion.toString()"
+POWERSHELL -Command "' PowerShell version: ' + $PSVersionTable.PSVersion.toString()"
 IF %ERRORLEVEL% GTR 0 GOTO ERR_PSC
 
 :: Check if pow is already installed
@@ -31,7 +31,7 @@ ECHO PowowShell will now use powershella.cmd for executing powershell
 GOTO:eof
 
 :ERR_POWI
-ECHO WARNING: pow.cmd is already installed on your system. You should be able to run pow already!
-ECHO Otherwise, delete the following file in order to re-install:
+ECHO  WARNING: pow.cmd is already installed on your system. You should be able to run pow already!
+ECHO   Otherwise, delete the following file in order to re-install:
 WHERE pow.cmd
 GOTO:eof

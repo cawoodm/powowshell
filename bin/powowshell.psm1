@@ -15,7 +15,7 @@ param(
 		[Parameter(Mandatory=$true)][String[]]$Command,
 		$p1,$p2,$p3
 )
-function main() {
+function Invoke-PowowShell() {
 	$Command | % {
 		Write-Verbose "`"$PSScriptRoot\$_.ps1`" $p1 $p2 $p3"
 		if ($p3) {& "$PSScriptRoot\$_.ps1" $p1 $p2 $p3}
@@ -24,4 +24,4 @@ function main() {
 	}
 }
 Set-StrictMode -Version Latest
-Export-ModuleMember main
+Export-ModuleMember -Function Invoke-PowowShell -Alias pow
