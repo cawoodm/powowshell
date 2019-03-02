@@ -6,7 +6,6 @@
 param()
 function main() {
     $ErrorActionPreference = "Stop"
-    Set-StrictMode -Version Latest
     try {
         Push-Location $PSScriptRoot
 

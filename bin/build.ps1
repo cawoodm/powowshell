@@ -298,6 +298,8 @@ function ReSerializeParams($parameters) {
         foreach ($param in $parameters.PSObject.Properties) {
             $pName = $param.Name
             $pVal = HDef $param "default" "";
+            
+            Write-Verbose "$pName=$pVal"
             $pType = HDef $param "type" ""; #if ($pType) {$pType="[$pType]"}
             $pMust = HDef $param "mandatory" ""
             if ($pMust -eq $true) {$pMust = "[Parameter(Mandatory=`$true)]"} else {$pMust=""}
