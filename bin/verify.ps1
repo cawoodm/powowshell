@@ -20,10 +20,11 @@ function main() {
     $Path = (Resolve-Path -Path $Path).Path
 	Push-Location $Path
 	try {
-        if (Test-Path .\error.log) {DEL .\error.log}
+        if (-not (Test-Path .\run_prod.ps1)) {throw "Pipeline is not built!"}
+        if (Test-Path .\errors.log) {DEL .\errors.log}
         if (Test-Path .\warnings.log) {DEL .\warnings.log}
-        $output = & .\run_prod.ps1 -WhatIf 2> .\error.log 3> .\warnings.log
-        $outputErr = Get-Content .\error.log -Raw
+        $output = & .\run_prod.ps1 -WhatIf 2> .\errors.log 3> .\warnings.log
+        $outputErr = Get-Content .\errors.log -Raw
         $outputWar = Get-Content .\warnings.log -Raw
         if ($outputErr) {
             Write-Host "VERIFICATION ERRORS" -ForegroundColor Red
@@ -37,10 +38,18 @@ function main() {
             Write-Host "VERIFICATION OK" -ForegroundColor Green
             Write-Host "Your pipeline ran to completion with no errors"
         }
+        # Show params
+        $cmd = Get-Command .\run_prod.ps1
+        "`nParameters:"
+        $cmd.Parameters.Keys | Where {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
+            $cmd.Parameters[$_].Attributes[0].Mandatory
+        }
     } catch {
-        Write-Host "!!! VERIFICATION FAILED !!!" -Color Red
+        Write-Host "!!! VERIFICATION FAILED !!!" -ForegroundColor Red
         throw $_
     } finally {
+        DEL .\errors.log -ErrorAction SilentlyContinue
+        DEL .\warnings.log -ErrorAction SilentlyContinue
         Pop-Location
     }
 }

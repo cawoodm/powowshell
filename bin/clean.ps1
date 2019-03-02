@@ -20,6 +20,7 @@ function main() {
 	DEL run_*.ps1
 	DEL *.log
 	DEL .\trace\*.txt
+	Write-Host "CLEAN successful" -ForegroundColor Green
 	Pop-Location
 }
 Set-StrictMode -Version Latest

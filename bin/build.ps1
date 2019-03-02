@@ -61,6 +61,13 @@ function BuildingPipeline() {
             $p=$Path; if ($Output) {$p=$Output}
             "Usage:`n  POW run $p"
             "OR`n  POW run $p -Trace"
+
+            # Show params
+            $cmd = Get-Command .\run_prod.ps1
+            "`nParameters:"
+            $cmd.Parameters.Keys | Where {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
+                " $_"
+            }
                 
 
     } catch {
@@ -282,22 +289,26 @@ function ReSerializeObject($obj) {
     $res += "};"
     return $res
 }
-function ReSerializeParams($obj) {
+function ReSerializeParams($parameters) {
     Write-Verbose "BUILDER ReSerializeParams"
-    if ($obj -is [array]) {throw "Parameters object should not be an array!"}
+    if ($parameters -is [array]) {throw "Parameters object should not be an array!"}
     $res = "[CmdletBinding(SupportsShouldProcess)]`n"
     $res += "param(`n"
-    $obj.PSObject.Properties | ForEach-Object {
+    $parameters.PSObject.Properties | ForEach-Object {
         Write-Verbose $_.Name
-        $pVal = $_.Value; $pName = $_.Name
+        $param = $_.Value
+        $pVal = $param.default; $pName = $_.Name
+        $pType=""; if ($param.PSObject.Properties["type"]) {$pType = "[$($param.type)]";}
+        if ($param.PSObject.Properties["mandatory"]) {Write-Host ($param.mandatory -eq $true); $pMust = $param.mandatory;}
+        if ($pMust -eq $true) {$pMust = "[Parameter(Mandatory=`$true)]"} else {$pMust=""}
         if ($pVal.Contains("`{") -and $pVal.EndsWith("}")) {
             # Parameter is code (a PowerShell Expression)
             # TODO: Escape code for PS
-            $res += "`t`$$($pName) = (" + $pVal.SubString(1, $pVal.Length-2) + "),`n"
+            $res += "`t$pMust$pType`$$($pName) = (" + $pVal.SubString(1, $pVal.Length-2) + "),`n"
         } else {
             # Parameter is a String
             # TODO: Escape String for PS
-            $res += "`t`$$($pName) = `"$($pVal)`",`n"
+            $res += "`t$pMust$pType`$$($pName) = `"$($pVal)`",`n"
         }
     }
     $res = $res -replace ',\n$', "`n"

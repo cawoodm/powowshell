@@ -3,14 +3,8 @@
 	"name": "Send mail to young voters",
 	"description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
 	"parameters": {
-		"DataSource": {
-			"default": ".\\data\\voters.txt",
-			"type": "string",
-			"mandatory": true
-		},
-		"p2": {
-			"default": "{Get-Date}"
-		}
+		"DataSource": ".\\data\\voters.txt",
+		"p2": "{Get-Date}"
 	},
 	"globals": {
 		"foo": "bar"
