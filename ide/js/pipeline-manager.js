@@ -20,7 +20,7 @@
    column: Array of steps representing [1-9]
     step: {
         id: "B1",                       // The id of the step 
-        ref: "file-csv-ps1",            // The path to the component
+        reference: "file-csv-ps1",            // The path to the component
         label: "Read Voters File",      // short readable name of the step
         parameters: {
             "p1": "value",              // Parameter p1 and it's value
@@ -33,8 +33,10 @@
 // @ts-check
 const pipeCols = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 let pipelineManager = (function() {
-
+    const COLS = pipeCols.length;
+    const ROWS = 9;
     let columns = [];
+    let pipelineDef = {};
 
     /**
      * Takes "A22" and returns 22
@@ -63,7 +65,7 @@ let pipelineManager = (function() {
         // @ts-ignore We may be called as (1,1) or ("A", 1) or ("A1") 
         if (!row) {row = parseRow(col); col = parseCol(col)}
         let column = getColumn(col);
-        if (row>=1 && row<=9) {
+        if (row>=1 && row<=ROWS) {
             return column[row-1];
         } else throw("Invalid row number " + row + " in getStep!");
     }
@@ -74,9 +76,40 @@ let pipelineManager = (function() {
     function importStep(step) {
         let col = parseCol(step.id);
         let row = parseRow(step.id);
-        if (getStep(col, row).ref != null) throw "Step " + col + row + " is not empty!"
+        if (getStep(col, row).reference != null) throw "Step " + col + row + " is not empty!"
         // @ts-ignore
         columns[col-1][row-1] = step;
+    }
+    function pipelineStepToStep(id, stepI) {
+        // MAPPING: Step definition in pipeline JSON to Step in UI
+        return {
+            id: id,
+            reference: stepI.reference,
+            label: stepI.name,
+            parameters: stepI.parameters,
+            input: stepI.input
+        }
+    }
+    function component2Step(id, component) {
+        // MAPPING: Component Definition to Step in UI
+        return {
+            id: id,
+            reference: component.reference,
+            parameters: component.parameters||{},
+            input: component.input||null,
+            output: component.output||null
+        };
+    }
+    function stepToPipelineStep(id, step) {
+        // MAPPING: Step in UI to step definition in pipeline JSON
+        return {
+            id: id,
+            reference: step.reference,
+            name: step.label,
+            parameters: step.parameters,
+            input: step.input,
+            output: step.output
+        }
     }
 
     // Public members
@@ -86,10 +119,11 @@ let pipelineManager = (function() {
       */ 
     reset: function() {
         columns = [];
+        pipelineDef = {};
         for (let c=0; c<pipeCols.length; c++) {
             let column = [];
-            for (let r=0; r<9; r++) {
-                let step = {id: pipeCols[c]+(r+1).toString(), ref: null, label: null}
+            for (let r=0; r<ROWS; r++) {
+                let step = {id: pipeCols[c]+(r+1).toString(), reference: null, label: null}
                 column.push(step);
             } 
             columns.push(column);
@@ -115,44 +149,55 @@ let pipelineManager = (function() {
     addComponent: function(col, row, component) {
         if (!row) {row = parseRow(col); col = parseCol(col)}
         let step = this.getStep(col, row);
-        if (step.ref != null) throw "Step " + col + row + " is not empty!"
-        step = {
-            id: step.id,
-            ref: component.ref
-            // TODO: Parameters
-        };
-        // @ts-ignore
-        columns[col-1][row-1] = step;
+        if (step.reference != null) throw "Step " + col + row + " is not empty!"
+        step = component2Step(step.id, component);
+        columns[parseInt(col)-1][row-1] = step;
         return step;
     },
     /**
      * Import pipeline definition from JSON
      * @param {Object|string} def The JSON object defining the pipeline from pipeline.json
+     * @returns {boolean} True is success
      */
     import: function(def) {
         this.reset();
         if (typeof def === "string") def = JSON.parse(def);
         for(let s=0; s<def.steps.length; s++) {
-            let step = def.steps[s];
-            let col = parseCol(step.id);
-            let row = parseRow(step.id);
-            importStep({
-                id: step.id,
-                ref: step.reference,
-                label: step.name,
-                parameters: step.input,
-                input: step.input,
-                output: step.output
-            });
+            let stepI = def.steps[s];
+            let col = parseCol(stepI.id);
+            let row = parseRow(stepI.id);
+            let step = pipelineStepToStep(stepI.id, stepI)
+            importStep(step);
         }
+        this.pipelineDef = def;
         return true;
     },
     /**
-     * Export pipeline definition to JSON
-     * @return {Object|string}
+     * Return the definition for unit testing
+     */
+    getDefinition: function() {
+        return this.pipelineDef;
+    },
+    /**
+     * Export pipeline definition as an object
+     * @return {Object}
      */ 
     export: function() {
-        
+        let res = {};
+        // Export all properties in pipelineDef
+        Object.assign(res, this.pipelineDef)
+        // Overwriting all non-empty steps
+        res.steps = [];
+        for (let r=1; r<=ROWS; r++) {
+            for (let c=1; c<=COLS; c++) {
+                let step = this.getStep(c, r);
+                if (step.reference !== null) {
+                    let stepO = stepToPipelineStep(step.id, step);
+                    res.steps.push(stepO);
+                }
+            }
+        }
+        return res;
     },
     columnCount: function() {
         return columns.length;
@@ -210,18 +255,28 @@ let pipelineManager = (function() {
         assert(pipelineManager.rowCount()===9, "We have the right number of rows (9)")
         
         // Getting and Adding Steps
-        assert('pipelineManager.getStep(1, 1).ref === null', "Step A1 is initialized")
-        assert('pipelineManager.addComponent(1, 2, {ref: "foo"}).ref === "foo"', "Step A2 is set to foo")
-        assert('pipelineManager.addComponent("C3", null, testComponent).ref=="CSV2JSON"', "Add basic component")
-        assert('pipelineManager.getStep("C", 3).ref !== null', "Step C3 is set")
+        assert('pipelineManager.getStep(1, 1).reference === null', "Step A1 is initialized")
+        assert('pipelineManager.addComponent(1, 2, {reference: "foo"}).reference === "foo"', "Step A2 is set to foo")
+        assert('pipelineManager.addComponent("C3", null, testComponent).reference=="CSV2JSON"', "Add basic component")
+        assert('pipelineManager.getStep("C", 3).reference !== null', "Step C3 is set")
 
         // Import
-        assert('pipelineManager.import(testPipeline)', "Pipeline import");
-        assert(()=>pipelineManager.getStep("A1").ref.match(/File/), "Test pipeline step B1 is File")
-        assert(()=>pipelineManager.getStep("B1").ref.match(/CSV2JSON/), "Test pipeline step B1 is CSV2JSON")
-        assert(()=>pipelineManager.getStep("C1").ref.match(/SelectFields/), "Test pipeline step C1 is SelectFields")
+        assert(()=>pipelineManager.import(testPipeline), "Pipeline import");
+        assert(()=>pipelineManager.getStep("A1").reference.match(/File/), "Test pipeline step B1 is File")
+        assert(()=>pipelineManager.getStep("B1").reference.match(/CSV2JSON/), "Test pipeline step B1 is CSV2JSON")
+        assert(()=>pipelineManager.getStep("C1").reference.match(/SelectFields/), "Test pipeline step C1 is SelectFields")
+        assert(()=>typeof pipelineManager.getStep("A1").parameters.Path === "string", "Step A1 of imported pipeline has a 'Path' parameter")
         
-        columnsToString();
+        // Export
+        let myPipeline = pipelineManager.export();
+        assert(()=>myPipeline.steps.length===3, "Pipeline export has 3 steps")
+        let pipelineDef = pipelineManager.getDefinition();
+        assert(()=>myPipeline.id===pipelineDef.id, "Export has same id")
+        let pipelineStr = JSON.stringify(myPipeline);
+        fs.writeFileSync("C:\\temp\\pipeline.json", pipelineStr, "utf-8");
+
+        //console.log(pipelineManager.getStep("C1"))
+        //columnsToString();
 
     } catch(e) {
         console.log("TEST cancelled:")
@@ -233,5 +288,4 @@ let pipelineManager = (function() {
         console.error("\x1b[31m", fails + " of " + tests + " failed")
     } else
         console.log("\x1b[36m", "All test passed successfully")
-})(0);
-
+})(1);

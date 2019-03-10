@@ -21,18 +21,18 @@
 	"output": {},
 	"steps": [
 		{
-			"id":"A1",
-			"name":"Read Voters File",
-			"reference":"../components/ReadFile.ps1",
-			"input":"",
+			"id": "A1",
+			"name": "Read Voters File",
+			"reference": "../components/ReadFile.ps1",
+			"input": "",
 			"parameters": {
 				"Path": "{$PipelineParams.DataSource}"
 			}
 		},
 		{
-			"id":"B1",
-			"name":"Convert2JSON",
-			"reference":"../components/CSV2JSON.ps1",
+			"id": "B1",
+			"name": "Convert2JSON",
+			"reference": "../components/CSV2JSON.ps1",
 			"input": "A",
 			"parameters": {
 				"Delimiter": "|",
@@ -40,9 +40,9 @@
 			}
 		},
 		{
-			"id":"C1",
-			"name":"Select Name and Email",
-			"reference":"../components/SelectFields.ps1",
+			"id": "C1",
+			"name": "Select Name and Email",
+			"reference": "../components/SelectFields.ps1",
 			"input": "B",
 			"parameters": {
 				"Fields": "{\"name\", \"age\", \"email\"}"
