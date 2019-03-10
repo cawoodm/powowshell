@@ -21,7 +21,7 @@
 	"output": {},
 	"steps": [
 		{
-			"id":"A",
+			"id":"A1",
 			"name":"Read Voters File",
 			"reference":"../components/ReadFile.ps1",
 			"input":"",
@@ -30,7 +30,7 @@
 			}
 		},
 		{
-			"id":"B",
+			"id":"B1",
 			"name":"Convert2JSON",
 			"reference":"../components/CSV2JSON.ps1",
 			"input": "A",
@@ -40,7 +40,7 @@
 			}
 		},
 		{
-			"id":"C",
+			"id":"C1",
 			"name":"Select Name and Email",
 			"reference":"../components/SelectFields.ps1",
 			"input": "B",
