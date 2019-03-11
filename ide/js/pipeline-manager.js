@@ -38,10 +38,134 @@ let pipelineManager = (function() {
     let columns = [];
     let pipelineDef = {};
 
+    // Public members
+    return {
+        /**
+         * Initialize a new, empty pipeline
+         */ 
+        reset: function() {
+            columns = [];
+            pipelineDef = {id: null};
+            for (let c=0; c<pipeCols.length; c++) {
+                let column = [];
+                for (let r=0; r<ROWS; r++) {
+                    let step = emptyStep(pipeCols[c]+(r+1).toString());
+                    column.push(step);
+                } 
+                columns.push(column);
+            } 
+        },
+        /**
+         * Return a column indexed from 1 to 10 (A-K)
+         * @param {number|string} col The ID of the column to return (1-9 or A-Z)
+         */
+        getColumn: getColumn,
+        /**
+         * Return a step indexed from A1 to Z9
+         * @param {string} col The ID (A-Z or 1 to 10) of the column to return
+         * @param {number} row The ID (1 to 9) of the step to return
+         */
+        getStep: getStep,
+        /**
+         * Add a component to the grid resulting in a step
+         * @param {string} col The ID (1 to 10) of the column
+         * @param {number} row The ID (1 to 9) of the step
+         * @param {Object} component The component definition to add
+         * @returns {Object} The step definition added
+         */
+        addComponent: function(col, row, component) {
+            if (!row) {row = parseRow(col); col = parseCol(col)}
+            let step = this.getStep(col, row);
+            if (step.reference != null) throw new Error("Step " + col + row + " is not empty!");
+            step = component2Step(step.id, component);
+            columns[parseInt(col)-1][row-1] = step;
+            return step;
+        },
+        /**
+         * Import pipeline definition from JSON
+         * @param {Object|string} def The JSON object defining the pipeline from pipeline.json
+         * @returns {boolean} True is success
+         */
+        import: function(def) {
+            this.reset();
+            if (typeof def === "string") def = JSON.parse(def);
+            for(let s=0; s<def.steps.length; s++) {
+                let stepI = def.steps[s];
+                let col = parseCol(stepI.id);
+                let row = parseRow(stepI.id);
+                let step = pipelineStepToStep(stepI.id, stepI)
+                importStep(step);
+            }
+            this.pipelineDef = def;
+            return true;
+        },
+        /**
+         * Export pipeline definition as an object
+         * @returns {Object}
+         */ 
+        export: function() {
+            let res = {};
+            // Export all properties in pipelineDef
+            Object.assign(res, this.pipelineDef)
+            // Overwriting all non-empty steps
+            res.steps.length = 0;
+            for (let r=1; r<=ROWS; r++) {
+                for (let c=1; c<=COLS; c++) {
+                    let step = this.getStep(c, r);
+                    if (step.reference !== null) {
+                        let stepO = stepToPipelineStep(step.id, step);
+                        res.steps.push(stepO);
+                    }
+                }
+            }
+            return res;
+        },
+        /**
+         * Move a step from one position to another
+         * @param {string} fromId 
+         * @param {string} toId 
+         */
+        moveStep: function(fromId, toId) {
+            if (getStep(toId).reference !== null) throw new Error("Step " + toId + " is not empty!");
+            let step = getStep(fromId);
+            this.removeStep(fromId);
+            let row = parseRow(toId);
+            let col = parseCol(toId);
+            columns[col-1][row-1] = step;
+        },
+        /**
+         * Remove/clear a step
+         * @param {string} id
+         */
+        removeStep: function(id) {
+            let row = parseRow(id);
+            let col = parseCol(id);
+            columns[col-1][row-1] = emptyStep(id);
+        },
+        /**
+         * Return the definition for unit testing
+         * @returns {Object} The in-memory pipeline which was loaded
+         */
+        getDefinition: function() {
+            return this.pipelineDef;
+        },
+        /**
+         * @returns {number} The number of columns
+         */
+        columnCount: function() {
+            return columns.length;
+        },
+        /**
+         * @returns {number} The number of rows
+         */
+        rowCount: function() {
+            return columns[0].length;
+        }
+    };
     /**
      * Takes "A22" and returns 22
      * @param {string} col 
-     * @return {number} 
+     * @returns {number} 
      */
     function parseRow(col) {
         return parseInt(col.substring(1))
@@ -49,14 +173,14 @@ let pipelineManager = (function() {
     /**
      * Takes "A22" and returns 1
      * @param {string} col 
-     * @return {any} 
+     * @returns {any} 
      */
     function parseCol(col) {
-        return typeof col === "number"?col:pipeCols.indexOf(col.substring(0,1))+1;
+        return !isNaN(parseInt(col))?col:pipeCols.indexOf(col.substring(0,1))+1;
     }
     function getColumn(col) {
         // We may be called as a number or a letter (e.g. "A")
-        if (typeof col !== "number") {col = pipeCols.indexOf(col)+1}
+        if (isNaN(col)) {col = parseCol(col)}
         if (col>=1 && col<=pipeCols.length+1) {
             return columns[col-1];
         } else throw("Invalid column number " + col + " in getColumn!");
@@ -77,11 +201,15 @@ let pipelineManager = (function() {
         let col = parseCol(step.id);
         let row = parseRow(step.id);
         if (getStep(col, row).reference != null) throw "Step " + col + row + " is not empty!"
-        // @ts-ignore
-        columns[col-1][row-1] = step;
+        columns[parseInt(col)-1][row-1] = step;
     }
+    /**
+     * Map a step definition in pipeline JSON to Step in UI
+     * @param {string} id 
+     * @param {Object} stepI 
+     * @returns {Object} The UI step
+     */
     function pipelineStepToStep(id, stepI) {
-        // MAPPING: Step definition in pipeline JSON to Step in UI
         return {
             id: id,
             reference: stepI.reference,
@@ -90,8 +218,13 @@ let pipelineManager = (function() {
             input: stepI.input
         }
     }
+    /**
+     * Map a component Definition to a new Step in the UI
+     * @param {string} id 
+     * @param {Object} component 
+     * @returns {Object} The new UI Step based on the component
+     */
     function component2Step(id, component) {
-        // MAPPING: Component Definition to Step in UI
         return {
             id: id,
             reference: component.reference,
@@ -100,8 +233,13 @@ let pipelineManager = (function() {
             output: component.output||null
         };
     }
+    /**
+     * Map a Step in the UI to step definition in pipeline JSON
+     * @param {string} id 
+     * @param {Object} step 
+     * @returns {Object} step definition according to pipeline.json 
+     */
     function stepToPipelineStep(id, step) {
-        // MAPPING: Step in UI to step definition in pipeline JSON
         return {
             id: id,
             reference: step.reference,
@@ -111,101 +249,13 @@ let pipelineManager = (function() {
             output: step.output
         }
     }
-
-    // Public members
-    return {
     /**
-     * Initialize a new, empty pipeline
-      */ 
-    reset: function() {
-        columns = [];
-        pipelineDef = {};
-        for (let c=0; c<pipeCols.length; c++) {
-            let column = [];
-            for (let r=0; r<ROWS; r++) {
-                let step = {id: pipeCols[c]+(r+1).toString(), reference: null, label: null}
-                column.push(step);
-            } 
-            columns.push(column);
-        } 
-    },
-    /**
-     * Return a column indexed from 1 to 10 (A-K)
-     * @param {number|string} col The ID of the column to return (1-9 or A-Z)
+     * Return an empty UI Step
+     * @param {string} id 
      */
-    getColumn: getColumn,
-    /**
-     * Return a step indexed from A1 to Z9
-     * @param {string} col The ID (A-Z or 1 to 10) of the column to return
-     * @param {number} row The ID (1 to 9) of the step to return
-     */
-    getStep: getStep,
-    /**
-     * Add a step to the grid
-     * @param {string} col The ID (1 to 10) of the column
-     * @param {number} row The ID (1 to 9) of the step
-     * @param {Object} component The component definition to add
-     */
-    addComponent: function(col, row, component) {
-        if (!row) {row = parseRow(col); col = parseCol(col)}
-        let step = this.getStep(col, row);
-        if (step.reference != null) throw "Step " + col + row + " is not empty!"
-        step = component2Step(step.id, component);
-        columns[parseInt(col)-1][row-1] = step;
-        return step;
-    },
-    /**
-     * Import pipeline definition from JSON
-     * @param {Object|string} def The JSON object defining the pipeline from pipeline.json
-     * @returns {boolean} True is success
-     */
-    import: function(def) {
-        this.reset();
-        if (typeof def === "string") def = JSON.parse(def);
-        for(let s=0; s<def.steps.length; s++) {
-            let stepI = def.steps[s];
-            let col = parseCol(stepI.id);
-            let row = parseRow(stepI.id);
-            let step = pipelineStepToStep(stepI.id, stepI)
-            importStep(step);
-        }
-        this.pipelineDef = def;
-        return true;
-    },
-    /**
-     * Return the definition for unit testing
-     */
-    getDefinition: function() {
-        return this.pipelineDef;
-    },
-    /**
-     * Export pipeline definition as an object
-     * @return {Object}
-     */ 
-    export: function() {
-        let res = {};
-        // Export all properties in pipelineDef
-        Object.assign(res, this.pipelineDef)
-        // Overwriting all non-empty steps
-        res.steps = [];
-        for (let r=1; r<=ROWS; r++) {
-            for (let c=1; c<=COLS; c++) {
-                let step = this.getStep(c, r);
-                if (step.reference !== null) {
-                    let stepO = stepToPipelineStep(step.id, step);
-                    res.steps.push(stepO);
-                }
-            }
-        }
-        return res;
-    },
-    columnCount: function() {
-        return columns.length;
-    },
-    rowCount: function() {
-        return columns[0].length;
+    function emptyStep(id) {
+        return {id: id, reference: null, label: null}
     }
-};
 })();
 
 /**
@@ -214,22 +264,26 @@ let pipelineManager = (function() {
 (function pipelineManagerTest(verbose) {
     let tests = 0;
     let fails = 0;
-    function assert(cond, msg) {
+    function assert(cond, msg, exception) {
         if (verbose) console.log("\x1b[36m", "... " + msg);
         try {
             tests++;
             let res = typeof cond === "function"?cond():eval(cond);
             if (res) {
-                if (verbose) console.log("\x1b[36m", "*** OK: "+msg);
+                if (verbose && !exception) console.log("\x1b[36m", "*** OK: "+msg);
             } else {
                 fails++;
                 console.log("\x1b[31m", "*** FAIL: "+msg);
             }
         } catch(e) {
-            fails++;
-            console.log("\x1b[31m", "****EXCEPTION: "+msg);
-            console.log(e);
-            throw "ENDE"; // Halt test
+            if (!exception) {
+                fails++;
+                console.log("\x1b[31m", "****EXCEPTION: "+msg);
+                console.log(e);
+                throw "ENDE"; // Halt test
+            } else {
+                if (verbose) console.log("\x1b[36m", "*** OK: "+msg);
+            }
         }
     }
     function columnsToString() {
@@ -242,14 +296,22 @@ let pipelineManager = (function() {
             console.log(s);
         }
     }
+    // @ts-ignore
     const fs = require('fs');
-    let testPipeline = fs.readFileSync('../../examples/pipeline1/pipeline.json', "utf8").trim();
+    // @ts-ignore
+    const path = require('path');
+    // @ts-ignore
+    let testPipeline = fs.readFileSync(path.resolve(__dirname, '../../examples/pipeline1/pipeline.json'), "utf8").trim();
     //let testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A", "name":"Read Voters File", "reference":"../components/ReadFile.ps1", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B", "name":"Convert2JSON", "reference":"../components/CSV2JSON.ps1", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C", "name":"Select Name and Email", "reference":"../components/SelectFields.ps1", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
-    let testComponent = JSON.parse(fs.readFileSync('../../examples/components/CSV2JSON.json', "utf8").trim());
+    // @ts-ignore
+    let testComponent = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../examples/components/CSV2JSON.json'), "utf8").trim());
     //let testComponent = { "synopsis": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": { "FieldSeparator": { "type": "string", "default": ",", "description": "Specifies the field separator. Default is a comma." } }, "input":"text/csv", "output":"json/array"};
 
     try{
+
         console.clear();
+
+        // Check a new pipeline
         pipelineManager.reset();
         assert(pipelineManager.columnCount()===pipeCols.length, "We have the right number of columns ("+pipeCols.length+")")
         assert(pipelineManager.rowCount()===9, "We have the right number of rows (9)")
@@ -259,6 +321,16 @@ let pipelineManager = (function() {
         assert('pipelineManager.addComponent(1, 2, {reference: "foo"}).reference === "foo"', "Step A2 is set to foo")
         assert('pipelineManager.addComponent("C3", null, testComponent).reference=="CSV2JSON"', "Add basic component")
         assert('pipelineManager.getStep("C", 3).reference !== null', "Step C3 is set")
+        assert(()=>pipelineManager.moveStep("C3", "A2"), "Step can't be moved over existing step", true);
+        assert(()=>pipelineManager.getStep("D4").reference===null, "Step D4 should be empty");
+        assert(()=>pipelineManager.getStep("A2").reference!==null, "Step A2 should not be empty");
+        assert(()=>pipelineManager.getStep("C3").reference!==null, "Step C3 should not be empty"); 
+        pipelineManager.moveStep("C3", "D4")
+        let c3 = pipelineManager.getStep("C3");
+        let d4 = pipelineManager.getStep("D4");
+        assert(()=>d4.reference=="CSV2JSON" && c3.reference === null, "Step C3 moved to D4");
+        pipelineManager.removeStep("D4");
+        assert(()=>pipelineManager.getStep("D4").reference === null, "Step D4 is removed")
 
         // Import
         assert(()=>pipelineManager.import(testPipeline), "Pipeline import");
@@ -273,7 +345,7 @@ let pipelineManager = (function() {
         let pipelineDef = pipelineManager.getDefinition();
         assert(()=>myPipeline.id===pipelineDef.id, "Export has same id")
         let pipelineStr = JSON.stringify(myPipeline);
-        fs.writeFileSync("C:\\temp\\pipeline.json", pipelineStr, "utf-8");
+        //fs.writeFileSync("C:\\temp\\pipeline.json", pipelineStr, "utf-8");
 
         //console.log(pipelineManager.getStep("C1"))
         //columnsToString();
@@ -288,4 +360,4 @@ let pipelineManager = (function() {
         console.error("\x1b[31m", fails + " of " + tests + " failed")
     } else
         console.log("\x1b[36m", "All test passed successfully")
-})(1);
+})(0);  
