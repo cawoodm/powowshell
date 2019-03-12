@@ -21,7 +21,7 @@
     step: {
         id: "B1",                       // The id of the step 
         reference: "file-csv-ps1",            // The path to the component
-        label: "Read Voters File",      // short readable name of the step
+        name : "Read Voters File",      // short readable name of the step
         parameters: {
             "p1": "value",              // Parameter p1 and it's value
             "p2": "value",              // Parameter p2 and it's value
@@ -56,17 +56,6 @@ let pipelineManager = (function() {
             } 
         },
         /**
-         * Return a column indexed from 1 to 10 (A-K)
-         * @param {number|string} col The ID of the column to return (1-9 or A-Z)
-         */
-        getColumn: getColumn,
-        /**
-         * Return a step indexed from A1 to Z9
-         * @param {string} col The ID (A-Z or 1 to 10) of the column to return
-         * @param {number} row The ID (1 to 9) of the step to return
-         */
-        getStep: getStep,
-        /**
          * Add a component to the grid resulting in a step
          * @param {string} col The ID (1 to 10) of the column
          * @param {number} row The ID (1 to 9) of the step
@@ -74,7 +63,14 @@ let pipelineManager = (function() {
          * @returns {Object} The step definition added
          */
         addComponent: function(col, row, component) {
-            if (!row) {row = parseRow(col); col = parseCol(col)}
+            if (!row) {
+                if (col.toString().match(/[A-Z]\d+/))
+                    row = parseRow(col);
+                else
+                    row = this.nextRow(col)
+                if (row>this.nextRow(col)) throw new Error("Cannot add component to that row position " + col);
+                col = parseCol(col)
+            }
             let step = this.getStep(col, row);
             if (step.reference != null) throw new Error("Step " + col + row + " is not empty!");
             step = component2Step(step.id, component);
@@ -121,6 +117,22 @@ let pipelineManager = (function() {
             return res;
         },
         /**
+         * Return array of steps
+         * @returns {Array}
+         */ 
+        getSteps: function() {
+            let res = [];
+            for (let r=1; r<=ROWS; r++) {
+                for (let c=1; c<=COLS; c++) {
+                    let step = this.getStep(c, r);
+                    if (step.reference !== null) {
+                        res.push(step);
+                    }
+                }
+            }
+            return res;
+        },
+        /**
          * Move a step from one position to another
          * @param {string} fromId 
          * @param {string} toId 
@@ -143,6 +155,18 @@ let pipelineManager = (function() {
             columns[col-1][row-1] = emptyStep(id);
         },
         /**
+         * Return next available row in a column
+         * @param {string} col
+         * @returns {number}
+         */
+        nextRow: function(col) {
+            let column = getColumn(col);
+            for (let r=0; r<column.length; r++)
+                if (column[r].reference === null)
+                    return r+1; // First empty row
+            return null;
+        },
+        /**
          * Return the definition for unit testing
          * @returns {Object} The in-memory pipeline which was loaded
          */
@@ -160,15 +184,27 @@ let pipelineManager = (function() {
          */
         rowCount: function() {
             return columns[0].length;
-        }
+        },
+        /**
+         * Return a column indexed from 1 to 10 (A-K)
+         * @param {number|string} col The ID of the column to return (1-9 or A-Z)
+         */
+        getColumn: getColumn,
+        /**
+         * Return a step indexed from A1 to Z9
+         * @param {string} col The ID (A-Z or 1 to 10) of the column to return
+         * @param {number} row The ID (1 to 9) of the step to return
+         */
+        getStep: getStep
     };
     /**
      * Takes "A22" and returns 22
-     * @param {string} col 
-     * @returns {number} 
+     * @param {string} col
+     * @returns {number}
      */
     function parseRow(col) {
-        return parseInt(col.substring(1))
+        if (!col.toString().match(/[A-Z]\d+/)) throw new Error("Invalid step reference '" + col + "'!")
+        return parseInt(col.toString().substring(1))
     }
     /**
      * Takes "A22" and returns 1
@@ -180,8 +216,9 @@ let pipelineManager = (function() {
     }
     function getColumn(col) {
         // We may be called as a number or a letter (e.g. "A")
+        if (columns.length===0) throw new Error("Pipeline not initialized!");
         if (isNaN(col)) {col = parseCol(col)}
-        if (col>=1 && col<=pipeCols.length+1) {
+        if (col>=1 && col<=pipeCols.length+1 && col <= columns.length) {
             return columns[col-1];
         } else throw("Invalid column number " + col + " in getColumn!");
     }
@@ -189,7 +226,7 @@ let pipelineManager = (function() {
         // @ts-ignore We may be called as (1,1) or ("A", 1) or ("A1") 
         if (!row) {row = parseRow(col); col = parseCol(col)}
         let column = getColumn(col);
-        if (row>=1 && row<=ROWS) {
+        if (row>=1 && row<=ROWS && row <= column.length) {
             return column[row-1];
         } else throw("Invalid row number " + row + " in getStep!");
     }
@@ -200,7 +237,7 @@ let pipelineManager = (function() {
     function importStep(step) {
         let col = parseCol(step.id);
         let row = parseRow(step.id);
-        if (getStep(col, row).reference != null) throw "Step " + col + row + " is not empty!"
+        if (getStep(col, row).reference != null) throw new Error("Step " + col + row + " is not empty!")
         columns[parseInt(col)-1][row-1] = step;
     }
     /**
@@ -213,7 +250,7 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: stepI.reference,
-            label: stepI.name,
+            name : stepI.name,
             parameters: stepI.parameters,
             input: stepI.input
         }
@@ -243,7 +280,7 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: step.reference,
-            name: step.label,
+            name: step.name ,
             parameters: step.parameters,
             input: step.input,
             output: step.output
@@ -254,13 +291,14 @@ let pipelineManager = (function() {
      * @param {string} id 
      */
     function emptyStep(id) {
-        return {id: id, reference: null, label: null}
+        return {id: id, reference: null, name : null}
     }
 })();
 
 /**
  * Tester
  */
+if (typeof process !== "undefined") {
 (function pipelineManagerTest(verbose) {
     let tests = 0;
     let fails = 0;
@@ -278,9 +316,10 @@ let pipelineManager = (function() {
         } catch(e) {
             if (!exception) {
                 fails++;
-                console.log("\x1b[31m", "****EXCEPTION: "+msg);
+                console.log("\x1b[31m", "*** FAIL: "+msg);
+                console.log("\x1b[31m", "****EXCEPTION: "+e.message);
                 console.log(e);
-                throw "ENDE"; // Halt test
+                throw new Error("HALT TEST: Unexpected exception");
             } else {
                 if (verbose) console.log("\x1b[36m", "*** OK: "+msg);
             }
@@ -291,7 +330,7 @@ let pipelineManager = (function() {
             let s = "";
             for (let c=1; c<=pipelineManager.columnCount(); c++) {
                 let step = pipelineManager.getStep(c, r);
-                s += step.id + " (" + step.label + ") ";
+                s += step.id + " (" + step.name  + ") ";
             }
             console.log(s);
         }
@@ -302,10 +341,10 @@ let pipelineManager = (function() {
     const path = require('path');
     // @ts-ignore
     let testPipeline = fs.readFileSync(path.resolve(__dirname, '../../examples/pipeline1/pipeline.json'), "utf8").trim();
-    //let testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A", "name":"Read Voters File", "reference":"../components/ReadFile.ps1", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B", "name":"Convert2JSON", "reference":"../components/CSV2JSON.ps1", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C", "name":"Select Name and Email", "reference":"../components/SelectFields.ps1", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
+    //testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A1", "name":"Read Voters File", "reference":"../components/ReadFile.ps1", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B1", "name":"Convert2JSON", "reference":"../components/CSV2JSON.ps1", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C1", "name":"Select Name and Email", "reference":"../components/SelectFields.ps1", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
     // @ts-ignore
     let testComponent = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../examples/components/CSV2JSON.json'), "utf8").trim());
-    //let testComponent = { "synopsis": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": { "FieldSeparator": { "type": "string", "default": ",", "description": "Specifies the field separator. Default is a comma." } }, "input":"text/csv", "output":"json/array"};
+    //testComponent = { "synopsis": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": { "FieldSeparator": { "type": "string", "default": ",", "description": "Specifies the field separator. Default is a comma." } }, "input":"text/csv", "output":"json/array"};
 
     try{
 
@@ -315,20 +354,30 @@ let pipelineManager = (function() {
         pipelineManager.reset();
         assert(pipelineManager.columnCount()===pipeCols.length, "We have the right number of columns ("+pipeCols.length+")")
         assert(pipelineManager.rowCount()===9, "We have the right number of rows (9)")
+        assert(pipelineManager.nextRow("A")===1, "Next empty row in column A is 1")
         
         // Getting and Adding Steps
         assert('pipelineManager.getStep(1, 1).reference === null', "Step A1 is initialized")
-        assert('pipelineManager.addComponent(1, 2, {reference: "foo"}).reference === "foo"', "Step A2 is set to foo")
-        assert('pipelineManager.addComponent("C3", null, testComponent).reference=="CSV2JSON"', "Add basic component")
+        assert('pipelineManager.addComponent(1, 1, {reference: "foo"}).reference === "foo"', "Step A1 is set to foo")
+        assert(pipelineManager.nextRow("A")===2, "Next empty row in column A is 2")
+        assert('pipelineManager.addComponent("B", null, {reference: "bar"}).reference === "bar"', "Step B1 is set to bar")
+        assert('pipelineManager.addComponent("C3", null, testComponent).reference=="CSV2JSON"', "Add component to wrong row", true)
+        assert('pipelineManager.addComponent("C1", null, testComponent).reference=="CSV2JSON"', "Add C1 component")
+        assert('pipelineManager.addComponent("C", null, testComponent).reference=="CSV2JSON"', "Add C component")
+        assert('pipelineManager.addComponent("C", null, testComponent).reference=="CSV2JSON"', "Add another C component")
         assert('pipelineManager.getStep("C", 3).reference !== null', "Step C3 is set")
-        assert(()=>pipelineManager.moveStep("C3", "A2"), "Step can't be moved over existing step", true);
+
+        // Moving steps
+        assert(()=>pipelineManager.moveStep("C3", "A1"), "Step can't be moved over existing step", true);
         assert(()=>pipelineManager.getStep("D4").reference===null, "Step D4 should be empty");
-        assert(()=>pipelineManager.getStep("A2").reference!==null, "Step A2 should not be empty");
+        assert(()=>pipelineManager.getStep("A1").reference!==null, "Step A1 should not be empty");
         assert(()=>pipelineManager.getStep("C3").reference!==null, "Step C3 should not be empty"); 
         pipelineManager.moveStep("C3", "D4")
         let c3 = pipelineManager.getStep("C3");
         let d4 = pipelineManager.getStep("D4");
         assert(()=>d4.reference=="CSV2JSON" && c3.reference === null, "Step C3 moved to D4");
+
+        // Removing steps
         pipelineManager.removeStep("D4");
         assert(()=>pipelineManager.getStep("D4").reference === null, "Step D4 is removed")
 
@@ -360,4 +409,5 @@ let pipelineManager = (function() {
         console.error("\x1b[31m", fails + " of " + tests + " failed")
     } else
         console.log("\x1b[36m", "All test passed successfully")
-})(0);  
+})(1);
+}

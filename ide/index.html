@@ -69,10 +69,10 @@ ul.list-group {margin-bottom: 0px}
     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body nopadding">
 				<ul class="list-group">
-					<li class="list-group-item pw_comp" id="comp_2" draggable="true" data='{"component":"Data2JSON", "icon": "random", "type": "transform"}'><span class="icon glyphicon glyphicon-random"></span>Data2JSON</li>
-					<li class="list-group-item pw_comp" id="comp_4" draggable="true" data='{"component":"JavaScript", "icon": "edit", "type": "script"}'><span class="icon glyphicon glyphicon-edit"></span>JavaScript</li>
-					<li class="list-group-item pw_comp" id="comp_5" draggable="true" data='{"component":"Filter", "icon": "filter", "type": "transform"}'><span class="icon glyphicon glyphicon-filter"></span>Filter</li>
-					<li class="list-group-item pw_comp" id="comp_6" draggable="true" data='{"component":"Sort", "icon": "sort-by-alphabet", "type": "transform"}'><span class="icon glyphicon glyphicon-sort-by-alphabet"></span>Sort</li>
+					<li class="list-group-item pw_comp" id="comp_2" draggable="true" data='{"reference":"Data2JSON.ps1", "icon": "random", "type": "transform"}'><span class="icon glyphicon glyphicon-random"></span>Data2JSON</li>
+					<li class="list-group-item pw_comp" id="comp_4" draggable="true" data='{"reference":"JavaScript.ps1", "icon": "edit", "type": "script"}'><span class="icon glyphicon glyphicon-edit"></span>JavaScript</li>
+					<li class="list-group-item pw_comp" id="comp_5" draggable="true" data='{"reference":"Filter.ps1", "icon": "filter", "type": "transform"}'><span class="icon glyphicon glyphicon-filter"></span>Filter</li>
+					<li class="list-group-item pw_comp" id="comp_6" draggable="true" data='{"reference":"Sort.ps1", "icon": "sort-by-alphabet", "type": "transform"}'><span class="icon glyphicon glyphicon-sort-by-alphabet"></span>Sort</li>
 				</ul>
 			</div>
     </div>
@@ -88,8 +88,8 @@ ul.list-group {margin-bottom: 0px}
     <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
       <div class="panel-body nopadding">
 					<ul class="list-group">
-						<li class="list-group-item pw_comp" id="comp_1" draggable="true" data='{"component":"ReadFile", "icon": "open-file", "type": "source"}'><span class="icon glyphicon glyphicon-open-file"></span>Read File</li>
-					<li class="list-group-item pw_comp" id="comp_3" draggable="true" data='{"component":"WriteFile", "icon": "save-file", "type": "destination"}'><span class="icon glyphicon glyphicon-save-file"></span>Write File</li>
+						<li class="list-group-item pw_comp" id="comp_1" draggable="true" data='{"reference":"ReadFile.ps1", "icon": "open-file", "type": "source"}'><span class="icon glyphicon glyphicon-open-file"></span>Read File</li>
+					<li class="list-group-item pw_comp" id="comp_3" draggable="true" data='{"reference":"WriteFile.ps1", "icon": "save-file", "type": "destination"}'><span class="icon glyphicon glyphicon-save-file"></span>Write File</li>
 					</ul>
       </div>
     </div>
@@ -105,8 +105,8 @@ ul.list-group {margin-bottom: 0px}
     <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
       <div class="panel-body nopadding">
 				<ul class="list-group">
-					<li class="list-group-item pw_comp" id="comp_7" draggable="true" data='{"component":"DatabaseSelect", "icon": "lock", "type": "source"}'><span class="icon glyphicon glyphicon-lock"></span>DB Read</li>
-					<li class="list-group-item pw_comp" id="comp_7" draggable="true" data='{"component":"DatabaseWrite", "icon": "lock", "type": "destination"}'><span class="icon glyphicon glyphicon-lock"></span>DB Write</li>
+					<li class="list-group-item pw_comp" id="comp_7" draggable="true" data='{"reference":"DatabaseSelect.ps1", "icon": "lock", "type": "source"}'><span class="icon glyphicon glyphicon-lock"></span>DB Read</li>
+					<li class="list-group-item pw_comp" id="comp_7" draggable="true" data='{"reference":"DatabaseWrite.ps1", "icon": "lock", "type": "destination"}'><span class="icon glyphicon glyphicon-lock"></span>DB Write</li>
 				</ul>
       </div>
     </div>
@@ -129,7 +129,7 @@ ul.list-group {margin-bottom: 0px}
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 			<form>
-				<input type="hidden" name="component">
+				<input type="hidden" name="reference">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title" id="myModalLabel">Step Configuration</h4>
@@ -157,6 +157,7 @@ ul.list-group {margin-bottom: 0px}
 <script src='./js/jquery-ui.js'></script>
 <script src='./js/bootstrap.js'></script>
 <script src='./js/functions.js'></script>
+<script src='./js/pipeline-manager.js'></script>
 <script src="./ide.js"></script>
 <div style="display:none">
 <div id="stepTemplate"><button type="button" class="step btn btn-lg btn-info icon glyphicon"></button></div>
