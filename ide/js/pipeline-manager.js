@@ -265,7 +265,7 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: component.reference,
-            parameters: component.parameters||{},
+            parameters: component.parameters||[],
             input: component.input||null,
             output: component.output||null
         };
@@ -358,14 +358,16 @@ if (typeof process !== "undefined") {
         
         // Getting and Adding Steps
         assert('pipelineManager.getStep(1, 1).reference === null', "Step A1 is initialized")
-        assert('pipelineManager.addComponent(1, 1, {reference: "foo"}).reference === "foo"', "Step A1 is set to foo")
+        assert(()=>pipelineManager.addComponent(1, 1, {reference: "foo"}).reference === "foo", "Step A1 is set to foo")
         assert(pipelineManager.nextRow("A")===2, "Next empty row in column A is 2")
         assert('pipelineManager.addComponent("B", null, {reference: "bar"}).reference === "bar"', "Step B1 is set to bar")
-        assert('pipelineManager.addComponent("C3", null, testComponent).reference=="CSV2JSON"', "Add component to wrong row", true)
-        assert('pipelineManager.addComponent("C1", null, testComponent).reference=="CSV2JSON"', "Add C1 component")
-        assert('pipelineManager.addComponent("C", null, testComponent).reference=="CSV2JSON"', "Add C component")
-        assert('pipelineManager.addComponent("C", null, testComponent).reference=="CSV2JSON"', "Add another C component")
+        assert('pipelineManager.addComponent("C3", null, testComponent).reference=="CSV2JSON.ps1"', "Add component to wrong row", true)
+        assert('pipelineManager.addComponent("C1", null, testComponent).reference=="CSV2JSON.ps1"', "Add C1 component")
+        assert('pipelineManager.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1"', "Add C component")
+        assert('pipelineManager.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1"', "Add another C component")
         assert('pipelineManager.getStep("C", 3).reference !== null', "Step C3 is set")
+        let step = pipelineManager.getStep("C3");
+        assert(()=>step.parameters.length===3, "CSV2JSON should have 3 parameters");
 
         // Moving steps
         assert(()=>pipelineManager.moveStep("C3", "A1"), "Step can't be moved over existing step", true);
@@ -375,7 +377,7 @@ if (typeof process !== "undefined") {
         pipelineManager.moveStep("C3", "D4")
         let c3 = pipelineManager.getStep("C3");
         let d4 = pipelineManager.getStep("D4");
-        assert(()=>d4.reference=="CSV2JSON" && c3.reference === null, "Step C3 moved to D4");
+        assert(()=>d4.reference=="CSV2JSON.ps1" && c3.reference === null, "Step C3 moved to D4");
 
         // Removing steps
         pipelineManager.removeStep("D4");

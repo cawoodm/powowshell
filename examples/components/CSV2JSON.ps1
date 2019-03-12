@@ -5,7 +5,7 @@
  .Description
   Accepts tabular CSV data and return contents as a JSON Array
 
- .Parameter FieldSeparator
+ .Parameter Delimiter
   Specifies the field separator. Default is a comma ",")
 	
  .Inputs
@@ -22,13 +22,15 @@ param(
     [String]$Delimiter=",",
     [String[]]$Header
 )
-Set-StrictMode -Version 3.0
-If ($InputObject -eq "") {
+Set-StrictMode -Version Latest
+if ($InputObject -eq "") {
     Push-Location $PSScriptRoot
-    If (("a;1`nb;2" | .\CSV2JSON.ps1 -Delimiter ";" -Header "name","age" | ConvertFrom-Json)[1].age -eq 2) {"CSV2JSON: OK"} Else {Write-Error "CSV2Json: FAIL"}
+    if (("a;1`nb;2" | .\CSV2JSON.ps1 -Delimiter ";" -Header "name","age" | ConvertFrom-Json)[1].age -eq 2) {"CSV2JSON: OK"} Else {Write-Error "CSV2Json: FAIL"}
     Pop-Location
     return
 }
-$params = @{}
-$MyInvocation.BoundParameters.Keys | Where {$_ -and $_ -ne "InputObject"} | % {$params.Add($_, (Get-Variable $_).Value )}
-$InputObject | ConvertFrom-Csv @params | ConvertTo-JSON
+if ($Header) {
+    $InputObject | ConvertFrom-Csv -Header $Header -Delimiter $Delimiter | ConvertTo-JSON
+} else {
+    $InputObject | ConvertFrom-Csv -Delimiter $Delimiter | ConvertTo-JSON
+}

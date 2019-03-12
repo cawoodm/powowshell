@@ -1,14 +1,30 @@
 ﻿{
-    "reference": "CSV2JSON",
-    "synopsis": "Convert CSV data to JSON format",
-    "description": "Accepts tabular CSV data and return contents as a JSON Array",
-    "parameters": {
-        "FieldSeparator": {
-            "type": "string",
-            "default": ",",
-            "description": "Specifies the field separator. Default is a comma."
-        }
-    },
-    "input":"text/csv",
-    "output":"json/array"
+    "reference":  "CSV2JSON.ps1",
+    "synopsis":  "Convert CSV data to JSON format",
+    "description":  "Accepts tabular CSV data and return contents as a JSON Array",
+    "parameters":  [
+                       {
+                           "name":  "InputObject",
+                           "type":  "Object",
+                           "required":  true,
+                           "default":  "",
+                           "description":  ""
+                       },
+                       {
+                           "name":  "Delimiter",
+                           "type":  "String",
+                           "required":  false,
+                           "default":  ",",
+                           "description":  "Specifies the field separator. Default is a comma \",\")"
+                       },
+                       {
+                           "name":  "Header",
+                           "type":  "String[]",
+                           "required":  false,
+                           "default":  "",
+                           "description":  ""
+                       }
+                   ],
+    "input":  "",
+    "output":  "json/array"
 }
