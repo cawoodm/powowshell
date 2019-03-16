@@ -1,19 +1,3 @@
-PARAMETERS:
-	a static list of fields which the pipeline designer must provide at design time
-	if you want dynamic input, use an input object provided by a preceding component
-
-INPUT: 
-	data passed to this component by a preceding component
-	can be a simple value called a Scalar like 1 or "hello"
-	can be a JSON object like {name:"John", age:21, smoker: false}
-	can be an Array of objects 
-{
-	type: Scalar/Array/Object,
-	subtype: string/number/boolean/date/datetime/"ClassName",
-	sample: ...
-}
-
-
 # Ground Rules
 
 ## COMPONENTS

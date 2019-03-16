@@ -33,7 +33,7 @@
 			"id": "B1",
 			"name": "Convert2JSON",
 			"reference": "../components/CSV2JSON.ps1",
-			"input": "A",
+			"input": "A1",
 			"parameters": {
 				"Delimiter": "|",
 				"Header": "{\"name\", \"age\", \"email\", \"source\"}"
@@ -43,7 +43,7 @@
 			"id": "C1",
 			"name": "Select Name and Email",
 			"reference": "../components/SelectFields.ps1",
-			"input": "B",
+			"input": "B1",
 			"parameters": {
 				"Fields": "{\"name\", \"age\", \"email\"}"
 			}

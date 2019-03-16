@@ -27,12 +27,15 @@ function Invoke-PowowShell {
 			[Parameter(Mandatory=$true)][String[]][ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install")]$Command,
 			$p1,$p2,$p3
 	)
+	$BinPath = $PSScriptRoot
+	if (Test-Path "$BinPath\path.txt") {$BinPath = Get-Content "$BinPath\path.txt"}
 	ForEach ($Cmd in $Command) {
 		try {
-			Write-Verbose "`"$PSScriptRoot\$Cmd.ps1`" $p1 $p2 $p3"
-			if ($p3) {& "$PSScriptRoot\$Cmd.ps1" $p1 $p2 $p3}
-			elseif ($p2) {& "$PSScriptRoot\$Cmd.ps1" $p1 $p2}
-			else {& "$PSScriptRoot\$Cmd.ps1" $p1}
+			Write-Verbose "`"$BinPath\$Cmd.ps1`" $p1 $p2 $p3"
+			if ($p3) {& "$BinPath\$Cmd.ps1" $p1 $p2 $p3}
+			elseif ($p2) {& "$BinPath\$Cmd.ps1" $p1 $p2}
+			elseif ($p1) {& "$BinPath\$Cmd.ps1" $p1}
+			else {& "$BinPath\$Cmd.ps1"}
 		} catch {
 			Write-Error "Error in '$cmd' command:"
 			throw $_

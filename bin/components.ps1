@@ -11,15 +11,25 @@
  .Parameter Path
  Path to the components directory
 
+ .Parameter Export
+ Export component definitions as JSON for IDE
+
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)][String]$Path
+    [Parameter(Mandatory=$true)][String]$Path,
+    [string]$Action=$null
+
 )
 function main() {
 	$FullPath = (Resolve-Path -Path $Path).Path
     Push-Location $FullPath
-    ListComponents
+    $Components = ListComponents
+    if ($Action -like "export") {
+        ListComponents | ConvertTo-JSON
+    } else {
+        return $Components
+    }
     Pop-Location
 }
 
@@ -59,7 +69,6 @@ function LoadComponents($Path) {
 
     # Process each folder
     ForEach($script in $scripts) {
-        #LoadComponent($script)
         Push-Location $PSScriptRoot
         & .\inspect.ps1 $script.Fullname
         Pop-Location

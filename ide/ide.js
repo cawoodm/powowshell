@@ -2,11 +2,23 @@
 require("jquery-ui-bundle");
 require("bootstrap3");*/
 
-// Our pipeline data model
-pipelineManager.reset();
-testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A1", "name":"Read Voters File", "reference":"../components/ReadFile.ps1", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B1", "name":"Convert2JSON", "reference":"../components/CSV2JSON.ps1", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C1", "name":"Select Name and Email", "reference":"../components/SelectFields.ps1", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
-pipelineManager.import(testPipeline);
+// Our global application
 var pw = {};
+
+// Load components list
+$.getJSON('./components.json').done((data)=>{pw.components=data}).fail((jqxhr, textStatus, error )=>{var err = textStatus + ", " + error;console.log(err);alert("Error loading pipeline1.json!")});
+
+// Our pipeline data model
+
+pipelineManager.reset();
+$.getJSON('../examples/pipeline1/pipeline.json').done((data)=>{
+	pw.pipeline1=data;
+	pipelineManager.import(pw.pipeline1);
+	showSteps(pipelineManager.getSteps());
+	spacers();
+}).fail((jqxhr, textStatus, error )=>{var err = textStatus + ", " + error;console.log(err);alert("Error loading pipeline1.json!")});
+//testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A1", "name":"Read Voters File", "reference":"../components/ReadFile.ps1", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B1", "name":"Convert2JSON", "reference":"../components/CSV2JSON.ps1", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C1", "name":"Select Name and Email", "reference":"../components/SelectFields.ps1", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
+
 // Setup UI, dialogs, dragging and matrix of spacers
 $(function() {
 
@@ -27,8 +39,6 @@ $(function() {
 	// Make all components draggable
 	$(".pw_comp").draggable({helper: "clone", zIndex : 10});
 
-	showSteps(pipelineManager.getSteps());
-	
 	// Create placeholder "spacers" in the matrix
 	spacers()
 });
@@ -135,8 +145,13 @@ function comp2Step(data) {
 	$(i).addClass("icon glyphicon glyphicon-"+icon);
 	i.innerText = data.reference.match(/([a-z]+).ps1/i)[1];
 	//if (data.type == "destination" || data.type == "transform") {i2 = document.createElement('span');$(i2).addClass("glyphicon-chevron-right");	el.appendChild(i2);	}
-	$(el).find('.stepHead').text(data.name||data.reference);
+	$(el).find('.stepHead').text(data.id + ': ' + data.name||data.reference);
 	$(el).find('.stepBody').append(i);
+	i = document.createElement('div');
+	if (data.input) {
+		i.innerText="Input:" + data.input;
+		$(el).find('.stepBody').append(i);
+	}
 	//if (data.type == "source" || data.type == "transform") {i1 = document.createElement('span');$(i1).addClass("glyphicon-chevron-right");el.appendChild(i1);	}
 	$(el).removeClass('pw_comp')
 	$(el).addClass('pw_step')

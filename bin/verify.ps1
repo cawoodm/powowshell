@@ -74,9 +74,9 @@ function main() {
         }
         # Show params
         $cmd = Get-Command .\run_prod.ps1
-        "`nParameters:"
+        #"`nParameters:"
         $cmd.Parameters.Keys | Where {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
-            if ($cmd.Parameters[$_].Attributes[0].Mandatory) {"$_ (mandatory)"} else {$_}
+            #if ($cmd.Parameters[$_].Attributes[0].Mandatory) {"$_ (mandatory)"} else {$_}
         }
     } catch {
         Write-Host "!!! VERIFICATION FAILED !!!" -ForegroundColor Red
