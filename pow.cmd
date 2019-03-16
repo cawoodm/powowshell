@@ -1,0 +1,6 @@
+@ECHO OFF
+
+ECHO You are in "DOS" mode command prompt
+ECHO Please run 'pow' commands from inside PowerShell!
+ECHO Type POWERSHELL to continue...
+ECHO Or, type INSTALL to install PowowShell...
