@@ -21,6 +21,14 @@ pow "clean", "build", "verify" .\examples\pipeline1
 Clean, build and verify a pipeline
 
 #>
+#########################################
+[CmdletBinding()]
+	param(
+			[Parameter(Mandatory=$true)][String[]]
+			$Command,
+			$p1,$p2,$p3
+    )
+#########################################
 function Invoke-PowowShell {
 	[CmdletBinding()]
 	param(
@@ -67,4 +75,6 @@ function Invoke-PowowShell {
 }
 Set-StrictMode -Version Latest
 Set-Alias pow Invoke-PowowShell
-Export-ModuleMember -Function Invoke-PowowShell -Alias pow
+#########################################
+Invoke-PowowShell $Command $p1 $p2 $p3
+#########################################

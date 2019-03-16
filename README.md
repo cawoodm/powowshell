@@ -104,6 +104,18 @@ We'll be developing this pipeline by adding new steps like:
 Run a pipeline, passing in parameters
 `pow run .\examples\pipeline1 "@{DataSource='.\data\names.txt'}"`
 
+## Workspaces
+You may have several projects which you can organize into folders called "workspaces".
+Each workspace should contain one components\ subdirectory and a subdirectory for each of your pipelines.
+PowowShell comes with an examples\ folder - let's define that as our current workspace:
+`pow workspace examples`
+If we do this, we'll save some typing because we can now type:
+`pow inspect !mycomponent`
+instead of
+`pow inspect .\examples\components\mycomponent.ps1`
+Make sure that you run
+
+
 
 ## PowerShell
 
