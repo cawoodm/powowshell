@@ -24,45 +24,37 @@ param(
 function main() {
 	$FullPath = (Resolve-Path -Path $Path).Path
     Push-Location $FullPath
-    $Components = ListComponents
-    if ($Action -like "export") {
-        ListComponents | ConvertTo-JSON
-    } else {
-        return $Components
+    try {
+        $Components = ListComponents
+        if ($Action -like "export") {
+            # Provide a serialized JSON export
+            return $Components | ConvertTo-JSON
+        } else {
+            return $Components
+        }
+    } catch {
+        Write-Error ("ERROR in ./bin/components.ps1 in Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+        #throw $_
+    } finally {
+        Pop-Location
     }
-    Pop-Location
 }
 
 function ListComponents() {
 
-    try {
+    # Get list of subfolders (1 level)
+    $folders = Get-ChildItem -Path .\ -Directory
 
-			# Get list of subfolders (1 level)
-			$folders = Get-ChildItem -Path .\ -Directory
-
-			# Process each folder
-			ForEach($folder in $folders) {
-				LoadComponents($folder)
-			}
-			
-			# Process current folder
-			LoadComponents(".\")
-
-    } catch {
-        if ($_.Exception.Message -ne "") {
-            Write-Error ("Unhandled Excption`n" + $_)
-        }
-    } finally {
-        
+    # Process each folder
+    ForEach($folder in $folders) {
+        LoadComponents($folder)
     }
+    
+    # Process current folder
+    LoadComponents(".\")
 }
 
 function LoadComponents($Path) {
-
-    trap [System.ArgumentException] {
-        Write-Error ("Error loading components in: $Path" + $_)
-        throw [Exception] ""
-    }
 
     # Get list of .ps1 scripts components (1 level)
     $scripts = Get-ChildItem -Path $Path -File -Filter *.ps1
@@ -70,8 +62,13 @@ function LoadComponents($Path) {
     # Process each folder
     ForEach($script in $scripts) {
         Push-Location $PSScriptRoot
-        & .\inspect.ps1 $script.Fullname
-        Pop-Location
+        Write-Verbose "INSPECT $($script.Name)"
+        try {
+            & .\inspect.ps1 $script.Fullname
+            #Write-Error ("ERROR in pow/components/LoadComponents in Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
+        } finally {
+            Pop-Location
+        }
     }
 
 }

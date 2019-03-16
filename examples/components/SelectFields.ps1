@@ -1,4 +1,11 @@
-﻿[OutputType([Array])]
+﻿<#
+ .Synopsis
+ Selects only certain fields from the input
+
+ .Outputs
+ text/json
+#>
+[OutputType([String])]
 param(
     [String[]]$Fields
 )

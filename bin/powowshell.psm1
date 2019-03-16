@@ -24,7 +24,9 @@ Clean, build and verify a pipeline
 function Invoke-PowowShell {
 	[CmdletBinding()]
 	param(
-			[Parameter(Mandatory=$true)][String[]][ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install")]$Command,
+			[Parameter(Mandatory=$true)][String[]]
+			[ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install")]
+			$Command,
 			$p1,$p2,$p3
 	)
 	$BinPath = $PSScriptRoot
@@ -37,7 +39,7 @@ function Invoke-PowowShell {
 			elseif ($p1) {& "$BinPath\$Cmd.ps1" $p1}
 			else {& "$BinPath\$Cmd.ps1"}
 		} catch {
-			Write-Error "Error in '$cmd' command:"
+			Write-Error "Error in '$cmd' command:" + $_
 			throw $_
 		}
 	}

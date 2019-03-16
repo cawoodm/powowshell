@@ -1,10 +1,6 @@
 # TODO
 
 ## POW CLI
-* Generate component manifest.json describing component for the UI
-  * `pow inspect` does this per component
-* Drop DOS support?
-* Enable CVS Paramaters in DOS => PowerShell HashTable
 
 ## IDE
 

@@ -18,41 +18,52 @@ param(
 function main() {
 	$FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 	if ($FullPath -eq $null) {throw "Path $Path not found!"}
-	$Path = ($FullPath).Path
-	Write-Verbose "Inspecting $Path ..."
-	#if ($Full) {return Get-Help $Path -Full | ConvertTo-Json}
-	$cmd = Get-Help -Full -Name $Path
-	$boolMap = @{"true"=$true;"false"=$false}
-	$parameters = Get-Help -Name $Path -Parameter *
-	$inputType = ""
-	$paramsOut = @()
-	$parameters | % {
-		if ($_.pipelineInput -eq $true) {
-			write-host $_.name
-			$inputType = IPType($cmd)
-		} else {
-			$paramsOut += [PSCustomObject]@{
-				"name" = $_.name;
-				"type" = $_.type.name; #"string"
-				"required" =  $boolMap[$_.required];
-				"default" = $_.defaultValue;
-				"description" = (&{if ($_.PSObject.Properties.Item("description") -and $_.description.length) {$_.description[0].text} else {""}})
-			};
+	try {
+		$Path = ($FullPath).Path
+		$Filename = (Split-Path -Path $Path -Leaf)
+		Write-Verbose "Inspecting $Path ..."
+		#if ($Full) {return Get-Help $Path -Full | ConvertTo-Json}
+		$cmd = Get-Help -Full -Name $Path -ErrorAction SilentlyContinue
+		#if ($null -eq $cmd ) {throw"Invalid CmdLet in component '$Filename'!"}
+		if (-not $cmd.PSObject.Properties.item("details")) {Write-Warning "Invalid CmdLet in component '$Filename'!"; return $null}
+		$boolMap = @{"true"=$true;"false"=$false}
+		$parameters = Get-Help -Name $Path -Parameter * -EA 0
+		if ($null -eq $parameters) {Write-Warning "No parameters found in component '$Filename'!"}
+		$inputType = ""
+		$paramsOut = @()
+		foreach ($parameter in $parameters) {
+			if ($parameter.pipelineInput -eq $true -or $parameter.pipelineInput -like "true*") {
+				$inputType = Get-IPType($cmd)
+			} else {
+				$paramsOut += [PSCustomObject]@{
+					"name" = $parameter.name;
+					"type" = $parameter.type.name;
+					"required" =  $boolMap[$parameter.required];
+					"default" = $parameter.defaultValue;
+					"description" = (&{if ($parameter.PSObject.Properties.Item("description") -and $parameter.description.length) {$parameter.description[0].text} else {""}})
+				};
+			}
 		}
+		$synopsis = Get-Synopsis($cmd)
+		$description = Get-Description($cmd)
+		$outputType = Get-OPType($cmd)
+		return [PSCustomObject]@{
+			"reference" = $Filename;
+			"synopsis" = $synopsis;
+			"description" = $description;
+			"parameters" = $paramsOut;
+			"input" = $inputType;
+			"output" = $outputType;
+		} #| ConvertTo-Json
+	} catch {
+		throw ("ERROR in ./bin/inspect.ps1 in Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+		#$PSCmdlet.ThrowTerminatingError($PSItem)
+		#throw $_
 	}
-	return [PSCustomObject]@{
-		"reference" = Split-Path -Path $Path -Leaf;
-		"synopsis" = $cmd.details.description[0].Text;
-		"description" = $cmd.description[0].Text;
-		"parameters" = $paramsOut;
-		"input" = $inputType;
-		"output" = OPType($cmd)
-	} #| ConvertTo-Json
 }
-function IPType($cmd) {return $cmd.inputTypes[0].inputType.type.name.ToLower();trap {return "none"}}
-function OPType($cmd) {return $cmd.returnValues[0].returnValue[0].type.name.ToLower();trap {return "none"}}
-function IPMode($cmd) {
-	#$cmd.parameters.parameter.name.Contains("InputObject");
-}
+function Get-Synopsis($cmd) {return $synopsis=$cmd.details.description[0].Text;trap {return ""}}
+function Get-Description($cmd) {return $cmd.description[0].Text;trap {return ""}}
+function Get-IPType($cmd) {return $cmd.inputTypes[0].inputType.type.name.ToLower();trap {return ""}}
+function Get-OPType($cmd) {return $cmd.returnValues[0].returnValue[0].type.name.ToLower();trap {return ""}}
 Set-StrictMode -Version Latest
 main
