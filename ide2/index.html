@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>IDE</title>
+<link type="text/css" rel="stylesheet" href="./css/fonts.css" />
+<link type="text/css" rel="stylesheet" href="./css/vuetify.css" />
+<link type="text/css" rel="stylesheet" href="./css/dragula.css" />
+<style>
+.col {width: 200px; border:1px solid silver; padding:5px; float: left;}
+td.step {width: 200px;height: 200px; border:1px dashed #ddd; overflow: hidden}
+#scroll {width: 100%;max-width: 100%;height: 100%; overflow:scroll;}
+#container {width: 100vw; max-width: 100vw !important; flex: none;}
+#maintable {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 1800px;
+}
+</style>
+</head>
+<body>
+<v-app id="root">
+    <!--<button v-on:click="addItem({message:'me'})">Add Item</button>
+    <button v-on:click="addStep(0, 1, {label:'FILE'})">Add File</button>-->
+    
+    <v-navigation-drawer app clipped permanent width=200>
+            <v-list>
+                <v-list-tile>Home</v-list-tile>        
+                <v-list-tile>Tools</v-list-tile>        
+                <v-list-tile>Guide</v-list-tile>        
+            </v-list>
+            <v-expansion-panel >
+                <v-expansion-panel-content expand>
+                    <div slot="header">Files</div>
+                    <v-list dense>
+                        <v-list-tile class="drag component" d-id="CSV2JSON"><v-icon>file_copy</v-icon>CSV2JSON</v-list-tile>        
+                        <v-list-tile class="drag component" d-id="Data2JSON">Data2JSON</v-list-tile>        
+                        <v-list-tile class="drag component" d-id="DateAdder">DateAdder</v-list-tile>        
+                    </v-list>
+                    <v-card class="drag component"><v-card-text>File 1</v-card-text></v-card>
+                    <v-card class="drag component"><v-card-text>File 2</v-card-text></v-card>
+                    <v-card class="drag component"><v-card-text>File 3</v-card-text></v-card>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-navigation-drawer>
+        
+        <v-toolbar color="blue darken-3" app dark  fixed >
+            <v-toolbar-title data-app>Hello
+        
+        <v-menu offset-y>
+                <v-btn slot="activator" color="primary" dark >Help</v-btn>
+                <v-list>
+                  <v-list-tile>
+                    <v-list-tile-title>About</v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
+            </v-toolbar-title>
+        </v-toolbar>
+        
+    <v-content>
+        <foo ref="foo" :store="sub"></foo>
+    </v-content>
+
+</v-app>
+
+<script src="./js/vue.js"></script>
+<script src="./js/vuetify.js"></script>
+<script src='./js/dragula.js'></script>
+<script src="./js/pipeline-manager.js"></script>
+<script>
+let dp = console.log
+let app = {};
+pipelineManager.reset();
+let testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A1", "name":"Read Voters File", "reference":"ReadFile.ps1", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B1", "name":"Convert2JSON", "reference":"CSV2JSON.ps1", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C1", "name":"Select Name and Email", "reference":"SelectFields.ps1", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
+pipelineManager.import(testPipeline);
+app.components = [ { "reference": "CSV2JSON", "synopsis": "Convert CSV data to JSON format" }, { "reference": "Data2JSON", "synopsis": "Convert input data to JSON format" }, { "reference": "DateAdder", "synopsis": "Add some days to today\u0027s date and return the date" }, { "reference": "DOSCommand", "synopsis": "Run any command with DOS CMD" }, { "reference": "DOSDir", "synopsis": "List files with DOS CMD" }, { "reference": "ExecuteCmdlet", "synopsis": "Execute any PowerShell Cmdlet" }, { "reference": "FieldAdd", "synopsis": "Add a field to each object in an array" }, { "reference": "FileList", "synopsis": "Returns a list of files." }, { "reference": "JSONMapping", "synopsis": "Map one form of JSON to another" }, { "reference": "ObjectAddField", "synopsis": "Add a field to each object in an array" }, { "reference": "ReadFile", "synopsis": "Read text from a file" }, { "reference": "SelectFields", "synopsis": "Selects only certain fields from the input" }]
+app.getComponent = (reference) => {
+    let res = app.components.filter((item)=>item.reference===reference);
+    return res.length>0?res[0]:null;
+}
+Vue.config.devtools = true;
+app.foo = Vue.component('foo', {
+    props: ['store'],
+    data: function() {
+        return {
+            message: this.store.message,
+            items: this.store.items,
+            rows: pipelineManager.getRows() //this.store.rows
+        };
+    },
+    methods: {
+        addComponent: function(id, component) {
+            try {
+                pipelineManager.addComponent(id, null, component)
+                this.doUpdate()
+            } catch(e) {
+                alert(e.message)
+            }
+        },
+        doUpdate: function() {
+            this.rows = pipelineManager.getRows();
+        }
+    },
+    template: `
+    <v-container id="container">
+            <!--<button v-on:click="doUpdate()">Reload</button>
+                {{message}}
+            -->
+        <div id="scroll">
+        <table id="maintable">
+            <tr>
+                <th v-for="step in rows[0]">{{step.id.substring(0,1)}}
+                </th>
+            </tr>
+            <tr v-for="row in rows">
+                <td v-for="step in row" :key="step.id" :id="step.id" :class="step.reference?'step drag':'step drag drop'">
+                    <v-card dark v-if="step.reference" color="primary">{{step.reference}}</v-card>
+                    <span v-if="step.reference">{{ step.name }}</span>
+                </td>
+            </tr>
+        </table>
+        </div>
+    </v-container>
+`
+});
+app.p={}
+app.root = new Vue({
+    el: '#root',
+    data: {
+        sub: {
+            message: "I am the System!"
+        }
+    },
+    methods: {
+        addItem: function(obj) {
+            this.sub.items.push(obj)
+        },
+        addStep: function(x, y, obj) {
+            Vue.set(this.sub.rows[y], x, obj)
+        }
+    },
+    mounted: function() {
+        // Make .drag elements draggable
+        app.dragula = dragula([].slice.call(document.querySelectorAll('.drag')),{
+            revertOnSpill: true, // true=Go back if not dropped
+            copy: true, // true=Copy the element
+            accepts: function (el, target, source, sibling) {
+                return target.className.indexOf('drop')>=0;
+            } 
+        }).on('drop', function (el, d) {
+            let id = el.getAttribute("d-id");
+            if (id) {
+                // This is a component
+                let component = app.getComponent(id);
+                app.root.$refs.foo.addComponent(d.id, component)
+            }
+            app.dragula.cancel(true)
+        });
+    }
+});
+</script>
+</body>
+</html>
