@@ -1,0 +1,25 @@
+.col {width: 200px; border:1px solid silver; padding:5px; float: left;}
+td.step {width: 200px;height: 200px; overflow: hidden; padding: 5px;}
+#scroll {width: 100%;max-width: 100%;height: 100%; overflow:scroll;}
+#container {width: 100vw; max-width: 100vw !important; flex: none;}
+#maintable {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 1800px;
+}
+.stepContainer {
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    border-width: 2px;
+    border-radius: 25px
+}
+.stepFilled {
+    border-style: solid;
+    border-color: #BBB;
+}
+.stepEmpty {
+    border-style: dashed;
+    border-color: #ddd;
+    border-radius: 25px
+}
