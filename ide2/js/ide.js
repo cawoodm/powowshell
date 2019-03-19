@@ -9,36 +9,12 @@ app.getComponent = (reference) => {
     return res.length>0?res[0]:null;
 }
 Vue.config.devtools = true;
-Vue.component('step-form', {
-    data: function() {
-        return {
-            dialog: false
-        }
-    },
-    methods: {
-        showDialog() {
-            this.dialog=!this.dialog;
-        }
-    },
-    template: `
-    <v-dialog v-model="dialog" persistent max-width="600px">
-        <v-card-title>
-          <span class="headline">User Profile</span>
-        </v-card-title>
-        <v-card-text>
-            Lorem ipsum
-        </v-card-text>
-    </v-dialog>
-`
-});
 
 Vue.component('steps-grid', {
     props: ['store'],
     data: function() {
         return {
-            message: this.store.message,
-            items: this.store.items,
-            rows: pipelineManager.getRows() //this.store.rows
+            rows: pipelineManager.getRows()
         };
     },
     methods: {
@@ -53,7 +29,7 @@ Vue.component('steps-grid', {
         showDialog: function(id) {
             let step = pipelineManager.getStep(id);
             if (!step.reference) return;
-            showForm(step)
+            app.root.showDialog(step)
         },
         doUpdate: function() {
             this.rows = pipelineManager.getRows();
@@ -88,25 +64,12 @@ Vue.component('steps-grid', {
 app.root = new Vue({
     el: '#root',
     data: {
-        panels: [true],
-        stepform: {
-            show: true
-        },
-        sub: {
-            message: "I am the System!"
-        }
+        panels: [true]
     },
     methods: {
-        doSummat: function() {
-            dp(this.stepform.show)
-            this.stepform.show=!this.stepform.show;
-            dp(this.stepform.show)
-        },
-        addItem: function(obj) {
-            this.sub.items.push(obj)
-        },
-        addStep: function(x, y, obj) {
-            Vue.set(this.sub.rows[y], x, obj)
+        showDialog: function(step) {
+            //this.$refs.stepForm.show = true; //showDialog();
+            formBuilder.showForm(step);
         }
     },
     mounted: function() {

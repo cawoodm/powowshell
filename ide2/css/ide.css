@@ -23,3 +23,5 @@ td.step {width: 200px;height: 200px; overflow: hidden; padding: 5px;}
     border-color: #ddd;
     border-radius: 25px
 }
+/* Vuetify Hacks */
+.v-card__title {background-color: #1565c0; color: white;}

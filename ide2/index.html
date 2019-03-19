@@ -8,8 +8,6 @@
 </head>
 <body>
 <v-app id="root">
-    <!--<button v-on:click="addItem({message:'me'})">Add Item</button>
-    <button v-on:click="addStep(0, 1, {label:'FILE'})">Add File</button>-->
     
     <v-navigation-drawer app clipped permanent width=200>
             <v-list>
@@ -44,11 +42,11 @@
         </v-toolbar>
         
     <v-content>
-        <steps-grid ref="stepsGrid" :store="sub"></steps-grid>
+        <steps-grid ref="stepsGrid"></steps-grid>
     </v-content>
 
-    <step-form ref="stepForm"></step-form>
-    <v-btn color="primary" dark @click="doSummat()">Open Dialog {{stepform.show}}</v-btn>
+    <!--<step-form ref="stepForm"></step-form>-->
+    <div id="myForm"></div>
 
 </v-app>
 
