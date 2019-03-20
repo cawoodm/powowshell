@@ -17,9 +17,9 @@
                 <v-expansion-panel-content expand v-model="panels">
                     <div slot="header">Files</div>
                     <v-list dense>
-                        <v-list-tile class="drag component" d-id="CSV2JSON"><v-icon>file_copy</v-icon>CSV2JSON</v-list-tile>        
-                        <v-list-tile class="drag component" d-id="Data2JSON">Data2JSON</v-list-tile>        
-                        <v-list-tile class="drag component" d-id="DateAdder">DateAdder</v-list-tile>        
+                        <v-list-tile class="drag component" d-ref="CSV2JSON"><v-icon>file_copy</v-icon>CSV2JSON</v-list-tile>        
+                        <v-list-tile class="drag component" d-ref="Data2JSON">Data2JSON</v-list-tile>        
+                        <v-list-tile class="drag component" d-ref="DateAdder">DateAdder</v-list-tile>        
                     </v-list>
                     <v-card class="drag component"><v-card-text>File 1</v-card-text></v-card>
                     <v-card class="drag component"><v-card-text>File 2</v-card-text></v-card>
@@ -44,9 +44,6 @@
     <v-content>
         <steps-grid ref="stepsGrid"></steps-grid>
     </v-content>
-
-    <!--<step-form ref="stepForm"></step-form>-->
-    <div id="myForm"></div>
 
 </v-app>
 

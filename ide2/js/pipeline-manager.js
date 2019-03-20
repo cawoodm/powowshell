@@ -268,6 +268,8 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: stepI.reference,
+            description: stepI.description,
+            synopsis: stepI.synopsis,
             name : stepI.name,
             parameters: stepI.parameters,
             input: stepI.input
@@ -283,6 +285,8 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: component.reference,
+            description: component.description,
+            synopsis: component.synopsis,
             parameters: component.parameters||[],
             input: component.input||null,
             output: component.output||null
@@ -298,6 +302,8 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: step.reference,
+            description: step.description,
+            synopsis: step.synopsis,
             name: step.name ,
             parameters: step.parameters,
             input: step.input,
