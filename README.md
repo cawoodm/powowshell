@@ -35,7 +35,9 @@ The point of all this fuss is that if we can neatly define and delineate compone
 
 Check out an early prototype of the IDE here:
 
-https://cawoodm.github.io/powowshell/ide/
+https://cawoodm.github.io/powowshell/ide2/
+
+~https://cawoodm.github.io/powowshell/ide/~
 
 ![ide](./docs/ide.png)
 
@@ -46,6 +48,7 @@ This demo is basically just look and feel. There is no loading, running and savi
 Pipelines are where the magic happens. Here you connect your components together in a sequence. The pipeline is run in columns: Column A is run, then B etc. In each column the components are executed from top to bottom so you'd have: A1 -> B1 -> B2 -> C1 -> C2 -> C3 -> D1
 
  ![pipeline](docs/pipeline.png)
+ ![pipeline2](docs/pipeline2.png)
 
  A pipeline is technically a pipeline.json file which describes the components it uses and how they are wired together. Pipelines also have globals which components can read and write as well as parameters which components may only read. These parameters are a way of er... parameterizing the pipeline so the same pipeline can do different useful things.
 
