@@ -3,6 +3,10 @@
 ## POW CLI
 
 ## IDE
+* Bind step form to data model
+* Save step
+* Export pipeline
+* Drag steps around
 
 * Revisit NWJS (is it maintained) vs Electron...
 

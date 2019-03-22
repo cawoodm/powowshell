@@ -19,9 +19,9 @@
   columns: Array of columns representing [A-I]
    column: Array of steps representing [1-9]
     step: {
-        id: "B1",                       // The id of the step 
-        reference: "file-csv-ps1",            // The path to the component
-        name : "Read Voters File",      // short readable name of the step
+        id: "B1",                       // The id of the step (*)
+        reference: "file-csv-ps1",            // The path to the component (*)
+        name : "Read Voters File",      // short readable name of the step (*)
         parameters: {
             "p1": "value",              // Parameter p1 and it's value
             "p2": "value",              // Parameter p2 and it's value
@@ -151,6 +151,17 @@ let pipelineManager = (function() {
             return columns;
         },
         /**
+         * Set a step directly
+         * @param {Object} newStep 
+         */
+        setStep: function(newStep) {
+            let row = parseRow(newStep.id);
+            let col = parseCol(newStep.id);
+            columns[parseInt(col)-1][row-1] = newStep;
+            // TODO: Validation
+            return true;
+        },
+        /**
          * Move a step from one position to another
          * @param {string} fromId 
          * @param {string} toId 
@@ -213,7 +224,8 @@ let pipelineManager = (function() {
          * @param {string} col The ID (A-Z or 1 to 10) of the column to return
          * @param {number} row The ID (1 to 9) of the step to return
          */
-        getStep: getStep
+        getStep: getStep,
+        pipeCols: pipeCols
     };
     /**
      * Takes "A22" and returns 22
@@ -285,6 +297,7 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: component.reference,
+            name: component.reference,
             description: component.description,
             synopsis: component.synopsis,
             parameters: component.parameters||[],
@@ -374,9 +387,11 @@ if (typeof process !== "undefined") {
 
         console.clear();
 
+        let COLS = pipelineManager.pipeCols;
+
         // Check a new pipeline
         pipelineManager.reset();
-        assert(pipelineManager.columnCount()===pipeCols.length, "We have the right number of columns ("+pipeCols.length+")")
+        assert(pipelineManager.columnCount()===COLS.length, "We have the right number of columns ("+COLS.length+")")
         assert(pipelineManager.rowCount()===9, "We have the right number of rows (9)")
         assert(pipelineManager.nextRow("A")===1, "Next empty row in column A is 1")
         
@@ -391,6 +406,7 @@ if (typeof process !== "undefined") {
         assert('pipelineManager.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1"', "Add another C component")
         assert('pipelineManager.getStep("C", 3).reference !== null', "Step C3 is set")
         let step = pipelineManager.getStep("C3");
+        assert(()=>pipelineManager.setStep(step), "Set step works");
         assert(()=>step.parameters.length===3, "CSV2JSON should have 3 parameters");
 
         // Moving steps
