@@ -13,12 +13,13 @@ Imagine dragging a CSV File component into your pipeline, connecting it to a Dat
 ### Power
 PowerShell is a powerful shell with a rich set of features. It has established mechanisms for
 producing output, writing errors, verbose logging (-Verbose), dry runs (-WhatIf), parameter goodies (types, validation, defaults) etc.
-We won't re-invent the wheel but will use these mechanisms wherever possible.
-We leverage the great wealth of annotation powershell provides through it's
+We won't re-invent the wheel but will use these mechanisms wherever possible. We leverage the great wealth of annotation powershell provides through it's special comments system to describe our components and to make them interoperate.
 
 ### Piping
 One really powerful aspect of PowerShell is the ability to pipe objects (instead of just text).
-For the moment, we are going to stick with plain text for reasons of simplicity. The problem is that 2 components have to exactly agree on the object format which is complicated. By supporting text and text/* subtypes (e.g. json, xml, ...) we keep things simple and components can do their own parsing and validation of input, ignoring whatever they don't need.
+For the moment, we are going to stick with plain text for reasons of simplicity. The problem is that 2 components have to exactly agree on the object format which is complicated and the main reason why integration is hard and you need programmers.
+
+By supporting text and text/* subtypes (e.g. json, xml, ...) we keep things simple and components can do their own parsing and validation of input, ignoring whatever they don't need. As an example, a DeleteFile component will accept any dataset which has objects with a .Path property no matter their type.
 
 ### Transparency
 Transparency (or maintainability) is a big issue: it is important that a pipeline designer (or runner) knows what their pipeline is doing. For this reasons we build pipelines in two modes: production and trace:
