@@ -1,7 +1,7 @@
 formBuilder = (function() {
     let dialog;
     return {
-        showForm: function(step, component) {
+        showForm: function($root, step, component) {
             let frm = document.createElement('div');
             frm.setAttribute('id', 'myForm');
             document.body.appendChild(frm);
@@ -15,6 +15,7 @@ formBuilder = (function() {
             let stepClone = Object.assign({}, step);
             let inputs = ['A', 'B'];
             dialog = new StepForm({
+                parent: $root,
                 propsData: {
                   id: step.id,
                   text: `<code>${str}</code>`,
@@ -37,9 +38,7 @@ const StepForm = Vue.extend({
     methods: {
         save() {
             console.log("Save", this.step.name, this.oldStep.name)
-            dp("sending event to ", this.$root)
-            // TODO: this.$root.$emit('stepSave', this.step);
-            app.root.$emit('stepSave', this.step);
+            this.$root.$emit('stepSave', this.step);
             this.close();
         },
         help() {

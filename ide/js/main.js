@@ -7,7 +7,7 @@ app.root = new Vue({
         showDialog: function(step) {
             //this.$refs.stepForm.show = true; //showDialog();
             let component = app.getComponent(step.reference);
-            formBuilder.showForm(step, component);
+            formBuilder.showForm(app.root.$root, step, component);
         }
     },
     mounted: function() {
@@ -29,15 +29,14 @@ app.root = new Vue({
             app.dragula.cancel(true)
         });
         // Listen for save events
-        dp("listening on ", this.$root)
         this.$root.$on('stepSave', (newStep) => {
             let oldStep = pipelineManager.getStep(newStep.id)
-            dp("got the save bru!", newStep.name, oldStep.name)
-            // TODO
-            // Doesn't work: oldStep = newStep;
-            // Clone is not synched with Vue: pipelineManager.setStep(newStep);
+            pipelineManager.setStep(newStep);
+            // Must synch entire grid OR Vue.set(exactObject, newObject)
+            app.stepsGrid.doUpdate();
         });
     }
 });
 app.stepsGrid = app.root.$refs.stepsGrid;
 app.stepForm = app.root.$refs.stepForm;
+console.clear(); // Vue junk
