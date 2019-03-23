@@ -1,15 +1,15 @@
 ﻿<#
-    .Synopsis
-    List files with DOS CMD
+ .Synopsis
+ List files with DOS CMD
 
-    .Parameter Path
-    The path to the directory to be listed
+ .Parameter Path
+ The path to the directory to be listed
 		
-		.Inputs
-		none
-		
-		.Outputs
-		text
+ .Inputs
+ none
+
+ .Outputs
+ text
 		
 #>
 param(

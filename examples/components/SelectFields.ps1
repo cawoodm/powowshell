@@ -2,6 +2,9 @@
  .Synopsis
  Selects only certain fields from the input
 
+ .Inputs
+ text/json
+
  .Outputs
  text/json
 #>

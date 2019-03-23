@@ -22,18 +22,20 @@ function main() {
 		$Path = ($FullPath).Path
 		$Filename = (Split-Path -Path $Path -Leaf)
 		Write-Verbose "Inspecting $Path ..."
-		#if ($Full) {return Get-Help $Path -Full | ConvertTo-Json}
+		#if ($Full) {try{Get-Help $Path -Full | ConvertTo-Json}
 		$cmd = Get-Help -Full -Name $Path -ErrorAction SilentlyContinue
+		# We WARN and exit instead of throwing so that 1 broken component doesn't halt everything
 		#if ($null -eq $cmd ) {throw"Invalid CmdLet in component '$Filename'!"}
 		if (-not $cmd.PSObject.Properties.item("details")) {Write-Warning "Invalid CmdLet in component '$Filename'!"; return $null}
 		$boolMap = @{"true"=$true;"false"=$false}
 		$parameters = Get-Help -Name $Path -Parameter * -EA 0
 		if ($null -eq $parameters) {Write-Warning "No parameters found in component '$Filename'!"}
-		$inputType = ""
+		$inputType = ""; $inputDesc = "";
 		$paramsOut = @()
+		$pipelineInputParam = $false;
 		foreach ($parameter in $parameters) {
-			if ($parameter.pipelineInput -eq $true -or $parameter.pipelineInput -like "true*") {
-				$inputType = Get-IPType($cmd)
+			if ($parameter.pipelineInput -like "true*") {
+				$pipelineInputParam = $true;
 			} else {
 				$paramsOut += [PSCustomObject]@{
 					"name" = $parameter.name;
@@ -44,26 +46,40 @@ function main() {
 				};
 			}
 		}
+		if ($pipelineInputParam) {
+			$inputType = Get-IPType($cmd)
+			$inputDesc = Get-IPDesc($cmd)
+		}
+		if ($pipelineInputParam -and -not $inputType) {Write-Warning "Pipeline input not described properly in annotated comments (.Inputs) of $Filename!"}
+		if (-not $pipelineInputParam -and $inputType) {Write-Warning "Pipeline input not declared properly in parameters (ValueFromPipeline=`$true) of $Filename!"}
 		$synopsis = Get-Synopsis($cmd)
 		$description = Get-Description($cmd)
 		$outputType = Get-OPType($cmd)
+		$outputDesc = Get-OPDesc($cmd)
 		return [PSCustomObject]@{
 			"reference" = $Filename;
 			"synopsis" = $synopsis;
 			"description" = $description;
 			"parameters" = $paramsOut;
 			"input" = $inputType;
+			"inputDescription" = $inputDesc;
 			"output" = $outputType;
+			"outputDescription" = $outputDesc;
 		} #| ConvertTo-Json
 	} catch {
-		throw ("ERROR in ./bin/inspect.ps1 in Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+		#throw ("ERROR in ./bin/inspect.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+		Write-Error ("ERROR in ./bin/build.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
 		#$PSCmdlet.ThrowTerminatingError($PSItem)
 		#throw $_
 	}
 }
-function Get-Synopsis($cmd) {return $synopsis=$cmd.details.description[0].Text;trap {return ""}}
-function Get-Description($cmd) {return $cmd.description[0].Text;trap {return ""}}
-function Get-IPType($cmd) {return $cmd.inputTypes[0].inputType.type.name.ToLower();trap {return ""}}
-function Get-OPType($cmd) {return $cmd.returnValues[0].returnValue[0].type.name.ToLower();trap {return ""}}
+function Get-Synopsis($cmd) {try{$cmd.details.description[0].Text}catch{}}
+function Get-Description($cmd) {try {return $cmd.description[0].Text}catch{}}
+function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower()}catch{}}
+function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{}}
+function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "`n")}catch{}}
+function Get-OPType($cmd) {try{([string](Get-OP($cmd))[0]).ToLower()}catch{}}
+function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{}}
+function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{}}
 Set-StrictMode -Version Latest
 main

@@ -46,12 +46,13 @@ function main() {
 	Push-Location $Path
 	try {
 		if ($Trace) {
-			. .\run_trace.ps1 @Parameters
+			& .\run_trace.ps1 @Parameters
 		} else {
-		. .\run_prod.ps1 @Parameters
+			& .\run_prod.ps1 @Parameters
 		}
 	} catch {
-
+		Write-Host "!!! PIPELINE RUN FAILED !!!" -ForegroundColor Red
+		Write-Error ("ERROR in pipeline on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
 	} finally {
 		Pop-Location
 	}

@@ -79,7 +79,8 @@ function main() {
             #if ($cmd.Parameters[$_].Attributes[0].Mandatory) {"$_ (mandatory)"} else {$_}
         }
     } catch {
-        Write-Host "!!! VERIFICATION FAILED !!!" -ForegroundColor Red
+        Write-Host "!!! PIPELINE VERIFICATION FAILED !!!" -ForegroundColor Red
+        Write-Error ("ERROR in ./bin/verify.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
         throw $_
     } finally {
         DEL .\errors.log -ErrorAction SilentlyContinue

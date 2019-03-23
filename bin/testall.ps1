@@ -38,7 +38,7 @@ function main() {
         Write-Host "----------------------------------------------------------------------------------"
     } catch {
         #throw $_
-        throw ("ERROR in Builder in Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
+        throw ("ERROR in Builder on Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
     } finally {
         Pop-Location
     }

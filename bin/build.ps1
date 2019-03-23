@@ -31,7 +31,7 @@ function main() {
     try {
         BuildingPipeline
     } catch {
-        Write-Error ("ERROR in Builder in Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
+        Write-Error ("ERROR in ./bin/build.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
         #throw $_
     }
     Pop-Location
@@ -181,7 +181,7 @@ function CreatingComponentSteps($pipelineDef) {
 #>
 function CreatingPipeline_prod($pipelineDef) {
     Write-Verbose "BUILDER CreatingPipeline_prod"
-    #Write-Error ("ERROR in Builder in Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
+    #Write-Error ("ERROR in Builder on Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
 
     # Can be run from anywhere, change to pipeline path
     $cmd = ReSerializeParams $pipelineDef.parameters;
@@ -317,7 +317,7 @@ function ReSerializeParams($parameters) {
         $res += ")`n"
         return $res
     } catch {
-        throw ("ERROR in Builder in Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
+        throw ("ERROR in Builder on Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
     }
 }
 function HDef($HashMap, $Field, $Default) {

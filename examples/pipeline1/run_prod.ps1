@@ -14,19 +14,19 @@ Push-Location $PSScriptRoot
 
 try {
 
-	# Run Step A: Read Voters File
-	Write-Verbose "Running step A: Read Voters File"
-	$OP_A = .\step_A.ps1 -PipelineParams $PipelineParams
+	# Run Step A1: Read Voters File
+	Write-Verbose "Running step A1: Read Voters File"
+	$OP_A1 = .\step_A1.ps1 -PipelineParams $PipelineParams
 
-	# Run Step B: Convert2JSON
-	Write-Verbose "Running step B: Convert2JSON"
-	$OP_B = $OP_A | .\step_B.ps1 -PipelineParams $PipelineParams
+	# Run Step B1: Convert2JSON
+	Write-Verbose "Running step B1: Convert2JSON"
+	$OP_B1 = $OP_A1 | .\step_B1.ps1 -PipelineParams $PipelineParams
 
-	# Run Step C: Select Name and Email
-	Write-Verbose "Running step C: Select Name and Email"
-	$OP_C = $OP_B | .\step_C.ps1 -PipelineParams $PipelineParams
+	# Run Step C1: Select Name and Email
+	Write-Verbose "Running step C1: Select Name and Email"
+	$OP_C1 = $OP_B1 | .\step_C1.ps1 -PipelineParams $PipelineParams
 
-	$OP_C
+	$OP_C1
 
 } catch {
    throw $_

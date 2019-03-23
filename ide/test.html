@@ -36,8 +36,9 @@ Vue.component('test-comps', {
 });
 function showComponentForm(reference) {
     let component = app.getComponent(reference);
+    //let component = { "reference": "csv2json.ps1", "synopsis": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": [ { "name": "Delimiter", "type": "String", "required": false, "default": ",", "description": "Specifies the field separator. Default is a comma \",\")" }, { "name": "Header", "type": "String[]", "required": false, "default": "", "description": "" } ], "input": "text/csv", "inputDescription": "A String in CSV format", "output": "text/json", "outputDescription": "A JSON array object" }
     let step = pipelineManager.getStep('A1');
-    formBuilder.showForm(step, component);
+    formBuilder.showForm(app.root.$root, step, component);
 }
 if (location.hash) window.setTimeout(()=>showComponentForm(location.hash.substring(1)), 500);
 </script>

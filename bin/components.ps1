@@ -29,12 +29,12 @@ function main() {
         $Components = ListComponents
         if ($Action -like "export") {
             # Provide a serialized JSON export
-            return $Components | ConvertTo-JSON
+            $Components | ConvertTo-JSON -Depth 4
         } else {
             return $Components
         }
     } catch {
-        Write-Error ("ERROR in ./bin/components.ps1 in Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+        Write-Error ("ERROR in ./bin/components.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
         #throw $_
     } finally {
         Pop-Location
@@ -62,48 +62,15 @@ function LoadComponents($Path) {
 
     # Process each folder
     ForEach($script in $scripts) {
-        Push-Location $PSScriptRoot
         Write-Verbose "INSPECT $($script.Name)"
         try {
-            & .\inspect.ps1 $script.Fullname
-            #Write-Error ("ERROR in pow/components/LoadComponents in Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
-        } finally {
-            Pop-Location
+            & "$PSScriptRoot\inspect.ps1" $script.Fullname
+        } catch {
+            Write-Error $_
         }
     }
 
 }
 
-function LoadComponent($File) {
-    $cmd = Get-Command $File.Fullname
-
-    # Get all parameters in the "Standard" Parameter Set
-    $params = $cmd.Parameters.Values | Where {$_.ParameterSets.ContainsKey("Standard")}
-  	if ($params -eq $null) {
-			# Fallback on all non-system parameters
-  		$params = $cmd.Parameters.Values| Where {-not $_.ParameterSets.ContainsKey("__AllParameterSets")}
-  	}
-  	
-  	# Get INPUT Type (must be a InputObject parameter)
-  	#$inputType = $cmd.InputType.Name
-  	$inputType = $cmd.Parameters.InputObject
-  	
-    # Validate OUTPUT of Component
-    $validOutputs = @("System.String")
-    $outputType = $cmd.OutputType.Name
-    if (-not $outputType) {
-        Write-Warning "No OutputType found for component '$ref'!"
-    } ElseIf ($outputType -and -not $validOutputs -contains $outputType) {
-        Write-Error "Invalid OutputType '$outputType' found for component '$ref'!"
-        Throw [Exception] ""
-    }
-
-    # Build Step code
-    #$cmd1 = "$inputSrc$ref @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
-    #$stepTemplate -f $params0, $cmd1 > "step_$id.ps1"
-
-    #$Count++
-
-}
 Set-StrictMode -Version Latest
 main

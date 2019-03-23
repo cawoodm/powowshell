@@ -16,10 +16,10 @@ param(
 function main() {
   $Path = (Resolve-Path -Path $Path).Path
 	Push-Location $Path
-	DEL step_*.ps1
-	DEL run_*.ps1
-	DEL *.log
-	DEL .\trace\*.txt
+	Remove-Item -Force step_*.ps1
+	Remove-Item -Force run_*.ps1
+	Remove-Item -Force *.log
+	Remove-Item -Force .\trace\*.txt
 	Write-Host "CLEAN successful" -ForegroundColor Green
 	Pop-Location
 }

@@ -13,7 +13,7 @@ formBuilder = (function() {
             }
             // Have to clone step or we can't cancel out of the form
             let stepClone = Object.assign({}, step);
-            let inputs = ['A', 'B'];
+            let inputs = pipelineManager.getAvailableInputs(step.id);
             dialog = new StepForm({
                 parent: $root,
                 propsData: {
@@ -37,7 +37,6 @@ const StepForm = Vue.extend({
     },
     methods: {
         save() {
-            console.log("Save", this.step.name, this.oldStep.name)
             this.$root.$emit('stepSave', this.step);
             this.close();
         },
@@ -45,7 +44,6 @@ const StepForm = Vue.extend({
             alert((this.component.synopsis||"") + `\n` + (this.component.description||""))
         },
         cancel() {
-            console.log("Cancel");
             this.close();
         },
         close() {

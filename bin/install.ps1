@@ -52,8 +52,8 @@ function main() {
                     Write-Host "Could not find an existing powershell modules directory to install to!" -ForegroundColor Red
                 }
             } else {
-                Write-Host "The pow command already exists in PowerShell!" -ForegroundColor Cyan
-                Write-Host " Tip: Type install -force to re-install" -ForegroundColor Cyan
+                Write-Host "The pow command already exists in PowerShell!" -ForegroundColor Yellow
+                Write-Host " Tip: Type install -force to re-install" -ForegroundColor Yellow
             }
             #if (Get-Command "pow" -errorAction SilentlyContinue) {$PowowShell=$true}
             $PowowShell = Get-Command "pow"

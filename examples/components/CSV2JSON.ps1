@@ -10,9 +10,15 @@
 	
  .Inputs
  text/csv
+ A String in CSV format
 
  .Outputs
- json/array
+ text/json
+ A JSON array object
+
+ .Example
+ "name,age`na,1`nb,2" | .\CSV2JSON.ps1
+ Return a JSON array with objects => [{name:"a", age: 1},{name:"b", age: 2}]
 
 #>
 [CmdLetBinding()]
@@ -32,5 +38,6 @@ if ($InputObject -eq "") {
 if ($Header) {
     $InputObject | ConvertFrom-Csv -Header $Header -Delimiter $Delimiter | ConvertTo-JSON
 } else {
+    Write-Verbose ($InputObject | ConvertFrom-Csv -Delimiter $Delimiter).GetType()
     $InputObject | ConvertFrom-Csv -Delimiter $Delimiter | ConvertTo-JSON
 }
