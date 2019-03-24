@@ -1,6 +1,7 @@
 # TODO
 
 ## POW CLI
+* Enforce: $ErrorActionPreference = "Stop"
 
 ## IDE
 * Bind step form to data model

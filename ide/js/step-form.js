@@ -59,7 +59,7 @@ const StepForm = Vue.extend({
     },
     template: `
     <v-dialog v-model="show" scrollable max-width="75%">
-        <v-card @keyup.esc="cancel" @keyup.ctrl.83="save" tabindex="0">
+        <v-card @keyup.esc="cancel" @keydown.ctrl.83.prevent.stop="save" tabindex="0">
             <v-toolbar card dark color="primary">
                 <span class="headline">{{title}}</span>
                 <v-spacer></v-spacer>
