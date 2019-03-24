@@ -22,7 +22,7 @@ $OutputPath=".\"
 function main() {
     
     $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-
+    
     $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 	if ($FullPath -eq $null) {throw "Path to pipeline $Path not found!"}
     if ($Output) {$OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue}
@@ -31,7 +31,7 @@ function main() {
     try {
         BuildingPipeline
     } catch {
-        Write-Error ("ERROR in ./bin/build.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
         #throw $_
     }
     Pop-Location
@@ -39,44 +39,34 @@ function main() {
 
 function BuildingPipeline() {
 
-    try {
+    # Read pipeline.json definition
+    $pipelineDef = ReadingPipelineDefinition("pipeline.json")
 
-            # Read pipeline.json definition
-			$pipelineDef = ReadingPipelineDefinition("pipeline.json")
+    # Validate definition
+    CheckingComponents($pipelineDef.steps)
 
-			# Validate definition
-			CheckingComponents($pipelineDef.steps)
+    # Transform definition of components into Steps
+    CreatingComponentSteps($pipelineDef)
 
-			# Transform definition of components into Steps
-			CreatingComponentSteps($pipelineDef)
+    # Transform definition of pipeline into run_trace.ps1
+    CreatingPipeline_trace($pipelineDef)
 
-			# Transform definition of pipeline into run_trace.ps1
-			CreatingPipeline_trace($pipelineDef)
+    # Transform definition of pipeline into run_prod.ps1
+    CreatingPipeline_prod($pipelineDef)
+    
+    Write-Host "BUILD successful" -ForegroundColor Green
 
-			# Transform definition of pipeline into run_prod.ps1
-			CreatingPipeline_prod($pipelineDef)
-			
-            Write-Host "BUILD successful" -ForegroundColor Green
+    $p=$Path; if ($Output) {$p=$Output}
+    "Usage:`n  POW run $p"
+    "OR`n  POW run $p -Trace"
 
-            $p=$Path; if ($Output) {$p=$Output}
-            "Usage:`n  POW run $p"
-            "OR`n  POW run $p -Trace"
-
-            # Show params
-            $cmd = Get-Command .\run_prod.ps1
-            "`nParameters:"
-            $cmd.Parameters.Keys | Where {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
-                " $_"
-            }
-                
-
-    } catch {
-        if ($_.Exception.Message -ne "") {
-            Write-Error ("Unhandled Excption`n" + $_)
-        }
-    } finally {
-        
+    # Show params
+    $cmd = Get-Command .\run_prod.ps1
+    "`nParameters:"
+    $cmd.Parameters.Keys | Where {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
+        " $_"
     }
+
 }
 
 function ReadingPipelineDefinition($Path) {
@@ -99,9 +89,9 @@ function CheckingComponents($components) {
     Write-Verbose "$($components.Count) components found"
 
     # Check each component
-    $components | ForEach-Object {
+    foreach($component in $components) {
         # TODO: Support Cmdlets and maybe use Get-Command?
-        $path = Resolve-Component $_.reference
+        $path = Resolve-Component $component.reference
         if (-not (Test-Path $path)) {
             Write-Error "Component Id $($_.id) reference $path not found!"
         }
@@ -114,7 +104,7 @@ function CheckingComponents($components) {
 }
 function Resolve-Component($reference) {
     # Components assumed to be in sibling path to pipeline
-    "..\components\${$_.reference}.ps1"
+    "..\components\$reference.ps1"
 }
 function CreatingComponentSteps($pipelineDef) {
 		
@@ -128,9 +118,8 @@ function CreatingComponentSteps($pipelineDef) {
     $Count = 0
     $validOutputs = @{"System.String"=$true;"System.Array"=$true;"System.Object"=$true}
 
-    $pipelineDef.steps | ForEach-Object {
+    foreach($step in $pipelineDef.steps) {
         
-        $step = $_
         $id = $step.id
         $ref = $step.reference
         
@@ -186,7 +175,6 @@ function CreatingComponentSteps($pipelineDef) {
 #>
 function CreatingPipeline_prod($pipelineDef) {
     Write-Verbose "BUILDER CreatingPipeline_prod"
-    #Write-Error ("ERROR in Builder on Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
 
     # Can be run from anywhere, change to pipeline path
     $cmd = ReSerializeParams $pipelineDef.parameters;
@@ -322,7 +310,8 @@ function ReSerializeParams($parameters) {
         $res += ")`n"
         return $res
     } catch {
-        throw ("ERROR in Builder on Line " + $_.InvocationInfo.ScriptLineNumber + ": " + $_.Exception.Message)
+        # TODO: Why are we catching here??
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
     }
 }
 function HDef($HashMap, $Field, $Default) {

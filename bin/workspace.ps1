@@ -19,18 +19,19 @@ param(
     [Parameter(Mandatory=$true)][String]$Path
 )
 function main() {
-    Push-Location $PSScriptRoot
-    CD..
 	try {
-        $WPath = (Resolve-Path $Path).Path
-        if (-not (Test-Path $WPath)) {throw "Workspace does not exist at $WPath"}
+        $WPath = ResolvePath $Path
         $WPath > .\workspace.txt
         Write-Host "Workspace set to '$WPath'" -ForegroundColor Cyan
     } catch {
-        throw $_
-    } finally {
-        Pop-Location
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
     }
+}
+function ResolvePath($Path) {
+    $error.clear();
+    $Path = Resolve-Path $Path -EA SilentlyContinue;
+    if ($error) {throw $error}
+    return $Path.path
 }
 Set-StrictMode -Version Latest
 main

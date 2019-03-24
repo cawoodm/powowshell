@@ -37,7 +37,7 @@ function main() {
             return $Components
         }
     } catch {
-        Write-Error ("ERROR in ./bin/components.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
         #throw $_
     } finally {
         Pop-Location
@@ -69,7 +69,8 @@ function LoadComponents($Path) {
         try {
             & "$PSScriptRoot\inspect.ps1" $script.Fullname
         } catch {
-            Write-Error $_
+            # Error message on each component but continue
+            $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
         }
     }
 

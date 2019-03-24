@@ -67,9 +67,7 @@ function main() {
 			"outputDescription" = $outputDesc;
 		} #| ConvertTo-Json
 	} catch {
-		#throw ("ERROR in ./bin/inspect.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
-		Write-Error ("ERROR in ./bin/build.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
-		#$PSCmdlet.ThrowTerminatingError($PSItem)
+		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
 		#throw $_
 	}
 }

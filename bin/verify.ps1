@@ -80,8 +80,8 @@ function main() {
         }
     } catch {
         Write-Host "!!! PIPELINE VERIFICATION FAILED !!!" -ForegroundColor Red
-        Write-Error ("ERROR in ./bin/verify.ps1 on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
-        throw $_
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
+        #throw $_
     } finally {
         DEL .\errors.log -ErrorAction SilentlyContinue
         DEL .\warnings.log -ErrorAction SilentlyContinue

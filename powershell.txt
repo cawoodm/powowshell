@@ -1,0 +1,13 @@
+﻿PowerShell's Error Handling is genuinely weird and quirky
+
+1. try...catch will not catch SOME exceptions
+  * Like syntax errors
+    * PowerShell will just stop processing and Write-Error the reason and line number
+    * UNLES it's inside a try...catch block in which case it will just stop processing and Write-Error the reason and report the WRONG line number
+  * Or non-terminating errors
+
+
+If you don't `throw $_` inside a try...catch block you will get the wrong line number shown in the error above.
+SO we should always throw from functions
+
+Should we throw from Cmdlets?
