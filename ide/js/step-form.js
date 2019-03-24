@@ -36,7 +36,8 @@ const StepForm = Vue.extend({
         }
     },
     methods: {
-        save() {
+        save(e) {
+            dp("save", e)
             this.$root.$emit('stepSave', this.step);
             this.close();
         },
@@ -51,11 +52,16 @@ const StepForm = Vue.extend({
             this.$el.remove();
         }
     },
+    computed: {
+        title: function() {
+            return `${this.id}: ${this.component.reference}`;
+        }
+    },
     template: `
     <v-dialog v-model="show" scrollable max-width="75%">
-        <v-card>
+        <v-card @keyup.esc="cancel" @keyup.ctrl.83="save" tabindex="0">
             <v-toolbar card dark color="primary">
-                <span class="headline">{{id}}: {{component.reference}}</span>
+                <span class="headline">{{title}}</span>
                 <v-spacer></v-spacer>
                 <v-icon @click="help()" color="white">help</v-icon>
             </v-toolbar>

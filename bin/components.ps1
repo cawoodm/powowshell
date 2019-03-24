@@ -22,6 +22,9 @@ param(
 
 )
 function main() {
+    
+    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+    
     $Path = $Path.replace('.ps1', '')
 	$FullPath = (Resolve-Path -Path $Path).Path
     Push-Location $FullPath

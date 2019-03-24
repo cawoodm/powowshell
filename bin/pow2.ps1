@@ -38,6 +38,8 @@ function Invoke-PowowShell {
 			$p1,$p2,$p3
     )
     
+    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+    
     # Change to bin\ path
     $BinPath = $PSScriptRoot
     # If we are installed as a module, our bin\ path is stored in path.txt
@@ -58,18 +60,20 @@ function Invoke-PowowShell {
             $p1 = $p1.replace("!", "$Workspace\");
         }
     }
+    # Get back to the location of the caller
+    Pop-Location
 	ForEach ($Cmd in $Command) {
 		try {
-			Write-Verbose "`".\$Cmd.ps1`" $p1 $p2 $p3"
-			if ($p3) {& ".\$Cmd.ps1" $p1 $p2 $p3}
-			elseif ($p2) {& ".\$Cmd.ps1" $p1 $p2}
-			elseif ($p1) {& ".\$Cmd.ps1" $p1}
-			else {& ".\$Cmd.ps1"}
+			Write-Verbose "`"$BinPath\$Cmd.ps1`" $p1 $p2 $p3"
+			if ($p3) {& "$BinPath\$Cmd.ps1" $p1 $p2 $p3}
+			elseif ($p2) {& "$BinPath\$Cmd.ps1" $p1 $p2}
+			elseif ($p1) {& "$BinPath\$Cmd.ps1" $p1}
+			else {& "$BinPath\$Cmd.ps1"}
 		} catch {
 			#Write-Error "Error in '$cmd' command:" + $_
 			throw $_
 		} finally {
-            Pop-Location
+            
         }
 	}
 }

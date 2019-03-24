@@ -101,8 +101,9 @@ function CheckingComponents($components) {
     # Check each component
     $components | ForEach-Object {
         # TODO: Support Cmdlets and maybe use Get-Command?
-        if (-not (Test-Path $_.reference)) {
-            Write-Error "Component Id $($_.id) reference $($_.reference) not found!"
+        $path = Resolve-Component $_.reference
+        if (-not (Test-Path $path)) {
+            Write-Error "Component Id $($_.id) reference $path not found!"
         }
         # TODO: Check mandatory fields (e.g. id)
         # TODO: Check parameters against component definition? - Done in CreatingComponentSteps()
@@ -111,7 +112,10 @@ function CheckingComponents($components) {
      Write-Host "`tComponents checked out OK" -ForegroundColor Green
 
 }
-
+function Resolve-Component($reference) {
+    # Components assumed to be in sibling path to pipeline
+    "..\components\${$_.reference}.ps1"
+}
 function CreatingComponentSteps($pipelineDef) {
 		
     # Step template
@@ -131,7 +135,8 @@ function CreatingComponentSteps($pipelineDef) {
         $ref = $step.reference
         
         # Inspect definition from component script
-        $cmd = Get-Command $step.reference
+        $compPath = Resolve-Component $step.reference;
+        $cmd = Get-Command $compPath
         if (-not $cmd.Parameters) {
             if ($step.parameters.PSObject.Properties.Count -gt 0) {
                 Write-Error "No parameters found for component '$ref'!"
@@ -160,7 +165,7 @@ function CreatingComponentSteps($pipelineDef) {
         }
 
         # Actual core component call
-        $cmd1 = "$inputSrc$ref @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
+        $cmd1 = "$inputSrc$compPath @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
         
         # Build Step code
         $stepHeader, $PipelineParams, $stepHeader2, $params0, $cmd1, $stepFooter -join "`n" > "$OutputPath\step_$id.ps1"

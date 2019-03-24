@@ -23,7 +23,7 @@
 		{
 			"id": "A1",
 			"name": "Read Voters File",
-			"reference": "../components/ReadFile.ps1",
+			"reference": "ReadFile",
 			"input": "",
 			"parameters": {
 				"Path": "{$PipelineParams.DataSource}"
@@ -32,7 +32,7 @@
 		{
 			"id": "B1",
 			"name": "Convert2JSON",
-			"reference": "../components/CSV2JSON.ps1",
+			"reference": "CSV2JSON",
 			"input": "A1",
 			"parameters": {
 				"Delimiter": "|",
@@ -42,7 +42,7 @@
 		{
 			"id": "C1",
 			"name": "Select Name and Email",
-			"reference": "../components/SelectFields.ps1",
+			"reference": "SelectFields",
 			"input": "B1",
 			"parameters": {
 				"Fields": "{\"name\", \"age\", \"email\"}"

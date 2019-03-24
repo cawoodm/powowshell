@@ -22,10 +22,9 @@ function main() {
 		$Path = ($FullPath).Path
 		$Filename = (Split-Path -Path $Path -Leaf)
 		Write-Verbose "Inspecting $Path ..."
-		#if ($Full) {try{Get-Help $Path -Full | ConvertTo-Json}
 		$cmd = Get-Help -Full -Name $Path -ErrorAction SilentlyContinue
 		# We WARN and exit instead of throwing so that 1 broken component doesn't halt everything
-		#if ($null -eq $cmd ) {throw"Invalid CmdLet in component '$Filename'!"}
+		#  if ($null -eq $cmd ) {throw"Invalid CmdLet in component '$Filename'!"}
 		if (-not $cmd.PSObject.Properties.item("details")) {Write-Warning "Invalid CmdLet in component '$Filename'!"; return $null}
 		$boolMap = @{"true"=$true;"false"=$false}
 		$parameters = Get-Help -Name $Path -Parameter * -EA 0
@@ -56,8 +55,9 @@ function main() {
 		$description = Get-Description($cmd)
 		$outputType = Get-OPType($cmd)
 		$outputDesc = Get-OPDesc($cmd)
+		$reference = $Filename -replace ".ps1", ""
 		return [PSCustomObject]@{
-			"reference" = $Filename;
+			"reference" = $reference;
 			"synopsis" = $synopsis;
 			"description" = $description;
 			"parameters" = $paramsOut;

@@ -9,21 +9,18 @@
 <body>
 <v-app id="root">
 
-    <v-toolbar color="blue darken-3" app dark  fixed >
+    <v-toolbar color="blue darken-3" app dark clipped-left>
+        <v-toolbar-title data-app>PowowShell Pipeline Designer</v-toolbar-title>
         <v-menu offset-y>
-            <v-btn slot="activator" color="primary" dark >Pipeline</v-btn>
+            <v-btn slot="activator" color="primary">Pipeline</v-btn>
             <v-list>
-                <v-list-tile><v-list-tile-title>Open...</v-list-tile-title></v-list-tile>
-                <v-list-tile><v-list-tile-title>Save</v-list-tile-title></v-list-tile>
+                <v-list-tile @click="pipelineOpen"><v-list-tile-title>Open...</v-list-tile-title></v-list-tile>
+                <v-list-tile @click="pipelineSave"><v-list-tile-title>Save</v-list-tile-title></v-list-tile>
             </v-list>
         </v-menu>
-        <v-toolbar-title data-app>
-            PowowShell Pipeline Designer
-        </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-menu offset-y>
-            
-            <v-btn slot="activator" color="primary" dark >Help</v-btn>
+            <v-btn slot="activator" color="primary">Help</v-btn>
             <v-list>
                 <v-list-tile><v-list-tile-title>About</v-list-tile-title></v-list-tile>
             </v-list>
@@ -32,25 +29,23 @@
 
     <v-navigation-drawer app clipped permanent width=200>
         <v-list>
-            <v-list-tile>Home</v-list-tile>        
+            <v-list-tile @click="pipelineLoad('pipeline1')">pipeline1</v-list-tile>        
+            <v-list-tile @click="pipelineLoad('pipeline3')">pipeline3</v-list-tile>        
         </v-list>
-        <v-expansion-panel >
-            <v-expansion-panel-content expand v-model="panels">
-                <div slot="header">Files</div>
+        <v-expansion-panel expand v-model="panels">
+            <v-expansion-panel-content>
+                <div slot="header">Components</div>
                 <v-list dense>
                     <v-list-tile class="drag component" d-ref="CSV2JSON"><v-icon>file_copy</v-icon>CSV2JSON</v-list-tile>        
                     <v-list-tile class="drag component" d-ref="Data2JSON">Data2JSON</v-list-tile>        
                     <v-list-tile class="drag component" d-ref="DateAdder">DateAdder</v-list-tile>        
                 </v-list>
-                <v-card class="drag component"><v-card-text>File 1</v-card-text></v-card>
-                <v-card class="drag component"><v-card-text>File 2</v-card-text></v-card>
-                <v-card class="drag component"><v-card-text>File 3</v-card-text></v-card>
-            </v-expansion-panel-content>
+            </v-expansion-panel-content>    
         </v-expansion-panel>
     </v-navigation-drawer>
 
     <v-content>
-        <step-grid ref="stepsGrid"></step-grid>
+        <step-grid ref="stepGrid"></step-grid>
     </v-content>
 
 </v-app>

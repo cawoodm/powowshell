@@ -1,14 +1,34 @@
 app.root = new Vue({
     el: '#root',
     data: {
-        panels: [true]
+        panels: [true],
+        items: [
+            { title: 'Click Me' },
+            { title: 'Click Me' },
+            { title: 'Click Me' },
+            { title: 'Click Me 2' }
+          ]
     },
     methods: {
         showDialog: function(step) {
             //this.$refs.stepForm.show = true; //showDialog();
             let component = app.getComponent(step.reference);
             formBuilder.showForm(app.root.$root, step, component);
-        }
+        },
+        pipelineLoad: function(id) {
+            // Load pipeline definition
+            fetch(`../examples/${id}/pipeline.json`)
+            .then((res)=>res.json())
+            .then((obj)=>{
+                pipelineManager.import(obj);
+                app.stepGrid.doUpdate();
+            })
+        },
+        pipelineOpen: function() {
+        },
+        pipelineSave: function() {
+            dp("pipelineSave")   
+        },
     },
     mounted: function() {
         // Make .drag elements draggable
@@ -24,7 +44,7 @@ app.root = new Vue({
             if (ref) {
                 // This is a component
                 let component = app.getComponent(ref);
-                app.root.$refs.stepsGrid.addComponent(space.id, component)
+                app.root.$refs.stepGrid.addComponent(space.id, component)
             }
             app.dragula.cancel(true)
         });
@@ -33,10 +53,13 @@ app.root = new Vue({
             let oldStep = pipelineManager.getStep(newStep.id)
             pipelineManager.setStep(newStep);
             // Must synch entire grid OR Vue.set(exactObject, newObject)
-            app.stepsGrid.doUpdate();
+            app.stepGrid.doUpdate();
         });
+        if (app.DEVMODE) {
+            console.clear(); // Vue junk
+            this.pipelineLoad('pipeline1')
+        }
     }
 });
-app.stepsGrid = app.root.$refs.stepsGrid;
+app.stepGrid = app.root.$refs.stepGrid;
 app.stepForm = app.root.$refs.stepForm;
-console.clear(); // Vue junk

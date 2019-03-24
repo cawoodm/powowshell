@@ -30,6 +30,8 @@ function Invoke-PowowShell {
 			$p1,$p2,$p3
     )
     
+    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+    
     # Change to bin\ path
     $BinPath = $PSScriptRoot
     # If we are installed as a module, our bin\ path is stored in path.txt
