@@ -36,9 +36,7 @@ The point of all this fuss is that if we can neatly define and delineate compone
 
 Check out an early prototype of the IDE here:
 
-https://cawoodm.github.io/powowshell/ide2/
-
-~https://cawoodm.github.io/powowshell/ide/~
+https://cawoodm.github.io/powowshell/ide/
 
 ![ide](./docs/ide.png)
 

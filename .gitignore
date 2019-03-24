@@ -3,6 +3,7 @@ trace/
 dist/
 bak/
 *.log
+*.bat
 examples/**/step_*.ps1
 examples/**/run_*.ps1
 powowshell.UZMDQU.U29730.pui
