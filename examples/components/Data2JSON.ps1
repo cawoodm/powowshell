@@ -1,5 +1,5 @@
 ﻿<#
- .SYNOPSIS
+ .Synopsis
   Convert input data to JSON format
 
  .DESCRIPTION
@@ -26,28 +26,37 @@
 [CmdLetBinding()]
 [OutputType([String])]
 param(
-  [Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,
-	[Parameter(Mandatory=$false)][String]$RecordSeparator,
-  [Parameter(Mandatory=$true)][String]$Delimiter=","
-)
+  [Parameter(Mandatory,ValueFromPipeline,ParameterSetName="Std")]
+    [String]$InputObject,
+  [Parameter(Mandatory,ParameterSetName="Std")]
+    [String]$Delimiter=",",
+  [Parameter(ParameterSetName="Std")]
+  [String]$RecordSeparator,
 
+	[Parameter(ParameterSetName="POW")]
+		[string]$POWAction
+)
+if ($POWAction -like "test") {
+  if (("a|1|M`nb|2|F" | " $PSScriptRoot\Data2JSON.ps1" -Delimiter "|" | ConvertFrom-Json)[1].gender -eq "F") {"OK: Data2JSON"} else {Write-Error "FAIL: Data2Json"}; return
+}
+,
 # The Magic Happens Here...
 $result = ""
 $r = 0
 $str = [string]$InputObject
 
-If ($RecordSeparator) {
+if ($RecordSeparator) {
 	$sep = $RecordSeparator
-} Else {
-	If ($str.IndexOf("`r`n") -ge 0) {$sep = "`r`n"}
-	ElseIf ($str.IndexOf("`r") -ge 0) {$sep = "`r"}
-	Else {$sep = "`n"}
+} else {
+	if ($str.IndexOf("`r`n") -ge 0) {$sep = "`r`n"}
+	elseif ($str.IndexOf("`r") -ge 0) {$sep = "`r"}
+	else {$sep = "`n"}
 }
 
 $rows = $str -split $sep
 $rows | ForEach-Object {
     $row = $_ -split $Delimiter, 0, "SimpleMatch"
-    If ($row.Length -gt 1) {
+    if ($row.Length -gt 1) {
         $result += '{"name":"' + $row[0] + '", "age":' + $row[1] + ', "gender":"' + $row[2] + '"}'
         $r++
     }

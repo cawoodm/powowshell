@@ -1,5 +1,10 @@
 CHANGELOG
 
+v0.1.5 26.03.2019
+* Return issues with component in POWMessages in `pow inspect`
+* Universally use `$ErrorActionPreference Stop` to ensure exceptions are thrown
+* Component tests and -POWAction
+
 v0.1.4 24.03.2019
 * Use vuetify cards for steps
 * Load pipeline definition dynamically

@@ -21,7 +21,7 @@
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter(Mandatory=$true)][String]$Path,
+    [Parameter(Mandatory)][String]$Path,
 		$Parameters=@{},
 		[switch]$Trace=$false
 )
@@ -52,10 +52,13 @@ function main() {
 		}
 	} catch {
 		Write-Host "!!! PIPELINE RUN FAILED !!!" -ForegroundColor Red
-		Write-Error ("ERROR in pipeline on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+		#Write-Error ("ERROR in pipeline on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
+		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
+		#throw $_
 	} finally {
 		Pop-Location
 	}
 }
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

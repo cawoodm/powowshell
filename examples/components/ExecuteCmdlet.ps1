@@ -19,50 +19,38 @@
 	
  .Inputs
  text
+
+ .Outputs
+ text/json
  
  .Example
  .\ExecuteCmdlet.ps1 -ExecuteTemplate "Get-ChildItem {0} {1}" -p0 "C:\temp" -p1 "*.txt"
 
- .Outputs
- json[]
-
 #>
-[CmdletBinding(DefaultParametersetName="PWTest")] 
+[CmdletBinding(DefaultParameterSetName="Std")] 
 [OutputType([String])]
 param(
 
-	[Parameter(ParameterSetName="PWTest",Position=0)]
-		[Switch]$PWTest,
-
-	[Parameter(ParameterSetName="PWOutput",Position=0)]
-		[Switch]$PWOutput,
-	
-	[Parameter(ParameterSetName="Standard")]
-		[Parameter(ValueFromPipeline=$true)]$InputObject,
-	[Parameter(ParameterSetName="Standard",Mandatory=$true)]
+	[Parameter(ParameterSetName="Std",Mandatory)]
 		[String]$ExecuteTemplate,
-	[Parameter(ParameterSetName="Standard")]
+	[Parameter(ParameterSetName="Std")]
 		[Int32]$Depth=2,
-	[Parameter(ParameterSetName="Standard")]
+	[Parameter(ParameterSetName="Std")]
 		[String]$p0,
-	[Parameter(ParameterSetName="Standard")]
+	[Parameter(ParameterSetName="Std")]
 		[String]$p1,
-	[Parameter(ParameterSetName="Standard")]
-		[String]$p2
+	[Parameter(ParameterSetName="Std")]
+		[String]$p2,
+
+	[Parameter(ParameterSetName="POW")]
+		[string]$POWAction
 	
 )
-Set-StrictMode -Version 3.0
-If ($PsCmdlet.ParameterSetName -eq "PWTest") {
+Set-StrictMode -Version Latest
+if ($POWAction -like "test") {
 	# Test Case
 	Push-Location $PSScriptRoot
-	If ((.\ExecuteCmdlet.ps1 -ExecuteTemplate "Get-ChildItem {0} {1}" -p0 "C:\" | ConvertFrom-Json).length -gt 0) {"ExecuteCmdlet: OK"} Else {Write-Error "ExecuteCmdlet: FAIL"}
-	Pop-Location
-	return
-}
-If ($PsCmdlet.ParameterSetName -eq "PWOutput") {
-	# Test Case
-	Push-Location $PSScriptRoot
-	If ((.\ExecuteCmdlet.ps1 -ExecuteTemplate "Get-ChildItem {0} {1}" -p0 "C:\" | ConvertFrom-Json).length -gt 0) {"ExecuteCmdlet: OK"} Else {Write-Error "ExecuteCmdlet: FAIL"}
+	if ((.\ExecuteCmdlet.ps1 -ExecuteTemplate "Get-ChildItem {0} {1}" -p0 "C:\" | ConvertFrom-Json).length -gt 0) {"ExecuteCmdlet: OK"} else {Write-Error "ExecuteCmdlet: FAIL"}
 	Pop-Location
 	return
 }

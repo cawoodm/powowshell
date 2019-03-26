@@ -74,4 +74,5 @@ function main() {
     }
 }
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

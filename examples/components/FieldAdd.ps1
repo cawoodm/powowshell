@@ -11,9 +11,9 @@
 #>
 [OutputType([Object])]
 param(
-	[Parameter(Mandatory=$true,ValueFromPipeline=$true)][String]$InputObject,
-	[Parameter(Mandatory=$true)][string]$Name,
-	[Parameter(Mandatory=$true)][string]$Value
+	[Parameter(Mandatory,ValueFromPipeline)][String]$InputObject,
+	[Parameter(Mandatory)][string]$Name,
+	[Parameter(Mandatory)][string]$Value
 )
 $obj = $InputObject | ConvertFrom-JSON
 $obj | % {

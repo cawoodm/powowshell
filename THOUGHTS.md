@@ -1,5 +1,8 @@
 #Thoughts
 
+# Components
+* Components can now self test with the `-POWAction test` parameter
+
 # Globals
 * How do we let steps/components write globals
 ** In theory, components don't know about the pipeline they are running in and hence don't know specific globals

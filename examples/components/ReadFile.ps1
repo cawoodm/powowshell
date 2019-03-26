@@ -17,7 +17,7 @@
 #>
 [OutputType([String])]
 param(
-    [Parameter(Mandatory=$true)][String]$Path
+    [Parameter(Mandatory)][String]$Path
 )
 
 # The Magic Happens Here...

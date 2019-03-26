@@ -30,7 +30,8 @@ function Invoke-PowowShell {
 			$p1,$p2,$p3
     )
     
-    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+    # Save path we are started from
+    $StartPath = (Get-Location).Path
     
     # Change to bin\ path
     $BinPath = $PSScriptRoot
@@ -65,10 +66,11 @@ function Invoke-PowowShell {
 			#Write-Error "Error in '$cmd' command:" + $_
 			throw $_
 		} finally {
-            
+            Set-Location $StartPath
         }
 	}
 }
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 Set-Alias pow Invoke-PowowShell
 Export-ModuleMember -Function Invoke-PowowShell -Alias pow

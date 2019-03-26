@@ -1,11 +1,10 @@
 # TODO
 
 ## POW CLI
-* Enforce: $ErrorActionPreference = "Stop"
+* Need to agree on `""` or `null/$null` for empty values in JSON
+* Should we add a `-POWTest` switch to every component to self-test?
 
 ## IDE
-* Bind step form to data model
-* Save step
 * Export pipeline
 * Drag steps around
 

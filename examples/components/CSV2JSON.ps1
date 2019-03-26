@@ -24,14 +24,20 @@
 [CmdLetBinding()]
 [OutputType([String])]
 param(
-    [Parameter(Mandatory=$true,ValueFromPipeline=$true)]$InputObject,
-    [String]$Delimiter=",",
-    [String[]]$Header
+    [Parameter(Mandatory,ValueFromPipeline,ParameterSetName="Std")]
+        $InputObject,
+    [Parameter(ParameterSetName="Std")]
+        [String]$Delimiter=",",
+    [Parameter(ParameterSetName="Std")]
+        [String[]]$Header,
+
+	[Parameter(ParameterSetName="POW")]
+		[string]$POWAction
 )
 Set-StrictMode -Version Latest
-if ($InputObject -eq "") {
+if ($POWAction -like "test") {
     Push-Location $PSScriptRoot
-    if (("a;1`nb;2" | .\CSV2JSON.ps1 -Delimiter ";" -Header "name","age" | ConvertFrom-Json)[1].age -eq 2) {"CSV2JSON: OK"} Else {Write-Error "CSV2Json: FAIL"}
+    if (("a;1`nb;2" | .\CSV2JSON.ps1 -Delimiter ";" -Header "name","age" | ConvertFrom-Json)[1].age -eq 2) {"OK: CSV2JSON self-test successful"} else {Write-Error "FAIL: CSV2JSON self-test failed!"}
     Pop-Location
     return
 }

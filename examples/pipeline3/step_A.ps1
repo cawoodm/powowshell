@@ -7,4 +7,5 @@ $params = @{
 & ../components/ReadFile.ps1 @params
 }
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

@@ -49,4 +49,5 @@ Command examples:
     }
 }
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

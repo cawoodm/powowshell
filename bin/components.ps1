@@ -17,7 +17,7 @@
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)][String]$Path,
+    [Parameter(Mandatory)][String]$Path,
     [string]$Action=$null
 
 )
@@ -77,4 +77,5 @@ function LoadComponents($Path) {
 }
 
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

@@ -24,7 +24,7 @@ Clean, build and verify a pipeline
 #########################################
 [CmdletBinding()]
 	param(
-			[Parameter(Mandatory=$true)][String[]]
+			[Parameter(Mandatory)][String[]]
 			$Command,
 			$p1,$p2,$p3
     )
@@ -32,13 +32,14 @@ Clean, build and verify a pipeline
 function Invoke-PowowShell {
 	[CmdletBinding()]
 	param(
-			[Parameter(Mandatory=$true)][String[]]
+			[Parameter(Mandatory)][String[]]
 			[ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install", "workspace")]
 			$Command,
 			$p1,$p2,$p3
     )
     
-    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+    # Save path we are started from
+    $StartPath = (Get-Location).Path
     
     # Change to bin\ path
     $BinPath = $PSScriptRoot
@@ -73,10 +74,11 @@ function Invoke-PowowShell {
 			#Write-Error "Error in '$cmd' command:" + $_
 			throw $_
 		} finally {
-            
+            Set-Location $StartPath
         }
 	}
 }
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 Set-Alias pow Invoke-PowowShell
 #########################################

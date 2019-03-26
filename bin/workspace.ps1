@@ -16,22 +16,18 @@
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)][String]$Path
+    [Parameter(Mandatory)][String]$Path
 )
 function main() {
 	try {
-        $WPath = ResolvePath $Path
+        $WPath = (Resolve-Path -Path $Path).Path
+        if (-not (Test-Path "$Wpath\components")) {Write-Warning "$WPath does not appear to be a workspace. No components\ subfolder!"; return;}
         $WPath > .\workspace.txt
         Write-Host "Workspace set to '$WPath'" -ForegroundColor Cyan
     } catch {
         $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
     }
 }
-function ResolvePath($Path) {
-    $error.clear();
-    $Path = Resolve-Path $Path -EA SilentlyContinue;
-    if ($error) {throw $error}
-    return $Path.path
-}
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

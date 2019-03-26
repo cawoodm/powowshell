@@ -28,7 +28,7 @@
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter(Mandatory=$true)][String]$Path,
+    [Parameter(Mandatory)][String]$Path,
     $Parameters=@{}
 )
 function main() {
@@ -89,4 +89,5 @@ function main() {
     }
 }
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

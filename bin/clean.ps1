@@ -11,7 +11,7 @@
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)][String]$Path
+    [Parameter(Mandatory)][String]$Path
 )
 function main() {
   $Path = (Resolve-Path -Path $Path).Path
@@ -24,4 +24,5 @@ function main() {
 	Pop-Location
 }
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

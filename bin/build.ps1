@@ -15,7 +15,7 @@
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)][String]$Path,
+    [Parameter(Mandatory)][String]$Path,
     [String]$Output
 )
 $OutputPath=".\"
@@ -148,7 +148,7 @@ function CreatingComponentSteps($pipelineDef) {
         $outputType = $cmd.OutputType.Name
         if (-not $outputType) {
             Write-Warning "No OutputType found for component '$ref'!"
-        } ElseIf ($outputType -and -not $validOutputs.ContainsKey($outputType)) {
+        } elseif ($outputType -and -not $validOutputs.ContainsKey($outputType)) {
             Write-Error "Invalid OutputType '$outputType' found for component '$ref'!"
             Throw [Exception] ""
         }
@@ -332,4 +332,5 @@ function ReSerializePipelineParams($obj) {
     return $res
 }
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 main

@@ -16,16 +16,21 @@
 
 #>
 param(
-    [Parameter(Mandatory=$true,ValueFromPipeline=$true)]$InputObject,
-    [string]$Mapping
+    [Parameter(Mandatory,ValueFromPipeline,ParameterSetName = 'Standard')]
+    $InputObject,
+    [Parameter(Mandatory,ParameterSetName = 'Standard')]
+    [string]$Mapping,
+
+    [Parameter(Mandatory,ParameterSetName = 'POW')]
+    [string]$POWAction
 )
-If ($InputObject -eq "") {
+if ($POWAction -eq "test") {
     Push-Location $PSScriptRoot
-    If (('{"a":"1","b":{"b1":100}}' | .\JSONMapping.ps1 -Mapping '{"x":".a", "y":".b.b1 + 1"}' | ConvertFrom-Json).y -eq 101) {"JSONMapping: OK"} Else {Write-Error "JSONMapping: FAIL"}
+    if (('{"a":"1","b":{"b1":100}}' | .\JSONMapping.ps1 -Mapping '{"x":".a", "y":".b.b1 + 1"}' | ConvertFrom-Json).y -eq 101) {"JSONMapping: OK"} else {Write-Error "JSONMapping: FAIL"}
     Pop-Location
     return
 }
-If ($InputObject -is [string]) {$InputObject = $InputObject | ConvertFROM-Json}
+if ($InputObject -is [string]) {$InputObject = $InputObject | ConvertFROM-Json}
 $Output = New-Object -TypeName PSObject
 $Map = $Mapping | ConvertFrom-JSON
 $Map.PSObject.Properties | ForEach-Object {

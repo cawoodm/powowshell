@@ -25,7 +25,7 @@
  text/json[name,fullName,size(int)]
 
 #>
-[CmdletBinding(DefaultParametersetName="Standard")]
+[CmdletBinding(DefaultParameterSetName="Std")]
 [OutputType([string])]
 param(
 
@@ -35,7 +35,7 @@ param(
 	[Parameter(ParameterSetName="PWOutput")]
 		[Switch]$PWOutput,
 		
-	[Parameter(ParameterSetName="Standard",Mandatory=$true,HelpMessage="The path to the files",Position=0)]
+	[Parameter(ParameterSetName="Std",Mandatory,HelpMessage="The path to the files",Position=0)]
 		[string]$Path,
 		[string]$Filter,
 		[switch]$Recurse
@@ -60,7 +60,7 @@ function main() {
 }
 function PWTest() {
 	Push-Location $PSScriptRoot
-	If ((.\FileList.ps1 -Path "C:\Windows" | ConvertFrom-Json).length -gt 0) {"FileList: OK"} Else {Write-Error "FileList: FAIL"}
+	if ((.\FileList.ps1 -Path "C:\Windows" | ConvertFrom-Json).length -gt 0) {"FileList: OK"} else {Write-Error "FileList: FAIL"}
 	Pop-Location
 }
 function PWOutput() {
