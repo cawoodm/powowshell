@@ -1,0 +1,22 @@
+{
+  "name": "powowshell-ide",
+  "version": "0.0.1",
+  "description": "PowowShell Designer",
+  "author": "Marc Cawood",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/cawoodm/powowshell",
+  "keywords": [
+    "PowerShell"
+  ],
+  "devDependencies": {
+    "electron-debug": "^2.1.0",
+    "electron-reload": "^1.4.0"
+  },
+  "dependencies": {
+    "electron-settings": "^3.2.0"
+  }
+}
