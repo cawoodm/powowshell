@@ -78,17 +78,13 @@ function windowStateKeeper(windowName) {
 	};
 	}
 	function saveState() {
-		if (!windowState.isMaximized) {
-			windowState = window.getBounds();
-		}
+		if (!windowState.isMaximized) windowState = window.getBounds();
 		windowState.isMaximized = window.isMaximized();
 		appConfig.set(`windowState.${windowName}`, windowState);
 	}
 	function track(win) {
 		window = win;
-		['resize', 'move', 'close'].forEach(event => {
-			win.on(event, saveState);
-		});
+		['resize', 'move', 'close'].forEach(event => win.on(event, saveState));
 	}
 	setBounds();
 	return({

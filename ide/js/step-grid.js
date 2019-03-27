@@ -14,6 +14,14 @@ Vue.component('step-grid', {
                 alert(e.message)
             }
         },
+        moveStep: function(fromId, toId) {
+            try {
+                pipelineManager.moveStep(fromId, toId)
+                this.doUpdate()
+            } catch(e) {
+                alert(e.message)
+            }
+        },
         showDialog: function(id) {
             let step = pipelineManager.getStep(id);
             if (!step.reference) return;
@@ -36,7 +44,7 @@ Vue.component('step-grid', {
             </tr>
             <tr v-for="row in rows">
                 <td v-for="step in row" :key="step.id" :id="step.id" :class="step.reference?'step drag':'step drag drop'">
-                    <div :id="step.id" :class="'stepContainer'+(step.reference?' stepFilled':' stepEmpty')" @click="showDialog(step.id)">
+                    <div :d-id="step.id" :class="'stepContainer'+(step.reference?' stepFilled':' stepEmpty')" @click="showDialog(step.id)">
                         <v-card height="200px" v-if="step.reference">
                             <v-card-title class="blue white--text stepName" :title="step.name">
                                 {{ step.name }}

@@ -32,19 +32,24 @@ app.root = new Vue({
     },
     mounted: function() {
         // Make .drag elements draggable
-        app.dragula = dragula([].slice.call(document.querySelectorAll('.drag')),{
+        const dragOpts = {
             revertOnSpill: true, // true=Go back if not dropped
-            copy: true, // true=Copy the element
+            //copy: true, // true=Copy the element
             accepts: function (el, target, source, sibling) {
                 return target.className.indexOf('drop')>=0;
             } 
-        }).on('drop', function (el, space) {
+        };
+        app.dragula = dragula([].slice.call(document.querySelectorAll('.drag')),dragOpts).on('drop', function (el, space) {
             let id = el.getAttribute("d-id");
+            console.log(id)
             let ref = el.getAttribute("d-ref");
             if (ref) {
                 // This is a component
                 let component = app.getComponent(ref);
                 app.root.$refs.stepGrid.addComponent(space.id, component)
+            } else if (id) {
+                // This is a step
+                app.root.$refs.stepGrid.moveStep(id, space.id);
             }
             app.dragula.cancel(true)
         });

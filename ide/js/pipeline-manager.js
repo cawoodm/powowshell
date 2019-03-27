@@ -68,7 +68,7 @@ let pipelineManager = (function() {
                     row = parseRow(col);
                 else
                     row = this.nextRow(col)
-                if (row>this.nextRow(col)) throw new Error("Cannot add component to that row position " + col);
+                //if (row>this.nextRow(col)) throw new Error("Cannot add component to that row position " + col);
                 col = parseCol(col)
             }
             let step = this.getStep(col, row);
@@ -170,6 +170,7 @@ let pipelineManager = (function() {
             if (getStep(toId).reference !== null) throw new Error("Step " + toId + " is not empty!");
             let step = getStep(fromId);
             this.removeStep(fromId);
+            step.id = toId;
             let row = parseRow(toId);
             let col = parseCol(toId);
             columns[col-1][row-1] = step;
@@ -417,15 +418,15 @@ if (typeof process !== "undefined") {
         assert(PM.nextRow("A")===1, "Next empty row in column A is 1")
         
         // Getting and Adding Steps
-        assert('PM.getStep(1, 1).reference === null', "Step A1 is initialized")
+        assert(()=>PM.getStep(1, 1).reference === null, "Step A1 is initialized")
         assert(()=>PM.addComponent("1", 1, {reference: "foo"}).reference === "foo", "Step A1 is set to foo")
         assert(PM.nextRow("A")===2, "Next empty row in column A is 2")
-        assert('PM.addComponent("B", null, {reference: "bar"}).reference === "bar"', "Step B1 is set to bar")
-        assert('PM.addComponent("C3", null, testComponent).reference=="CSV2JSON.ps1"', "Add component to wrong row", true)
-        assert('PM.addComponent("C1", null, testComponent).reference=="CSV2JSON.ps1"', "Add C1 component")
-        assert('PM.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1"', "Add C component")
-        assert('PM.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1"', "Add another C component")
-        assert('PM.getStep("C", 3).reference !== null', "Step C3 is set")
+        assert(()=>PM.addComponent("B", null, {reference: "bar"}).reference === "bar", "Step B1 is set to bar")
+        assert(()=>PM.addComponent("C3", null, testComponent).reference=="CSV2JSON.ps1", "Add component to wrong row", true)
+        assert(()=>PM.addComponent("C1", null, testComponent).reference=="CSV2JSON.ps1", "Add C1 component")
+        assert(()=>PM.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1", "Add C component")
+        assert(()=>PM.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1", "Add another C component")
+        assert(()=>PM.getStep("C", 3).reference !== null, "Step C3 is set")
         let step = PM.getStep("C3");
         assert(()=>PM.setStep(step), "Set step works");
         assert(()=>step.parameters.length===3, "CSV2JSON should have 3 parameters");
