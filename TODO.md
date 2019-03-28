@@ -2,13 +2,13 @@
 
 ## POW CLI
 * Need to agree on `""` or `null/$null` for empty values in JSON
-* Should we add a `-POWTest` switch to every component to self-test?
 
 ## IDE
-* Export pipeline
-* Drag steps around
-
-* Revisit NWJS (is it maintained) vs Electron...
+* Save (export) pipeline
+* Verify pipeline
+* Build pipeline
+* Run pipeline
+* Load pipeline/components via fs instead of XHR?
 
 * Pipeline from Scratch
   * Drag dummy components around the matrix -> DONE
@@ -18,20 +18,10 @@
     * Read list of installed modules from profile?
       - list by module
   * Configure components in IDE (forms)
-* Load Pipeline from pipeline.json
-  * Phase 1: Copy/Paste JSON
-  * Phase 2: Upload/Drag?
-  * Phase 3: REST
-  * Phase 4: Direct read file system
-* Save Pipeline to pipeline.json
-  * Phase 1: Export JSON
-  * Phase 2: Direct write file system
 
 ## Components
 * We need to deal with not passing on empty parameters
-* Handling parameters for the pipeline as a whole
-  * Calling pipeline with params
-  * Running pipeline as a step
+* Running pipeline as a step/component
 * Progress Bar?
   * `Write-Progress -Activity "Search in Progress" -Status "$I% Complete:" -PercentComplete $I;`
 * Package Manager
