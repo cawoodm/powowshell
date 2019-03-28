@@ -6,7 +6,7 @@ function main() {
     try {
         # 1. Inspect and test each powershell component
         $i=0
-        ..\bin\components.ps1 .\components | ForEach-Object {
+        ..\bin\components.ps1 ..\examples\components | ForEach-Object {
             $i++
             $component = $_
             try{$component.reference}catch{Write-Error "ERROR: $i. Something about $component"}
@@ -18,13 +18,13 @@ function main() {
                 else {Write-Host $msg.message -ForegroundColor Cyan}
                 if ($component.parameters | Where name -like "POWAction") {
                     # Self-testing
-                    & ".\components\$reference.ps1" -POWAction test
+                    & "..\examples\components\$reference.ps1" -POWAction test
                 }
             }
         }
 
         # Test Pipeline1
-        if ((.\pipeline1\run_prod.ps1 | ConvertFrom-Json)[1].age -eq "100") {"Pipeline: OK"} else {Write-Error "Pipeline: FAIL"}
+        if ((..\examples\pipeline1\run_prod.ps1 | ConvertFrom-Json)[1].age -eq "100") {"Pipeline: OK"} else {Write-Error "Pipeline: FAIL"}
 
     } catch {
 		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")

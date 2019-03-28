@@ -2,26 +2,26 @@
  .Synopsis
   Convert input data to JSON format
 
- .DESCRIPTION
+ .Description
   Accepts custom tabular data about people and return contents as a JSON Array
 	The data must be in the format:
 	NAME|AGE|GENDER
 	However, the separator can be different and specified by the -Delimiter parameter
 
- .PARAMETER Delimiter
+ .Parameter Delimiter
   Specifies the field separator. Default is a comma ",")
 
- .EXAMPLE
-  Data2JSON.ps1 -Delimiter ";"
- 
- .INPUTS
+ .Inputs
   text/xsv
   Any separated data (e.g. CSV) with newlines between records
 	
- .OUTPUTS
+ .Outputs
   text/json
   An array of JSON objects corresponding to the rows of the input data
 
+  .Example
+  Data2JSON.ps1 -Delimiter ";"
+ 
 #>
 [CmdLetBinding()]
 [OutputType([String])]
@@ -37,7 +37,7 @@ param(
 		[string]$POWAction
 )
 if ($POWAction -like "test") {
-  if (("a|1|M`nb|2|F" | " $PSScriptRoot\Data2JSON.ps1" -Delimiter "|" | ConvertFrom-Json)[1].gender -eq "F") {"OK: Data2JSON"} else {Write-Error "FAIL: Data2Json"}; return
+  if (("a|1|M`nb|2|F" | & "$PSScriptRoot\Data2JSON.ps1" -Delimiter "|" | ConvertFrom-Json)[1].gender -eq "F") {"OK: Data2JSON"} else {Write-Error "FAIL: Data2Json"}; return
 }
 ,
 # The Magic Happens Here...
