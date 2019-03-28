@@ -4,7 +4,7 @@
   "description": "PowowShell Designer",
   "author": "Marc Cawood",
   "license": "MIT",
-  "main": "main.js",
+  "main": "app.js",
   "scripts": {
     "start": "electron ."
   },

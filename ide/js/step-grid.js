@@ -23,9 +23,7 @@ Vue.component('step-grid', {
             }
         },
         showDialog: function(id) {
-            let step = pipelineManager.getStep(id);
-            if (!step.reference) return;
-            app.root.showDialog(step)
+            this.$root.showDialog(id)
         },
         doUpdate: function() {
             this.rows = pipelineManager.getRows();

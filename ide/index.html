@@ -28,19 +28,15 @@
     </v-toolbar>
 
     <v-navigation-drawer app clipped permanent width=200>
-        <v-list>
-            <v-list-tile @click="pipelineLoad('pipeline1')">pipeline1</v-list-tile>        
-            <v-list-tile @click="pipelineLoad('pipeline3')">pipeline3</v-list-tile>        
-        </v-list>
         <v-expansion-panel expand v-model="panels">
             <v-expansion-panel-content>
-                <div slot="header">Components</div>
-                <v-list dense>
-                    <v-list-tile class="drag component" d-ref="CSV2JSON"><v-icon>file_copy</v-icon>CSV2JSON</v-list-tile>        
-                    <v-list-tile class="drag component" d-ref="Data2JSON">Data2JSON</v-list-tile>        
-                    <v-list-tile class="drag component" d-ref="DateAdder">DateAdder</v-list-tile>        
+                <div slot="header">Pipelines</div>
+                <v-list>
+                    <v-list-tile @click="pipelineLoad('pipeline1')">pipeline1</v-list-tile>        
+                    <v-list-tile @click="pipelineLoad('pipeline3')">pipeline3</v-list-tile>        
                 </v-list>
-            </v-expansion-panel-content>    
+            </v-expansion-panel-content>
+            <component-list ref="componentList"></component-list>
         </v-expansion-panel>
     </v-navigation-drawer>
 
@@ -54,9 +50,9 @@
 <script src="./js/vuetify.js"></script>-->
 <script src='./js/dragula.js'></script>
 <script src="./js/pipeline-manager.js"></script>
+<script src="./js/component-list.js"></script>
 <script src="./js/step-grid.js"></script>
 <script src="./js/step-form.js"></script>
-<script src="./js/init.js"></script>
 <script src="./js/main.js"></script>
 </body>
 </html>

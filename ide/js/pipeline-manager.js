@@ -355,7 +355,7 @@ let pipelineManager = (function() {
 /**
  * Tester
  */
-if (typeof process !== "undefined") {
+if (typeof process !== "undefined" && process.argv && process.argv.length > 0 && process.argv[0]=="test") {
 (function pipelineManagerTest(verbose) {
     let tests = 0;
     let fails = 0;

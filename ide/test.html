@@ -8,7 +8,6 @@
 </head>
 <body>
 <v-app id="root">
-
 <test-comps></test-comps>
 </v-app>
 
@@ -18,10 +17,8 @@
 <script src="./js/pipeline-manager.js"></script>
 <script src="./js/step-grid.js"></script>
 <script src="./js/step-form.js"></script>
-<script src="./js/init.js"></script>
+<script src="./js/main.js"></script>
 <script>
-
-
 Vue.component('test-comps', {
     data: function() {
         return {components: app.components}
@@ -36,12 +33,10 @@ Vue.component('test-comps', {
 });
 function showComponentForm(reference) {
     let component = app.getComponent(reference);
-    //let component = { "reference": "csv2json.ps1", "synopsis": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": [ { "name": "Delimiter", "type": "String", "required": false, "default": ",", "description": "Specifies the field separator. Default is a comma \",\")" }, { "name": "Header", "type": "String[]", "required": false, "default": "", "description": "" } ], "input": "text/csv", "inputDescription": "A String in CSV format", "output": "text/json", "outputDescription": "A JSON array object" }
     let step = pipelineManager.getStep('A1');
     formBuilder.showForm(app.root.$root, step, component);
 }
 if (location.hash) window.setTimeout(()=>showComponentForm(location.hash.substring(1)), 500);
 </script>
-<script src="./js/main.js"></script>
 </body>
 </html>
