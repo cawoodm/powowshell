@@ -55,6 +55,7 @@ window.onload = function() {
                         // This is a component
                         let component = app.getComponent(ref);
                         root.$refs.stepGrid.addComponent(space.id, component)
+                        root.showDialog(space.id);
                     } else if (id) {
                         // This is a step
                         root.$refs.stepGrid.moveStep(id, space.id);
@@ -68,8 +69,8 @@ window.onload = function() {
                     if (!step.reference) return;
                     let component = app.getComponent(step.reference);
                     formBuilder.showForm(this.$root, step, component);
-                } catch {
-
+                } catch(e) {
+                    alert(e.message)
                 }
             },
             pipelineLoad: function(id) {
