@@ -63,6 +63,9 @@ window.onload = function() {
                     app.dragula.cancel(true)
                 });
             },
+            run: function() {
+                pshell.exec("Get-Date").then(alert)
+            },
             showDialog: function(id) {
                 try {
                     let step = pipelineManager.getStep(id);
