@@ -17,6 +17,8 @@
     "electron-reload": "^1.4.0"
   },
   "dependencies": {
-    "electron-settings": "^3.2.0"
+    "electron-settings": "^3.2.0",
+    "node-powershell": "^4.0.0",
+    "powershell": "^2.3.1"
   }
 }
