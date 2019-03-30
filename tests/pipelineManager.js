@@ -1,5 +1,4 @@
 let pipelineManager = require('../ide/js/pipeline-manager.js');
-console.log(pipelineManager.reset);
 (function pipelineManagerTest(verbose) {
     let tests = 0;
     let fails = 0;
