@@ -1,13 +1,12 @@
-Vue.component('component-list', {
-    props: ['store'],
+Vue.component("component-list", {
+    props: ["store"],
     data: function() {
         return {
             components: this.components
         };
     },
     methods: {
-        showDialog: function(id) {
-        },
+        //showDialog: function(id) {},
         setComponents: function(components) {
             this.components = components;
         }

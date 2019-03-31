@@ -11,9 +11,10 @@
  *  }
  */
 // @ts-check
+console.log(1, require)
 const pow = (function(){
 
-    let pshell = require("./pshell");
+    const pshell = require("./pshell");
     let workspace = ".";
     let execOptions = {};
 
@@ -232,7 +233,7 @@ class POWError extends Error {
         this.name = "POWError";
     }
 }
-
+console.log(2, pow)
 if (typeof module !== "undefined") {
     module.exports.pow = pow;
     module.exports.POWResult = POWResult;
