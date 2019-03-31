@@ -27,21 +27,21 @@
             out = await pow.init(workspacePath); assert(out.success, "Should find our ./examples/ workspace: " + out.success)
             out = pow.getWorkspace(); assert(out.match(/examples/),`Workspace should be set to 'examples': (${out})`)
             
-            // // Test POW building a pipeline
-            // try{out = await pow.build(); assert(false, "NO!!!")} catch(e){assert(e.messages.length>0, "Build without ID should throw")}
-            // out = await pow.build("!pipeline1"); assert(out.success, `Build of pipeline1 should succeed: '${out.messages[0].message}'`)
+            // Test POW building a pipeline
+            try{out = await pow.build(); assert(false, "NO!!!")} catch(e){assert(e.messages.length>0, "Build without ID should throw")}
+            out = await pow.build("!pipeline1"); assert(out.success, `Build of pipeline1 should succeed: '${out.messages[0].message}'`)
             
-            // // Test verifying a pipeline
-            // out = await pow.verify("!pipeline1"); assert(out.success, `Verification of pipeline1 should succeed: '${out.messages[0].message}'`)
+            // Test verifying a pipeline
+            out = await pow.verify("!pipeline1"); assert(out.success, `Verification of pipeline1 should succeed: '${out.messages[0].message}'`)
             
-            // // Test running a pipeline
-            // out = await pow.run("!pipeline1"); assert(out.success, `Running a pipeline1 should succeed: '${out.messages[0].message}'`)
-            // assert(out.object[0].name === "John Doe", `Should have 'John Doe' in our pipeline output: '${out.object[0].name}'`)
-            // //out.messages.forEach((msg)=>{console.log(msg.type, msg.message)})
+            // Test running a pipeline
+            out = await pow.run("!pipeline1"); assert(out.success, `Running a pipeline1 should succeed: '${out.messages[0].message}'`)
+            assert(out.object[0].name === "John Doe", `Should have 'John Doe' in our pipeline output: '${out.object[0].name}'`)
+            //out.messages.forEach((msg)=>{console.log(msg.type, msg.message)})
             
-            // // Test inspecting a single component
-            // out = await pow.inspect("!CSV2JSON"); assert(out.success, `Should inspect a component and see the reference: '${out.object.reference}'`)
-            // assert(out.object.input.match(/text\/.sv/), `Should have 'text/*sv' as our component input: '${out.object.input}'`)
+            // Test inspecting a single component
+            out = await pow.inspect("!CSV2JSON"); assert(out.success, `Should inspect a component and see the reference: '${out.object.reference}'`)
+            assert(out.object.input.match(/text\/.sv/), `Should have 'text/*sv' as our component input: '${out.object.input}'`)
 
             // TODO: Test pow components
             out = await pow.components("!"); assert(out.success && out.object.length > 5, `Should list components find some: '${out.object.length}'`)
@@ -58,12 +58,12 @@
             FUNC.addFails;
         }
 
-        if (FUNC.fails) {
-            console.log("\x1b[31m", `FAIL: pow.js failed ${FUNC.fails} of ${FUNC.tests} tests`)
+        if (FUNC.fails()>0) {
+            console.log("\x1b[31m", `FAIL: pow.js failed ${FUNC.fails()} of ${FUNC.tests()} tests`)
             console.log("\x1b[0m")
             process.exit(1)
         } else {
-            console.log("\x1b[32m", `SUCCESS: pow.js passed ${FUNC.tests} tests successfully`)
+            console.log("\x1b[32m", `SUCCESS: pow.js passed ${FUNC.tests()} tests successfully`)
             console.log("\x1b[0m")
             process.exit(0)
         }

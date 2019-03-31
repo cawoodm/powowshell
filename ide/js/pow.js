@@ -118,7 +118,7 @@ const pow = (function(){
      * @returns {Promise} Promise with a POWResult
      */
     async function components(path="!") {
-        return execStrictJSON(`pow components "${path}"`);
+        return execStrictJSON(`pow components "${path}" export`);
     }
 
     /**
