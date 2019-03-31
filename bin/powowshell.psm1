@@ -70,6 +70,7 @@ function Invoke-PowowShell {
         }
 	}
 }
+
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 Set-Alias pow Invoke-PowowShell

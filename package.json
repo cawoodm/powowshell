@@ -1,12 +1,13 @@
 {
   "name": "powowshell",
-  "version": "0.0.1",
+  "version": "v0.1.5",
   "description": "PowowShell: A Graphical PowerShell Designer",
   "author": "Marc Cawood",
   "license": "MIT",
   "main": "ide/app.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "POWERSHELL -f ./tests/allTests.ps1"
   },
   "repository": "https://github.com/cawoodm/powowshell",
   "keywords": [

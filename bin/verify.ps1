@@ -49,7 +49,6 @@ function main() {
         #$p = $ExecutionContext.InvokeCommand.ExpandString($Parameters)
     }
     Write-Verbose $Parameters
-    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
     $Path = (Resolve-Path -Path $Path).Path
     Write-Verbose $Path
 	Push-Location $Path
@@ -88,6 +87,8 @@ function main() {
         Pop-Location
     }
 }
+
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

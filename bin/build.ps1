@@ -21,8 +21,6 @@ param(
 $OutputPath=".\"
 function main() {
     
-    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-    
     $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 	if ($FullPath -eq $null) {throw "Path to pipeline $Path not found!"}
     if ($Output) {$OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue}
@@ -99,7 +97,7 @@ function CheckingComponents($components) {
         # TODO: Check parameters against component definition? - Done in CreatingComponentSteps()
      }
 
-     Write-Host "`tComponents checked out OK" -ForegroundColor Green
+     #Write-Host "`tComponents checked out OK" -ForegroundColor Green
 
 }
 function Resolve-Component($reference) {
@@ -331,6 +329,8 @@ function ReSerializePipelineParams($obj) {
     $res += "};`n"
     return $res
 }
+
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

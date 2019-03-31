@@ -1,5 +1,8 @@
 # TODO
 
+## POW.js
+* How to capture -Verbose output
+
 ## POW CLI
 * Need to agree on `""` or `null/$null` for empty values in JSON
 

@@ -49,26 +49,76 @@ const pow = (function(){
     }
 
     /**
-     * Return version information
+     * Execute any powershell command
+     *  Will not throw an error if errors are written to stderr
      * @param {String} command: The powershell command to execute
      * @returns {Promise} Promise with a POWResult
      */
     async function exec(command) {
         return _POWPromise(command, false);
     }
+    /**
+     * Execute any powershell command
+     *  Will throw an error if errors are written to stderr
+     * @param {String} command: The powershell command to execute
+     * @returns {Promise} Promise with a POWResult
+     */
     async function execStrict(command) {
         return _POWPromise(command, true);
     }
-
+    /**
+     * Execute any powershell command and return an object from the JSON output
+     *  Will throw an error if errors are written to stderr
+     * @param {String} command: The powershell command to execute
+     * @returns {Promise} Promise with a POWResult
+     */
+    async function execStrictJSON(command) {
+        return _POWPromise(command, true, true);
+    }
 
     /**
      * Builds a pipeline from it's definition
      * @param {string} pipelineId The ID of the pipeline
+     * @returns {Promise} Promise with a POWResult
      */
-    function build(pipelineId) {
-        if (!pipelineId) throw(new POWError("No pipeline Id provided to pow builder!"));
-        if (pipelineId==="error") throw(new POWError("Booo!", [new POWMessage("ERROR", "Fail bru!")]));
-        //return new POWResult(true, null);
+    async function build(pipelineId) {
+        return execStrict(`pow build "${pipelineId}"`);
+    }
+
+    /**
+     * Verify a built pipeline
+     * @param {string} pipelineId The ID of the pipeline
+     * @returns {Promise} Promise with a POWResult
+     */
+    async function verify(pipelineId) {
+        return execStrict(`pow verify "${pipelineId}"`);
+    }
+
+    /**
+     * Run a built pipeline
+     * @param {string} path Path to pipeline (or "!PIPELINEID" for default workspace)
+     * @returns {Promise} Promise with a POWResult containing an object (pipeline result)
+     */
+    async function run(path) {
+        return execStrictJSON(`pow run "${path}"`);
+    }
+
+    /**
+     * Inspect a component
+     * @param {string} path Path to component (or "!REFERENCE" for default workspace)
+     * @returns {Promise} Promise with a POWResult containing an object (component definition)
+     */
+    async function inspect(path) {
+        return execStrictJSON(`pow inspect "${path}" | ConvertTo-JSON -Depth 4`);
+    }
+
+    /**
+     * Run a built pipeline
+     * @param {string} path Path to the components ("!" for default workspace)
+     * @returns {Promise} Promise with a POWResult
+     */
+    async function components(path="!") {
+        return execStrictJSON(`pow components "${path}"`);
     }
 
     /**
@@ -77,16 +127,20 @@ const pow = (function(){
      * @param {boolean} strict: Throw exception if we have errors
      * @returns {Promise} Promise with a POWResult
      */
-    function _POWPromise(command, strict=false) {
+    function _POWPromise(command, strict=false, json=false) {
         return new Promise(function(resolve, reject) {
             if (execOptions.debug) console.debug("EXEC", command);
             pshell.exec(command, execOptions)
                 .then((out)=>{
-                    let result = _processResult(out);
-                    if (strict && !result.success)
-                        reject(result)
-                    else
-                        resolve(result);
+                    try {
+                        let result = _processResult(out, json);
+                        if (strict && !result.success)
+                            reject(new POWError(`Failure of '${command}'!`, result.messages))
+                        else
+                            resolve(result);
+                    } catch (e) {
+                        reject(e);
+                    }
                 }).catch((err)=>{
                     reject(err);
                 });
@@ -94,21 +148,37 @@ const pow = (function(){
     }
 
     /**
-     * Process powershell result
+     * Process powershell result returning a POWResul
      * @param {Object} out: stdout and stderr components
+     * @param {boolean} json: Parse stdout as JSON
      * @returns {POWResult} The success, output and messages
      */
-    function _processResult(out) {
+    function _processResult(out, json=false) {
+        // TODO: Handle -Verbose output as type=DEBUG
         let success = true;
         let messages = [];
+
+        // TODO: Get warnings as a series of WARNING messages
+
+        // Get stderr as a series of ERROR messages
         if (out.stderr) {
             success = false;
             messages.push(new POWMessage("ERROR", out.stderr))
         }
-        let outlines = out.stdout.split("\r\n");
+
+        // Get stdout as a series of INFO messages
+        let outlines = out.stdout.split(/\r?\n/);
         for (let o=0; o < outlines.length; o++)
             messages.push(new POWMessage("INFO", outlines[o]))
-        return new POWResult(success, out.stdout, messages)
+
+        let obj = null;
+        // Process JSON output
+        if (json) try{obj = JSON.parse(out.stdout)}catch(e){
+            messages.unshift(new POWMessage("ERROR", e.message))
+            throw new POWError(`Invalid JSON Object: ${e.message}`, messages)
+        }
+            
+        return new POWResult(success, out.stdout, messages, obj)
     }
 
     return {
@@ -116,22 +186,28 @@ const pow = (function(){
         execOptions: execOptions,
         version: version,
         build: build,
+        verify: verify,
+        run: run,
+        inspect: inspect,
+        components: components,
         exec: exec,
         execStrict: execStrict,
-        getWorkspace: function(){return workspace}
+        getWorkspace: ()=>workspace
     }
 
 })();
 
 /**
  * Result and message class
- * @param {boolean} success 
- * @param {string} output
- * @param {POWMessage[]} messages 
+ * @param {boolean} success: True if no errors
+ * @param {string} output: The raw stdout string
+ * @param {POWMessage[]} messages: List of all messages
+ * @param {Object} object: The resulting JSON parsed as an obhecrt
  */
-const POWResult = function(success, output, messages) {
+const POWResult = function(success, output, messages, object) {
     this.success  = success;
     this.output   = output;
+    this.object   = object;
     this.messages = messages || [];
 }
 /**
