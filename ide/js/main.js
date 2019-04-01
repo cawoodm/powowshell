@@ -8,8 +8,6 @@ if (typeof process !== "undefined") {
 }
 app.components = {}
 
-// TODO: List components dynamically
-
 app.getComponent = (reference) => {
     let res = app.components.filter((item)=>item.reference===reference);
     return res.length>0?res[0]:null;
@@ -19,17 +17,17 @@ Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
 window.onload = function() {
-    fetch("../examples/components/components.json")
-        .then((res)=>res.json())
+    pow.components()
         .then((obj)=>{
-            app.components = obj;
+            app.components = obj.object;
             app.root.$refs.componentList.setComponents(app.components);
             app.root.loaded("components");
-        })
+        });
     app.root = new Vue({
         el: "#root",
         data: {
             panels: [false, true],
+            pipeline: {}
         },
         methods: {
             loaded: function(what) {
@@ -60,7 +58,10 @@ window.onload = function() {
                 });
             },
             run: function() {
-                pow.execStrict("Get-Date").then((res)=>alert(res.output))
+                pow.run("!"+this.pipeline.id)
+                    .then((obj)=>{
+                        alert(JSON.stringify(obj.object))
+                    })
             },
             showDialog: function(id) {
                 try {
@@ -73,14 +74,13 @@ window.onload = function() {
                 }
             },
             pipelineLoad: function(id) {
-                let root = this;
                 // Load pipeline definition
-                fetch(`../examples/${id}/pipeline.json`)
-                    .then((res)=>res.json())
+                pow.pipeline(`${id}`)
                     .then((obj)=>{
-                        pipelineManager.import(obj);
+                        pipelineManager.import(obj.object);
                         if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
-                        root.loaded("pipeline");
+                        this.pipeline = obj.object;
+                        this.loaded("pipeline");
                     });
             },
             pipelineOpen: function() {

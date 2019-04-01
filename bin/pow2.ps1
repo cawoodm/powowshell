@@ -33,7 +33,7 @@ function Invoke-PowowShell {
 	[CmdletBinding()]
 	param(
 			[Parameter(Mandatory=$true)][String[]]
-			[ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install", "workspace")]
+			[ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install", "workspace", "pipeline")]
 			$Command,
 			$p1,$p2,$p3
     )

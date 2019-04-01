@@ -21,14 +21,8 @@ let pshell = (function() {
                 ps.on("error", (err)=>{
                     reject(err);
                 });
-                //ps.on("error-output", (err)=>{reject(err)});
             })
         }
-    }
-
-    function mock(command, options, cb) {
-        // Just return the command text as stdout
-        cb(null, command, "");
     }
 
 })();

@@ -33,7 +33,8 @@ function createMainWindow() {
 		width: mainWindowStateKeeper.width,
 		height: mainWindowStateKeeper.height,
 		webPreferences: {
-			nodeIntegration: true
+			nodeIntegration: true,
+			allowEval: false
 		}
 	});
 	mainWindowStateKeeper.track(win);

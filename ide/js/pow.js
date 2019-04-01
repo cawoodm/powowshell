@@ -11,7 +11,6 @@
  *  }
  */
 // @ts-check
-console.log(1, require)
 const pow = (function(){
 
     const pshell = require("./pshell");
@@ -78,6 +77,16 @@ const pow = (function(){
     }
 
     /**
+     * Return a built pipeline definition (pipeline.json)
+     * @param {string} path Path to the pipeline ("!pipeline1" for default workspace)
+     * @returns {Promise} Promise with a POWResult
+     */
+    async function pipeline(path) {
+        if (!path.match(/^!/) && !path.match(/[\\/]/)) path = "!"+path;
+        return execStrictJSON(`pow pipeline "${path}" export`);
+    }
+
+    /**
      * Builds a pipeline from it's definition
      * @param {string} pipelineId The ID of the pipeline
      * @returns {Promise} Promise with a POWResult
@@ -97,7 +106,7 @@ const pow = (function(){
 
     /**
      * Run a built pipeline
-     * @param {string} path Path to pipeline (or "!PIPELINEID" for default workspace)
+     * @param {string} path Path to pipeline (or "!pipelineId" for default workspace)
      * @returns {Promise} Promise with a POWResult containing an object (pipeline result)
      */
     async function run(path) {
@@ -106,7 +115,7 @@ const pow = (function(){
 
     /**
      * Inspect a component
-     * @param {string} path Path to component (or "!REFERENCE" for default workspace)
+     * @param {string} path Path to component (or "!componentReference" for default workspace)
      * @returns {Promise} Promise with a POWResult containing an object (component definition)
      */
     async function inspect(path) {
@@ -191,6 +200,7 @@ const pow = (function(){
         run: run,
         inspect: inspect,
         components: components,
+        pipeline: pipeline,
         exec: exec,
         execStrict: execStrict,
         getWorkspace: ()=>workspace
@@ -233,7 +243,6 @@ class POWError extends Error {
         this.name = "POWError";
     }
 }
-console.log(2, pow)
 if (typeof module !== "undefined") {
     module.exports.pow = pow;
     module.exports.POWResult = POWResult;

@@ -1,10 +1,16 @@
 /* pow.js Mock for browser where we have now PowerShell */
 if (typeof process === "undefined") {
 window.pow = (function(){
-    let fakePromise = function(msg) {
+    let fakePromise = function(msg, messages=[], obj={}) {
         return new Promise(function(resolve) {
-            resolve(new POWResult(true, `Would now execute '${msg}' in PowerShell if I could in a browser!\nThe IDE must be run in electron!`, [], {}))
+            resolve(new POWResult(true, `Would now execute '${msg}' in PowerShell if I could in a browser!\nThe IDE must be run in electron!`, messages, obj))
         });
+    }
+    function componentsMock() {
+        return new Promise((resolve)=>{fetch("../examples/components/components.json").then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
+    }
+    function pipelineMock(id) {
+        return new Promise((resolve)=>{fetch(`../examples/${id}/pipeline.json`).then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
     }
     return {
         init: async ()=>fakePromise("init"),
@@ -12,9 +18,10 @@ window.pow = (function(){
         version: async ()=>fakePromise(""),
         build: async ()=>fakePromise(""),
         verify: async ()=>fakePromise(""),
-        run: async ()=>fakePromise(""),
+        run: async (id)=>fakePromise(`pow run !${id}`, [], [{name:"foo"}]),
         inspect: async ()=>fakePromise(""),
-        components: async ()=>fakePromise(""),
+        pipeline: pipelineMock,
+        components: componentsMock,
         exec: async (command)=>fakePromise(command),
         execStrict: async (command)=>fakePromise(command),
         getWorkspace: ()=>async ()=>fakePromise("")

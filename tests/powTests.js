@@ -26,6 +26,10 @@
             out = await pow.version(); assert(out.match(/0\.\d\.\d/), `Should have a pow version number: ${out.match(/v\d+\.\d+\.\d+/)}`)
             out = await pow.init(workspacePath); assert(out.success, "Should find our ./examples/ workspace: " + out.success)
             out = pow.getWorkspace(); assert(out.match(/examples/),`Workspace should be set to 'examples': (${out})`)
+
+            // Test loading pipeline
+            out = await pow.pipeline("!pipeline1"); assert(out.success, `Load of pipeline1 should succeed: '${out.messages[0].message}'`)
+            assert(out.object.id=="pipeline1", `ID of pipeline1 should be set: '${out.object.id}'`)
             
             // Test POW building a pipeline
             try{out = await pow.build(); assert(false, "NO!!!")} catch(e){assert(e.messages.length>0, "Build without ID should throw")}
