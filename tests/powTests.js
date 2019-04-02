@@ -3,7 +3,7 @@
     let verbose = args.indexOf("verbose")>=0?true:false;
     let debug = args.indexOf("debug")>=0?true:false;
 
-    let FUNC = require("./functions").FUNC(verbose);
+    let FUNC = require("./functions")(verbose);
     let assert = FUNC.assert;
 
     let POW = require("../ide/js/pow");

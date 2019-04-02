@@ -35,4 +35,4 @@ function FUNC(verbose) {
         }
     };
 }
-module.exports.FUNC = FUNC
+module.exports = FUNC

@@ -87,6 +87,17 @@ const pow = (function(){
     }
 
     /**
+     * Savea pipeline definition to pipeline.json)
+     * @param {string} path Path to the pipeline (e.g. "!pipeline1" for default workspace)
+     * @param {POWPipelineDef} pipeline Path to the pipeline (e.g. "!pipeline1" for default workspace)
+     * @returns {Promise} Promise with a POWResult
+     */
+    async function save(path) {
+        if (!path.match(/^!/) && !path.match(/[\\/]/)) path = "!"+path;
+        return execStrictJSON(`pow pipeline "${path}" export`);
+    }
+
+    /**
      * Builds a pipeline from it's definition
      * @param {string} pipelineId The ID of the pipeline
      * @returns {Promise} Promise with a POWResult

@@ -81,24 +81,24 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
         assert(()=>myPipeline.steps.length===3, "Pipeline export has 3 steps")
         let pipelineDef = PM.getDefinition();
         assert(()=>myPipeline.id===pipelineDef.id, "Export has same id")
-        let pipelineStr = JSON.stringify(myPipeline);
+        //let pipelineStr = JSON.stringify(myPipeline);
         //fs.writeFileSync("C:\\temp\\pipeline.json", pipelineStr, "utf-8");
 
         //console.log(PM.getStep("C1"))
         //columnsToString();
 
     } catch(e) {
-        fails++;
+        FUNC.addFails();
         console.log("TEST cancelled:")
         console.log(e);
     }
 
-    if (fails) {
+    if (FUNC.fails > 0) {
         columnsToString();
-        console.log("\x1b[31m", "FAIL: pipeline-manager.js failed some tests", "\x1b[0m")
+        console.log("\x1b[31m", `FAIL: pipeline-manager.js ${FUNC.fails()} of ${FUNC.tests()} tests`, "\x1b[0m")
         process.exit(1)
     } else {
-        console.log("\x1b[32m", "SUCCESS: pipeline-manager.js passed successfully", "\x1b[0m")
+        console.log("\x1b[32m", `SUCCESS: pipeline-manager.js passed ${FUNC.tests()} tests successfully`, "\x1b[0m");
         process.exit(0)
     }
 })(console, process.argv.slice(2));
