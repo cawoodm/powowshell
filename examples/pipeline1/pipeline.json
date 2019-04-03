@@ -17,6 +17,15 @@
   "steps": [
     {
       "id": "A1",
+      "reference": "ReadFile",
+      "name": "Read Voters File",
+      "parameters": {
+        "Path": "{$PipelineParams.DataSource}"
+      },
+      "input": ""
+    },
+    {
+      "id": "B1",
       "reference": "CSV2JSON",
       "name": "Convert2JSON",
       "parameters": {
@@ -24,15 +33,6 @@
         "Header": "{\"name\", \"age\", \"email\", \"source\"}"
       },
       "input": "A1"
-    },
-    {
-      "id": "B1",
-      "reference": "ReadFile",
-      "name": "Read Voters File",
-      "parameters": {
-        "Path": "{$PipelineParams.DataSource}"
-      },
-      "input": ""
     },
     {
       "id": "C1",

@@ -58,10 +58,26 @@ window.onload = function() {
                 });
             },
             run: function() {
-                pow.run("!"+this.pipeline.id)
-                    .then((obj)=>{
-                        alert(JSON.stringify(obj.object))
+                // TODO: We need to save pipeline first!
+                pow.build("!"+this.pipeline.id)
+                    .then((res)=>{
+                        return pow.verify("!"+this.pipeline.id);
                     })
+                    .then((res)=>{
+                        return pow.run("!"+this.pipeline.id)
+                    })
+                    .then((obj)=>{
+                        alert(JSON.stringify(obj.object, null, 2))
+                    }).catch((err)=>{
+                        this.handlePOWError(err)
+                    });
+            },
+            handlePOWError: function(err) {
+                let message = err.message;
+                err.messages.forEach((msg)=>{
+                    message += "\n" + msg.type + ": " + msg.message;
+                });
+                alert(message);
             },
             showDialog: function(id) {
                 try {
