@@ -24,3 +24,7 @@ export type POWResult = {
     object: any,
     messages: POWMessage[]
 }
+export type POWError = {
+    message: string,
+    messages: string[]
+}

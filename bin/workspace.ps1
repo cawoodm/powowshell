@@ -22,7 +22,10 @@ function main() {
 	try {
         $WPath = (Resolve-Path -Path $Path).Path
         if (-not (Test-Path "$Wpath\components")) {Write-Warning "$WPath does not appear to be a workspace. No components\ subfolder!"; return;}
-        $WPath > .\workspace.txt
+        # Workspace is always in root of this app otherwise pow commands will become relative to their execution location
+        Push-Location $PSScriptRoot
+        $WPath > ..\workspace.txt
+        Pop-Location
         Write-Host "Workspace set to '$WPath'" -ForegroundColor Cyan
     } catch {
         $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")

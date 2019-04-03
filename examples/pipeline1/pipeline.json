@@ -1,53 +1,52 @@
-﻿{
-	"id": "pipeline1",
-	"name": "Send mail to young voters",
-	"description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
-	"parameters": {
-		"DataSource": {
-			"default": ".\\data\\voters.txt",
-			"type": "string"
-		},
-		"p2": {
-			"default": "{Get-Date}"
-		}
-	},
-	"globals": {
-		"foo": "bar"
-	},
-	"checks": {
-		"run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?"
-	},
-	"input": {},
-	"output": {},
-	"steps": [
-		{
-			"id": "A1",
-			"name": "Read Voters File",
-			"reference": "ReadFile",
-			"input": "",
-			"parameters": {
-				"Path": "{$PipelineParams.DataSource}"
-			}
-		},
-		{
-			"id": "B1",
-			"name": "Convert2JSON",
-			"reference": "CSV2JSON",
-			"input": "A1",
-			"parameters": {
-				"Delimiter": "|",
-				"Header": "{\"name\", \"age\", \"email\", \"source\"}"
-			}
-		},
-		{
-			"id": "C1",
-			"name": "Select Name and Email",
-			"reference": "SelectFields",
-			"input": "B1",
-			"parameters": {
-				"Fields": "{\"name\", \"age\", \"email\"}"
-			}
-		}
-	]
-	
+{
+  "id": "pipeline1",
+  "name": "Send mail to young voters",
+  "description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
+  "parameters": {
+    "DataSource": {
+      "default": ".\\data\\voters.txt",
+      "type": "string"
+    },
+    "p2": {
+      "default": "{Get-Date}"
+    }
+  },
+  "globals": {
+    "foo": "bar"
+  },
+  "steps": [
+    {
+      "id": "A1",
+      "reference": "CSV2JSON",
+      "name": "Convert2JSON",
+      "parameters": {
+        "Delimiter": "|",
+        "Header": "{\"name\", \"age\", \"email\", \"source\"}"
+      },
+      "input": "A1"
+    },
+    {
+      "id": "B1",
+      "reference": "ReadFile",
+      "name": "Read Voters File",
+      "parameters": {
+        "Path": "{$PipelineParams.DataSource}"
+      },
+      "input": ""
+    },
+    {
+      "id": "C1",
+      "reference": "SelectFields",
+      "name": "Select Name and Email",
+      "parameters": {
+        "Fields": "{\"name\", \"age\", \"email\"}"
+      },
+      "input": "B1"
+    }
+  ],
+  "input": {},
+  "output": {},
+  "checks": {
+    "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?"
+  }
 }

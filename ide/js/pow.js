@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const pow = (function () {
-    //import {PShell} from "./pshell";
+    const fs = require("fs");
+    const path = require("path");
     const pshell = require("./pshell").PShell();
     let workspace = ".";
-    let execOptions = {};
+    let execOptions = { debug: false };
     /**
      * Initialize a workspace
      * @param {string} workspacePath: The path to the workspace root
@@ -74,15 +75,21 @@ const pow = (function () {
         return execStrictJSON(`pow pipeline "${path}" export`);
     }
     /**
-     * Savea pipeline definition to pipeline.json)
+     * Save a pipeline definition to pipeline.json)
      * @param {string} path Path to the pipeline (e.g. "!pipeline1" for default workspace)
      * @param {POWPipelineDef} pipeline Path to the pipeline (e.g. "!pipeline1" for default workspace)
      * @returns {Promise} Promise with a POWResult
      */
-    async function save(path) {
-        if (!path.match(/^!/) && !path.match(/[\\/]/))
-            path = "!" + path;
-        return execStrictJSON(`pow pipeline "${path}" export`);
+    async function save(pipeline) {
+        let data = JSON.stringify(pipeline, null, 2);
+        return new Promise(function (resolve, reject) {
+            fs.writeFile(path.resolve(workspace, pipeline.id, "pipeline.json"), data, (err) => {
+                if (!err)
+                    resolve(new POWResult(true, "Pipeline saved!", [], {}));
+                else
+                    reject(new POWError(err, []));
+            });
+        });
     }
     /**
      * Builds a pipeline from it's definition
@@ -193,6 +200,7 @@ const pow = (function () {
         inspect: inspect,
         components: components,
         pipeline: pipeline,
+        save: save,
         exec: exec,
         execStrict: execStrict,
         getWorkspace: () => workspace

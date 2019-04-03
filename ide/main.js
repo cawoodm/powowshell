@@ -1,5 +1,4 @@
 /* global Vue dragula formBuilder console pipelineManager */
-let dp = console.log
 let app = {};
 if (typeof process !== "undefined") {
     var pow = require("./js/pow").pow;
@@ -45,6 +44,7 @@ window.onload = function() {
                 app.dragula = dragula([].slice.call(document.querySelectorAll(".drag")),dragOpts).on("drop", function (el, space) {
                     let id = el.getAttribute("d-id");
                     let ref = el.getAttribute("d-ref");
+                    console.log(id, ref)
                     if (ref) {
                         // This is a component
                         let component = app.getComponent(ref);
@@ -86,7 +86,10 @@ window.onload = function() {
             pipelineOpen: function() {
             },
             pipelineSave: function() {
-                dp("pipelineSave")   // TODO: IDE: Pipeline Save
+                let pipeline = pipelineManager.export();
+                pow.save(pipeline)
+                    .then(()=>alert("Saved*"))
+                    .catch((err)=>alert(err));
             }
         },
         mounted: function() {
@@ -101,7 +104,9 @@ window.onload = function() {
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
-                this.pipelineLoad("pipeline1")
+                pow.init("examples")
+                    .then(root.pipelineLoad("pipeline1"));
+                
             }
         }
     });

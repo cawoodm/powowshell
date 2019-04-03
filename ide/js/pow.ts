@@ -14,11 +14,12 @@
 import * as POWType from "./pow-types";
 const pow = (function(){
 
-    //import {PShell} from "./pshell";
+    const fs = require("fs");
+    const path = require("path");
     const pshell = require("./pshell").PShell();
 
     let workspace = ".";
-    let execOptions = {};
+    let execOptions : {debug: boolean} = {debug: false};
 
     /**
      * Initialize a workspace
@@ -42,7 +43,7 @@ const pow = (function(){
      */
     async function version() {
         return new Promise(function(resolve, reject) {
-            _POWPromise("pow version").then((result)=>{
+            _POWPromise("pow version").then((result: POWType.POWResult)=>{
                 if (result.success)
                     resolve(result.output)
                 else
@@ -90,14 +91,19 @@ const pow = (function(){
     }
 
     /**
-     * Savea pipeline definition to pipeline.json)
+     * Save a pipeline definition to pipeline.json)
      * @param {string} path Path to the pipeline (e.g. "!pipeline1" for default workspace)
      * @param {POWPipelineDef} pipeline Path to the pipeline (e.g. "!pipeline1" for default workspace)
      * @returns {Promise} Promise with a POWResult
      */
-    async function save(path) {
-        if (!path.match(/^!/) && !path.match(/[\\/]/)) path = "!"+path;
-        return execStrictJSON(`pow pipeline "${path}" export`);
+    async function save(pipeline: POWType.PipelineDef) {
+        let data = JSON.stringify(pipeline, null, 2);
+        return new Promise(function(resolve, reject) {
+            fs.writeFile(path.resolve(workspace, pipeline.id, "pipeline.json"), data, (err)=>{
+                if (!err) resolve(new POWResult(true, "Pipeline saved!", [], {}));
+                else reject(new POWError(err, []));
+            })
+        });
     }
 
     /**
@@ -215,6 +221,7 @@ const pow = (function(){
         inspect: inspect,
         components: components,
         pipeline: pipeline,
+        save: save,
         exec: exec,
         execStrict: execStrict,
         getWorkspace: ()=>workspace
@@ -250,8 +257,9 @@ const POWMessage = function(type, message) {
  *  - A summary message
  *  - An array of POWMessages
  */
-class POWError extends Error {
-    constructor(message, messages) {
+class POWError extends Error implements POWType.POWError{
+    messages: string[];
+    constructor(message: string, messages: string[]) {
         super(message);
         this.messages = messages || [];
         this.name = "POWError";

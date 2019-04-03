@@ -7,7 +7,8 @@
 * Need to agree on `""` or `null/$null` for empty values in JSON
 
 ## IDE
-* Save (export) pipeline
+* BUG: Drag & drop is broken
+* TODO: When dragging a step the inputs need to be changed/cleared
 * Verify pipeline
 * Build pipeline
 * Run pipeline
