@@ -34,6 +34,9 @@ window.onload = function() {
                 // Check everything is loaded
                 if (!this.loading.pipeline || !this.loading.components) return;
                 app.root.$refs.componentList.setComponents(app.components);
+            },
+            componentsUpdated: function() {
+                let root = this;
                 // Make .drag elements draggable
                 const dragOpts = {
                     revertOnSpill: true, // true=Go back if not dropped
@@ -44,7 +47,6 @@ window.onload = function() {
                 app.dragula = dragula([].slice.call(document.querySelectorAll(".drag")),dragOpts).on("drop", function (el, space) {
                     let id = el.getAttribute("d-id");
                     let ref = el.getAttribute("d-ref");
-                    console.log(el)
                     if (ref) {
                         // This is a component
                         let component = app.getComponent(ref);

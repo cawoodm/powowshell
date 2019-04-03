@@ -11,8 +11,9 @@ Vue.component("component-list", {
             this.components = components;
         }
     },
+    updated: function() {},
     template: `
-    <v-expansion-panel-content>
+    <v-expansion-panel-content @hook:updated="$root.componentsUpdated">
         <div slot="header">Components</div>
         <v-list dense>
             <v-list-tile v-for="component in components" class="drag component" :d-ref="component.reference" :key="component.reference">
