@@ -1,8 +1,10 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es2017",
         "module": "commonjs",
+        "lib": ["dom", "es6"],
         "removeComments" :false,
-        "sourceMap": true
+        "sourceMap": true,
+        "moduleResolution":"node"
     }
 }

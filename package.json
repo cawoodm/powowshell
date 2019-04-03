@@ -12,5 +12,8 @@
   "repository": "https://github.com/cawoodm/powowshell",
   "keywords": [
     "PowerShell"
-  ]
+  ],
+  "dependencies": {
+    "@types/node": "^11.13.0"
+  }
 }

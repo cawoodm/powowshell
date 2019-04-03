@@ -20,7 +20,6 @@ window.onload = function() {
     pow.components()
         .then((obj)=>{
             app.components = obj.object;
-            app.root.$refs.componentList.setComponents(app.components);
             app.root.loaded("components");
         });
     app.root = new Vue({
@@ -35,6 +34,7 @@ window.onload = function() {
                 this.loading[what]=true;
                 // Check everything is loaded
                 if (!this.loading.pipeline || !this.loading.components) return;
+                app.root.$refs.componentList.setComponents(app.components);
                 // Make .drag elements draggable
                 const dragOpts = {
                     revertOnSpill: true, // true=Go back if not dropped
@@ -100,7 +100,7 @@ window.onload = function() {
                 root.$refs.stepGrid.doUpdate();
             });
             if (app.DEVMODE) {
-                //console.clear(); // Vue junk
+                console.clear(); // Vue/electron junk warnings
                 this.pipelineLoad("pipeline1")
             }
         }

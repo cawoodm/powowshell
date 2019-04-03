@@ -30,31 +30,15 @@
  *    }
  *
  */
-import {POWGlobalDef} from "../tmp";
+import * as POWType from "./pow-types";
 // @ts-check
 let pipelineManager = (function() {
     const pipeCols = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
     const COLS = pipeCols.length;
     const ROWS = 9;
     let columns = [];
-    //type POWGlobalDef = { [key:string]: string};
-    type POWPipelineParamDef = { "default": string;  "type": string};
-    type POWStepParamDef = { "default": string;  "type": string};
-    type POWStepDef = { id: string; name: string; reference: string; input: string; parameters: POWStepParamDef[]};
-    type POWInputDef = {}; // TODO: Define pipeline I/O properly
-    type POWOutputDef = {};
-    type POWPipelineDef =  {
-        id: string;
-        name: string;
-        description: string;
-        parameters: POWPipelineParamDef[]
-        globals: POWGlobalDef;
-        steps: POWStepDef[]
-        input: POWInputDef;
-        output: POWInputDef
-    };
-    const pipelineDefNull: POWPipelineDef = {id: null, name: null, description: null, parameters: [], globals: {}, steps: [], input: {}, output: {}};
-    let pipelineDef: POWPipelineDef = pipelineDefNull;
+    const pipelineDefNull: POWType.PipelineDef = {id: null, name: null, description: null, parameters: [], globals: {}, steps: [], input: {}, output: {}};
+    let pipelineDef: POWType.PipelineDef = pipelineDefNull;
 
     // Public members
     return {

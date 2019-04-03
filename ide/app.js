@@ -1,17 +1,15 @@
-'use strict';
-const electron = require('electron');
-const appConfig = require('electron-settings');
-const path = require('path');
-const fs = require('fs');
+"use strict";
+const electron = require("electron");
+const appConfig = require("electron-settings");
+//const path = require("path");const fs = require("fs");
 const app = electron.app;
 
-if (process.env.NODE_ENV=='prod') {
-} else {
-	require('electron-reload')(__dirname, {
-		electron: 'C:/Users/Marc/AppData/Roaming/npm/electron.cmd',
-		hardResetMethod: 'exit'
+if (process.env.NODE_ENV!=="prod") {
+	require("electron-reload")(__dirname, {
+		electron: "C:/Users/Marc/AppData/Roaming/npm/electron.cmd",
+		hardResetMethod: "exit"
 	});
-	require('electron-debug')();
+	require("electron-debug")();
 }
 
 // prevent window being garbage collected
@@ -24,10 +22,10 @@ function onClosed() {
 } 
 
 function createMainWindow() {
-	const mainWindowStateKeeper = windowStateKeeper('main');
+	const mainWindowStateKeeper = windowStateKeeper("main");
 
 	const win = new electron.BrowserWindow({
-		title: 'main',
+		title: "main",
 		x: mainWindowStateKeeper.x,
 		y: mainWindowStateKeeper.y,
 		width: mainWindowStateKeeper.width,
@@ -40,24 +38,24 @@ function createMainWindow() {
 	mainWindowStateKeeper.track(win);
 
 	win.loadURL(`file://${__dirname}/index.html`);
-	win.on('closed', onClosed);
+	win.on("closed", onClosed);
 
 	return win;
 }
 
-app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+	if (process.platform !== "darwin") {
 		app.quit();
 	}
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
 	if (!mainWindow) {
 		mainWindow = createMainWindow();
 	}
 });
 
-app.on('ready', () => {
+app.on("ready", () => {
 	mainWindow = createMainWindow();
 });
 
@@ -85,7 +83,7 @@ function windowStateKeeper(windowName) {
 	}
 	function track(win) {
 		window = win;
-		['resize', 'move', 'close'].forEach(event => win.on(event, saveState));
+		["resize", "move", "close"].forEach(event => win.on(event, saveState));
 	}
 	setBounds();
 	return({
