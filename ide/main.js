@@ -44,7 +44,7 @@ window.onload = function() {
                 app.dragula = dragula([].slice.call(document.querySelectorAll(".drag")),dragOpts).on("drop", function (el, space) {
                     let id = el.getAttribute("d-id");
                     let ref = el.getAttribute("d-ref");
-                    console.log(id, ref)
+                    console.log(el)
                     if (ref) {
                         // This is a component
                         let component = app.getComponent(ref);

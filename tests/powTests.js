@@ -30,6 +30,7 @@
             // Test loading pipeline
             out = await pow.pipeline("!pipeline1"); assert(out.success, `Load of pipeline1 should succeed: '${out.messages[0].message}'`)
             assert(out.object.id=="pipeline1", `ID of pipeline1 should be set: '${out.object.id}'`)
+            let pipeline1 = out.object;
             
             // Test POW building a pipeline
             try{out = await pow.build(); assert(false, "NO!!!")} catch(e){assert(e.messages.length>0, "Build without ID should throw")}
@@ -47,9 +48,11 @@
             out = await pow.inspect("!CSV2JSON"); assert(out.success, `Should inspect a component and see the reference: '${out.object.reference}'`)
             assert(out.object.input.match(/text\/.sv/), `Should have 'text/*sv' as our component input: '${out.object.input}'`)
 
-            // TODO: Test pow components
+            // Test pow components
             out = await pow.components("!"); assert(out.success && out.object.length > 5, `Should list components find some: '${out.object.length}'`)
 
+            // Test pow save
+            out = await pow.save(pipeline1); assert(out.success, `Should save the pipeline: ${out.success}`)
             
         } catch(e) {
             console.error("\x1b[31m", "TEST cancelled:\n", e.message, "\x1b[31m")
