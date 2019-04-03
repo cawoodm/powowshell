@@ -1,11 +1,11 @@
-/* global Vue dragula formBuilder console pow pipelineManager */
+/* global Vue dragula formBuilder console pipelineManager */
 let dp = console.log
 let app = {};
-pipelineManager.reset();
 if (typeof process !== "undefined") {
-    var POW = require("./js/pow")
-    var pow = POW.pow;
+    var pow = require("./js/pow").pow;
+    pipelineManager = require("./js/pipeline-manager") //  eslint-disable-line
 }
+pipelineManager.reset();
 app.components = {}
 
 app.getComponent = (reference) => {

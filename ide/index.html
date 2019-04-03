@@ -46,14 +46,20 @@
     </v-content>
 
 </v-app>
-<script src="./js/vue.js"></script>
+<script src="./js/vue.min.js"></script>
 <script src="./js/vuetify.js"></script>
 <script src='./js/dragula.js'></script>
-<script src="./js/pipeline-manager.js"></script>
+<script>
+if (typeof process === "undefined") {
+    var exports = {} // Fix TypeScript reference to exports not known in browser
+    // Write JS Modules as <script> tags for Browser Demo (non-electron)
+    document.write('<script src="./js/pipeline-manager.js"><'+'/script>');
+    document.write('<script src="./js/pow-mock.js"><'+'/script>');
+}
+</script>
 <script src="./js/component-list.js"></script>
-<script src="./js/pow-mock.js"></script>
 <script src="./js/step-grid.js"></script>
 <script src="./js/step-form.js"></script>
-<script src="./js/main.js"></script>
+<script src="./main.js"></script>
 </body>
 </html>

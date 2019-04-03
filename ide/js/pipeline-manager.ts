@@ -1,35 +1,35 @@
-/*
- PipelineManager
- Manage the pipeline interfacing between the UI/user (dragging stuff around) and the pipeline.json output
- The pipeline is represented in meory as a list of columns with steps
- 
- Functionality:
-    reset(): Like an init() which can be called repeatedly to clear the pipeline
-    import(): Read/de-serialize a pipeline JSON document into memory
-    export(): Save/serialize a pipeline JSON document to JSON
-    verifyPipeline(): Check in-memory pipeline for consistency
-    addComponent(): Add a new step from a componet definition
-    removeStep(): Remove a step from a pipeline
-    moveStep(): Move a step from one position to another
- HelperS:
-    getColumn(c): Get a column (array of steps)
-    getStep(c, r): Get a step from within column c at row r
-
- Data Model:
-  columns: Array of columns representing [A-I]
-   column: Array of steps representing [1-9]
-    step: {
-        id: "B1",                       // The id of the step (*)
-        reference: "file-csv-ps1",            // The path to the component (*)
-        name : "Read Voters File",      // short readable name of the step (*)
-        parameters: {
-            "p1": "value",              // Parameter p1 and it's value
-            "p2": "value",              // Parameter p2 and it's value
-        },
-        input: "A1"                     // Which step's output is my input
-    }
-
-*/
+/**
+ * PipelineManager
+ * Manage the pipeline interfacing between the UI/user (dragging stuff around) and the pipeline.json output
+ * The pipeline is represented in meory as a list of columns with steps
+ * 
+ * Functionality:
+ *    reset(): Like an init() which can be called repeatedly to clear the pipeline
+ *    import(): Read/de-serialize a pipeline JSON document into memory
+ *    export(): Save/serialize a pipeline JSON document to JSON
+ *    verifyPipeline(): Check in-memory pipeline for consistency
+ *    addComponent(): Add a new step from a componet definition
+ *    removeStep(): Remove a step from a pipeline
+ *    moveStep(): Move a step from one position to another
+ * HelperS:
+ *    getColumn(c): Get a column (array of steps)
+ *    getStep(c, r): Get a step from within column c at row r
+ *
+ * Data Model:
+ *  columns: Array of columns representing [A-I]
+ *   column: Array of steps representing [1-9]
+ *    step: {
+ *        id: "B1",                       // The id of the step (*)
+ *        reference: "file-csv-ps1",            // The path to the component (*)
+ *        name : "Read Voters File",      // short readable name of the step (*)
+ *        parameters: {
+ *            "p1": "value",              // Parameter p1 and it's value
+ *            "p2": "value",              // Parameter p2 and it's value
+ *        },
+ *        input: "A1"                     // Which step's output is my input
+ *    }
+ *
+ */
 import {POWGlobalDef} from "../tmp";
 // @ts-check
 let pipelineManager = (function() {
