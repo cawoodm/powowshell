@@ -22,8 +22,8 @@ param(
 
 )
 function main() {
-    
     $Path = $Path.replace('.ps1', '')
+    Write-Verbose "Path=$Path"
 	$FullPath = (Resolve-Path -Path $Path).Path
     Push-Location $FullPath
     try {

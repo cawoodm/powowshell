@@ -12,17 +12,22 @@
 
 	.Parameter Action
 	Action = "export": Export description as JSON
+
+	.Parameter ExportPath
+	Path to export to
 	
 #>
 [CmdletBinding()]
 param(
 	[Parameter(Mandatory)][string]$Path,
-	[string][ValidateSet("export")]$Action
+	[string][ValidateSet("export")]$Action,
+	[string]$ExportPath
 )
 function main() {
 	
 	try {
 		$Path = (Resolve-Path -Path $Path).Path
+		if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
 		$Filename = (Split-Path -Path $Path -Leaf)
 		Write-Verbose "Inspecting $Path ..."
 		$POWMessages=@()
@@ -72,7 +77,11 @@ function main() {
 			"POWMessages" = $POWMessages
 		}
 		if ($Action -like "export") {
-			return $result | ConvertTo-Json
+			if ($ExportPath) {
+				return $result | ConvertTo-Json > $ExportPath
+			} else {
+				return $result | ConvertTo-Json
+			}
 		} else {
 			return $result
 		}
@@ -89,6 +98,9 @@ function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -spl
 function Get-OPType($cmd) {try{([string](Get-OP($cmd))[0]).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
 function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{$null}}
+
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+#[Console]::OuputEncoding = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main
