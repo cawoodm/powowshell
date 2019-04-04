@@ -15,6 +15,7 @@
         <v-menu offset-y>
             <v-btn slot="activator" color="primary">Pipeline</v-btn>
             <v-list>
+                <v-list-tile @click="pipelineNew"><v-list-tile-title>New</v-list-tile-title></v-list-tile>
                 <v-list-tile @click="pipelineOpen"><v-list-tile-title>Open...</v-list-tile-title></v-list-tile>
                 <v-list-tile @click="pipelineSave"><v-list-tile-title>Save</v-list-tile-title></v-list-tile>
             </v-list>

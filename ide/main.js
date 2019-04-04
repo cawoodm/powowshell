@@ -3,6 +3,8 @@ let app = {};
 if (typeof process !== "undefined") {
     var pow = require("./js/pow").pow;
     pipelineManager = require("./js/pipeline-manager") //  eslint-disable-line
+    var {dialog} = require("electron").remote
+    console.log(dialog)
 }
 pipelineManager.reset();
 app.components = {}
@@ -29,11 +31,10 @@ window.onload = function() {
         },
         methods: {
             loaded: function(what) {
-                let root = this;
                 this.loading[what]=true;
                 // Check everything is loaded
                 if (!this.loading.pipeline || !this.loading.components) return;
-                app.root.$refs.componentList.setComponents(app.components);
+                this.$refs.componentList.setComponents(app.components);
             },
             componentsUpdated: function() {
                 let root = this;
@@ -60,12 +61,12 @@ window.onload = function() {
                 });
             },
             run: function() {
-                // TODO: We need to save pipeline first!
+                // TODO: We should to save the pipeline first!
                 pow.build("!"+this.pipeline.id)
-                    .then((res)=>{
+                    .then(()=>{
                         return pow.verify("!"+this.pipeline.id);
                     })
-                    .then((res)=>{
+                    .then(()=>{
                         return pow.run("!"+this.pipeline.id)
                     })
                     .then((obj)=>{
@@ -91,23 +92,46 @@ window.onload = function() {
                     alert(e.message)
                 }
             },
-            pipelineLoad: function(id) {
+            pipelineLoad: function(id, opts) {
                 // Load pipeline definition
+                opts = opts || {};
+                opts.skipConfirm=opts.skipConfirm||false;
+                if (!opts.skipConfirm && !confirm("Are you sure you want to clear the grid and load a new pipeline?")) return;
                 pow.pipeline(`${id}`)
-                    .then((obj)=>{
-                        pipelineManager.import(obj.object);
+                    .then((res)=>{
+                        pipelineManager.import(res.object);
                         if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
-                        this.pipeline = obj.object;
+                        this.pipeline = res.object;
                         this.loaded("pipeline");
                     });
             },
+            pipelineNew: function() {
+                if (!confirm("Are you sure you want to clear the grid and start a new pipeline?")) return;
+                pipelineManager.reset();
+                this.redraw();
+            },
             pipelineOpen: function() {
+                if (typeof dialog === "undefined") return alert("Not implemented in the demo!\nTry download the app and run it with electron for all the features.")
+                let file = dialog.showOpenDialog({
+                    properties: ["openFile"],
+                    filters: { name: "Pipelines", extensions: ["json"] }
+                });
+                if (!file) return;
+                pow.load(file[0]).then((res)=>{
+                    pipelineManager.import(res.object);
+                    if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
+                    this.pipeline = res.object;
+                });
             },
             pipelineSave: function() {
                 let pipeline = pipelineManager.export();
                 pow.save(pipeline)
-                    .then(()=>alert("Saved*"))
+                    .then(()=>alert("Saved"))
                     .catch((err)=>alert(err));
+            },
+            redraw: function() {
+                // Must synch entire grid OR Vue.set(exactObject, newObject)
+                this.$refs.stepGrid.doUpdate();
             }
         },
         mounted: function() {
@@ -117,13 +141,12 @@ window.onload = function() {
             this.$root.$on("stepSave", (newStep) => {
                 //let oldStep = pipelineManager.getStep(newStep.id)
                 pipelineManager.setStep(newStep);
-                // Must synch entire grid OR Vue.set(exactObject, newObject)
-                root.$refs.stepGrid.doUpdate();
+                this.redraw();
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
                 pow.init("examples")
-                    .then(root.pipelineLoad("pipeline1"));
+                    .then(()=>root.pipelineLoad("pipeline1", {skipConfirm: true}));
                 
             }
         }

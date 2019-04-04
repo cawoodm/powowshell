@@ -75,7 +75,7 @@ const pow = (function () {
         return execStrictJSON(`pow pipeline "${path}" export`);
     }
     /**
-     * Save a pipeline definition to pipeline.json)
+     * Save a pipeline definition to pipeline.json
      * @param {string} path Path to the pipeline (e.g. "!pipeline1" for default workspace)
      * @param {POWPipelineDef} pipeline Path to the pipeline (e.g. "!pipeline1" for default workspace)
      * @returns {Promise} Promise with a POWResult
@@ -86,6 +86,22 @@ const pow = (function () {
             fs.writeFile(path.resolve(workspace, pipeline.id, "pipeline.json"), data, (err) => {
                 if (!err)
                     resolve(new POWResult(true, "Pipeline saved!", [], {}));
+                else
+                    reject(new POWError(err, []));
+            });
+        });
+    }
+    /**
+     * Load a pipeline definition from a pipeline.json
+     * @param {string} path Path to the pipeline (e.g. "!pipeline1" for default workspace)
+     * @returns {Promise} Promise with a POWPipelineDef
+     */
+    async function load(pipeline) {
+        return new Promise(function (resolve, reject) {
+            fs.readFile(pipeline, "utf8", (err, data) => {
+                data = data.replace(/^\uFEFF/, ''); // Drop BOM
+                if (!err)
+                    resolve(new POWResult(true, "Pipeline loaded!", [], JSON.parse(data)));
                 else
                     reject(new POWError(err, []));
             });
@@ -201,6 +217,7 @@ const pow = (function () {
         components: components,
         pipeline: pipeline,
         save: save,
+        load: load,
         exec: exec,
         execStrict: execStrict,
         getWorkspace: () => workspace
