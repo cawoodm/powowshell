@@ -1,12 +1,41 @@
 # PowowShell
 
-Ever dreamed of drawing a visual data flow and pressing "Play" to see it run?
-I have, and that's why I dreamed up PowowShell: a graphical designer powered
-by PowerShell.
+Ever dreamed of drawing a visual data flow and pressing "Play" to see it run? I have, and that's why I dreamed up PowowShell: a graphical designer powered by PowerShell.
 
 ## The Vision
 
 Imagine dragging a CSV File component into your pipeline, connecting it to a Database component and pressing "Play" to load data into your database. What about getting an email out if some records don't load? Drag in an Email component and connect it to the Errors output of your Database component. Call a web service? Sure, just use a Transform component to map your data to the format required.
+
+## Getting Started
+The software is pre-alpha, proof of concept, cutting (bleeding) edge technology but for the brave:
+
+1. Clone this repository with git: `git clone https://cawoodm/powowshell.git`
+2. Install electron: `npm install -g electron`
+3. Run the IDE with `npm start` or `electron `.`
+4. You can also run `install.cmd` and then play with the `pow` commands in powershell to build and run example pipelines
+
+## Examples
+This repo includes an 2 example pipelines in `./examples/` as well as a bunch of components.
+
+Install the `pow` cmdlet with install.cmd and then fire up `powershell` to begin.
+
+If you type `pow version` you should see version information and `pow help` will get you started with commands.
+
+Type `pow workspace .\examples` to switch to the examples workspace and save you typing the full path to pipelines.
+
+The first example can be built with `pow build !pipeline1` and then run with `pow run !pipeline1`. The `!` references the current workspace.
+
+The pipeline1 consists of 3 steps:
+
+1. Read a voters.txt file with a list of people
+2. Convert the delimited file to json
+3. Select only the name and email and output them as json
+
+Not very spectacular sure but this is a simple example and the principle should be clear:
+
+1. Steps are executed in a fixed order A1, A2, A3...B1, B2...C1...
+2. Steps can accept piped input from previous steps
+3. The pipeline can be run with different parameters making it reusable
 
 ## The Strategy
 
@@ -16,8 +45,7 @@ producing output, writing errors, verbose logging (-Verbose), dry runs (-WhatIf)
 We won't re-invent the wheel but will use these mechanisms wherever possible. We leverage the great wealth of annotation powershell provides through it's special comments system to describe our components and to make them interoperate.
 
 ### Piping
-One really powerful aspect of PowerShell is the ability to pipe objects (instead of just text).
-For the moment, we are going to stick with plain text for reasons of simplicity. The problem is that 2 components have to exactly agree on the object format which is complicated and the main reason why integration is hard and you need programmers.
+One really powerful aspect of PowerShell is the ability to pipe objects (instead of just text like normal shells). For the moment, we are going to stick with plain text for reasons of simplicity. The problem is that 2 components have to exactly agree on the object format which is complicated and the main reason why integration is hard and you need programmers.
 
 By supporting text and text/* subtypes (e.g. json, xml, ...) we keep things simple and components can do their own parsing and validation of input, ignoring whatever they don't need. As an example, a DeleteFile component will accept any dataset which has objects with a .Path property no matter their type.
 
@@ -34,13 +62,13 @@ Additionally pipelines and components can be verified and tested by running them
 
 The point of all this fuss is that if we can neatly define and delineate components and pipelines we can build a super-simple and super-sexy IDE which allows building and testing of pipelines with ease and maximum coolness.
 
-Check out an early prototype of the IDE here:
+Check out a prototype of the IDE here:
 
 https://cawoodm.github.io/powowshell/ide/
 
 ![ide](./docs/ide.png)
 
-This demo is basically just look and feel. There is no loading, running and saving of pipelines.
+This demo is basically just look and feel. There is no loading, running and saving of pipelines because PowerShell does not run in the browser. However, the IDE is available as an Electron app which allows you to load, save and run pipelines.
 
 ### Pipelines
 
@@ -49,11 +77,13 @@ Pipelines are where the magic happens. Here you connect your components together
  ![pipeline](docs/pipeline.png)
  ![pipeline2](docs/pipeline2.png)
 
- A pipeline is technically a pipeline.json file which describes the components it uses and how they are wired together. Pipelines also have globals which components can read and write as well as parameters which components may only read. These parameters are a way of er... parameterizing the pipeline so the same pipeline can do different useful things.
+ A pipeline is just a pipeline.json file which describes the components it uses and how they are wired together. Pipelines also have globals which components can read and write as well as parameters which components may only read. These parameters are a way of er... parameterizing the pipeline so the same pipeline can do different useful things.
+
+ The IDE produces the pipeline.json but you can also hack it together by hand - or write a better IDE!
 
 ### Components
 
-The diagram shows the 4 types of components (source, transform, destination and script) and how data can flow between them. It also shows how script components just run, needing no input and producing no output. Indeed you can use a pipeline to just run some commands in sequence.
+The diagram above shows the 4 types of components (source, transform, destination and script) and how data can flow between them. It also shows how script components just run, needing no input and producing no output. Indeed you can use a pipeline to just run some commands in sequence.
 
 ## Installation
 
