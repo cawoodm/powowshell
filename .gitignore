@@ -4,6 +4,7 @@ dist/
 bak/
 *.log
 *.bat
+!.map
 tmp*
 examples/**/step_*.ps1
 examples/**/run_*.ps1

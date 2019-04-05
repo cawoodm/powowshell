@@ -27,7 +27,9 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
     let testPipeline = fs.readFileSync(path.resolve(__dirname, "../examples/pipeline1/pipeline.json"), "utf8").trim();
     //testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A1", "name":"Read Voters File", "reference":"../components/ReadFile.ps1", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B1", "name":"Convert2JSON", "reference":"../components/CSV2JSON.ps1", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C1", "name":"Select Name and Email", "reference":"../components/SelectFields.ps1", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
     // @ts-ignore
-    let testComponent = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../examples/components/CSV2JSON.json"), "utf8").trim());
+    let testComponent = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./CSV2JSON.json"), "utf8").trim());
+    console.log(testComponent);
+    process.exit();
     //testComponent = { "synopsis": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": { "FieldSeparator": { "type": "string", "default": ",", "description": "Specifies the field separator. Default is a comma." } }, "input":"text/csv", "output":"json/array"};
 
     try{

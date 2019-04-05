@@ -2,12 +2,12 @@
 #Create folder for trace files
 New-Item -Path .\trace -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
 
-# Run Step A1: Read Voters File
-Write-Verbose "Running step A1: Read Voters File"
+# Run Step A1: Open Names File
+Write-Verbose "Running step A1: Open Names File"
 .\step_A1.ps1 >.\trace\tmp_A1_output.txt 2>.\trace\tmp_A1_errors.txt 5>>.\trace\tmp_debug.txt
 
-# Run Step B1: Convert2JSON
-Write-Verbose "Running step B1: Convert2JSON"
+# Run Step B1: Parse Names File
+Write-Verbose "Running step B1: Parse Names File"
 Get-Content -Raw .\trace\tmp_A1_output.txt | .\step_B1.ps1 >.\trace\tmp_B1_output.txt 2>.\trace\tmp_B1_errors.txt 5>>.\trace\tmp_debug.txt
 
 # Run Step C1: Select Name and Email

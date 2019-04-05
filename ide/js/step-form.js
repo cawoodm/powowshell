@@ -37,7 +37,6 @@ const StepForm = Vue.extend({
     },
     methods: {
         save(e) {
-            dp("save", e)
             this.$root.$emit('stepSave', this.step);
             this.close();
         },

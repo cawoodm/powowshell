@@ -6,10 +6,13 @@
   Accepts custom tabular data about people and return contents as a JSON Array
 	The data must be in the format:
 	NAME|AGE|GENDER
-	However, the separator can be different and specified by the -Delimiter parameter
+	However, the record and field separator can be anything.
 
  .Parameter Delimiter
   Specifies the field separator. Default is a comma ",")
+
+ .Parameter RecordSeparator
+  Specifies the record separator. Default is a newline.
 
  .Inputs
   text/xsv

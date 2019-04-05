@@ -1,6 +1,6 @@
 ﻿[CmdletBinding(SupportsShouldProcess)]
 param(
-	[string]$DataSource = ".\data\voters.txt",
+	[string]$DataSource = ".\data\names.txt",
 	$p2 = (Get-Date)
 )
 $PipelineParams = @{
@@ -14,12 +14,12 @@ Push-Location $PSScriptRoot
 
 try {
 
-	# Run Step A1: Read Voters File
-	Write-Verbose "Running step A1: Read Voters File"
+	# Run Step A1: Open Names File
+	Write-Verbose "Running step A1: Open Names File"
 	$OP_A1 = .\step_A1.ps1 -PipelineParams $PipelineParams
 
-	# Run Step B1: Convert2JSON
-	Write-Verbose "Running step B1: Convert2JSON"
+	# Run Step B1: Parse Names File
+	Write-Verbose "Running step B1: Parse Names File"
 	$OP_B1 = $OP_A1 | .\step_B1.ps1 -PipelineParams $PipelineParams
 
 	# Run Step C1: Select Name and Email

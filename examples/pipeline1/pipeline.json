@@ -4,7 +4,7 @@
   "description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
   "parameters": {
     "DataSource": {
-      "default": ".\\data\\voters.txt",
+      "default": ".\\data\\names.txt",
       "type": "string"
     },
     "p2": {
@@ -18,7 +18,7 @@
     {
       "id": "A1",
       "reference": "ReadFile",
-      "name": "Read Voters File",
+      "name": "Open Names File",
       "parameters": {
         "Path": "{$PipelineParams.DataSource}"
       },
@@ -27,7 +27,7 @@
     {
       "id": "B1",
       "reference": "CSV2JSON",
-      "name": "Convert2JSON",
+      "name": "Parse Names File",
       "parameters": {
         "Delimiter": "|",
         "Header": "{\"name\", \"age\", \"email\", \"source\"}"
@@ -47,6 +47,6 @@
   "input": {},
   "output": {},
   "checks": {
-    "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?"
+    "run": "some checks that we have all we need (e.g. ./data/names.txt) to run?"
   }
 }

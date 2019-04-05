@@ -26,6 +26,7 @@ function main() {
         foreach($script in $scripts) {
             $script = $script.Name
             if ("functions.js", "allTests.ps1", "workspace.txt" -contains $script) {continue}
+            if ($script -notlike "*.ps1" -and $script -notlike "*.js") {continue}
             Write-Host "Testing $script :"
             #$script = $script.replace(".", "Tests.")
             if ($script -like "*.js") {

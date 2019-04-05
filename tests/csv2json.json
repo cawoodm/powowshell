@@ -1,15 +1,8 @@
 ﻿{
-    "reference":  "CSV2JSON.ps1",
+    "reference":  "CSV2JSON",
     "synopsis":  "Convert CSV data to JSON format",
     "description":  "Accepts tabular CSV data and return contents as a JSON Array",
     "parameters":  [
-                       {
-                           "name":  "InputObject",
-                           "type":  "Object",
-                           "required":  true,
-                           "default":  "",
-                           "description":  ""
-                       },
                        {
                            "name":  "Delimiter",
                            "type":  "String",
@@ -23,8 +16,20 @@
                            "required":  false,
                            "default":  "",
                            "description":  ""
+                       },
+                       {
+                           "name":  "POWAction",
+                           "type":  "String",
+                           "required":  false,
+                           "default":  "",
+                           "description":  ""
                        }
                    ],
-    "input":  "",
-    "output":  "json/array"
+    "input":  "text/csv",
+    "inputDescription":  "A String in CSV format",
+    "output":  "text/json",
+    "outputDescription":  "A JSON array object",
+    "POWMessages":  [
+
+                    ]
 }
