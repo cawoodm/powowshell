@@ -36,18 +36,21 @@ Usage: pow <command>
 Commands: "version", "help", "clean", "build", "verify", "run", "inspect", "components"
 Command examples:
  * pow version: Print version information
- * pow help <command>: Help using a command
- * pow build <pipeline>: Build a pipeline (creates .ps1 file)
- * pow verify <pipeline>: Verify a pipeline by running it in PowerShell's 'dry run' (-WhatIf) mode
- * pow run <pipeline>: Run a pipeline
- * pow run <pipeline> -Trace -Verbose: Run a pipeline with verbose output and each step's output logged to trace directory
+ * pow help <command> : Help using a command
+ * pow build <pipeline> : Build a pipeline (creates .ps1 file)
+ * pow verify <pipeline> : Verify a pipeline by running it in PowerShell's 'dry run' (-WhatIf) mode
+ * pow run <pipeline> : Run a pipeline
+ * pow run <pipeline> -Trace -Verbose : Run a pipeline with verbose output and each step's output logged to trace directory
  * pow run <pipeline> @params: Run a pipeline passing in parameters (using splatting)
- * pow clean, build <pipeline>: Delete a built pipeline and re-build it
- * pow inspect <component.ps1>: Inspects a component
- * pow components <components directory>: List components in a folder
+ * pow pipeline <pipeline> : Return a pipeline definition
+ * pow pipeline <pipeline> export: Return a pipeline definition as JSON
+ * pow clean, build, verify <pipeline> : Delete a built pipeline, re-build it and verify it
+ * pow inspect <component.ps1> : Inspects a component
+ * pow components <components directory> : List components in a folder
 "@
     }
 }
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main
