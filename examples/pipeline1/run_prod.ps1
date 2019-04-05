@@ -1,6 +1,6 @@
 ﻿[CmdletBinding(SupportsShouldProcess)]
 param(
-	[string]$DataSource = ".\data\names.txt",
+	[string]$DataSource = ".\data\voters.txt",
 	$p2 = (Get-Date)
 )
 $PipelineParams = @{

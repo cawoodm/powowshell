@@ -27,8 +27,8 @@ function main() {
             $script = $script.Name
             if ("functions.js", "allTests.ps1", "workspace.txt" -contains $script) {continue}
             if ($script -notlike "*.ps1" -and $script -notlike "*.js") {continue}
-            Write-Host "Testing $script :"
-            #$script = $script.replace(".", "Tests.")
+            $script1 = $script.replace(".tests.", ".")
+            Write-Host "Testing $script1 :"
             if ($script -like "*.js") {
                 & node "$script" $verbose
                 if ($LASTEXITCODE) {throw "FAIL: $script"}
@@ -38,11 +38,12 @@ function main() {
         }
         
     } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     } finally {
         Set-Location $StartPath
     }
 }
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

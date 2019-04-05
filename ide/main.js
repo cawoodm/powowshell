@@ -74,9 +74,7 @@ window.onload = function() {
                     })
                     .then((obj)=>{
                         alert(JSON.stringify(obj.object, null, 2))
-                    }).catch((err)=>{
-                        this.handlePOWError(err)
-                    });
+                    }).catch(this.handlePOWError);
             },
             handlePOWError: function(err) {
                 let message = err.message;
@@ -108,7 +106,7 @@ window.onload = function() {
                         this.pipeline = res.object;
                         this.loaded("pipeline");
                         this.showLoading(false);
-                    });
+                    }).catch(this.handlePOWError);
             },
             pipelineNew: function() {
                 if (!confirm("Are you sure you want to clear the grid and start a new pipeline?")) return;
@@ -126,7 +124,7 @@ window.onload = function() {
                     pipelineManager.import(res.object);
                     if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
                     this.pipeline = res.object;
-                });
+                }).catch(this.handlePOWError);
             },
             pipelineSave: function() {
                 let pipeline = pipelineManager.export();
@@ -150,9 +148,9 @@ window.onload = function() {
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
-                pow.init("examples")
-                    .then(()=>root.pipelineLoad("pipeline1", {skipConfirm: true}));
-                
+                pow.init("!examples1")
+                    .then(()=>root.pipelineLoad("pipeline1", {skipConfirm: true}))
+                    .catch(this.handlePOWError);
             }
         }
     });
