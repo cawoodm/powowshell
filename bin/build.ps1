@@ -20,19 +20,23 @@ param(
 )
 $OutputPath=".\"
 function main() {
+
+	# Save path we are started from
+    $StartPath = (Get-Location).Path
     
     $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
-	if ($FullPath -eq $null) {throw "Path to pipeline $Path not found!"}
+	if ($null -eq $FullPath) {throw "Path to pipeline $Path not found!"}
     if ($Output) {$OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue}
-    if ($OutputPath -eq $null) {throw "Output path $Output not found!"}
+    if ($null -eq $OutputPath) {throw "Output path $Output not found!"}
     Push-Location $FullPath.Path
     try {
         BuildingPipeline
     } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
         #throw $_
+    } finally {
+        Set-Location $StartPath
     }
-    Pop-Location
 }
 
 function BuildingPipeline() {
@@ -309,7 +313,7 @@ function ReSerializeParams($parameters) {
         return $res
     } catch {
         # TODO: Why are we catching here??
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     }
 }
 function HDef($HashMap, $Field, $Default) {

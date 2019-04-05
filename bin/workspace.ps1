@@ -19,6 +19,10 @@ param(
     [Parameter(Mandatory)][String]$Path
 )
 function main() {
+
+	# Save path we are started from
+    $StartPath = (Get-Location).Path
+    
 	try {
         $WPath = (Resolve-Path -Path $Path).Path
         if (-not (Test-Path "$Wpath\components")) {Write-Warning "$WPath does not appear to be a workspace. No components\ subfolder!"; return;}
@@ -28,8 +32,10 @@ function main() {
         Pop-Location
         Write-Host "Workspace set to '$WPath'" -ForegroundColor Cyan
     } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
-    }
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+    } finally {
+        Set-Location $StartPath
+	}
 }
 
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'

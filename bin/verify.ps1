@@ -32,6 +32,10 @@ param(
     $Parameters=@{}
 )
 function main() {
+
+	# Save path we are started from
+    $StartPath = (Get-Location).Path
+    
     if ($Parameters -is [string]) {
         if ($Parameters -like '@*') {
             $Parameters = Invoke-Expression $Parameters
@@ -79,13 +83,13 @@ function main() {
         }
     } catch {
         Write-Host "!!! PIPELINE VERIFICATION FAILED !!!" -ForegroundColor Red
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
         #throw $_
     } finally {
         DEL .\errors.log -ErrorAction SilentlyContinue
         DEL .\warnings.log -ErrorAction SilentlyContinue
-        Pop-Location
-    }
+		Set-Location $StartPath
+	}
 }
 
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'

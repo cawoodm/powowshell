@@ -26,6 +26,10 @@ param(
 		[switch]$Trace=$false
 )
 function main() {
+
+	# Save path we are started from
+	$StartPath = (Get-Location).Path
+
 	if ($Parameters -is [string]) {
 			if ($Parameters -like '@*') {
 					$Parameters = Invoke-Expression $Parameters
@@ -52,11 +56,10 @@ function main() {
 		}
 	} catch {
 		Write-Host "!!! PIPELINE RUN FAILED !!!" -ForegroundColor Red
-		#Write-Error ("ERROR in pipeline on Line " + $_.InvocationInfo.ScriptLineNumber + ":`n" + $_.Exception.Message)
-		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber): $($_.Exception.Message)")
+		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
 		#throw $_
 	} finally {
-		Pop-Location
+		Set-Location $StartPath
 	}
 }
 
