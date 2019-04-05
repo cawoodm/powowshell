@@ -148,7 +148,7 @@ window.onload = function() {
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
-                pow.init("!examples1")
+                pow.init("!examples")
                     .then(()=>root.pipelineLoad("pipeline1", {skipConfirm: true}))
                     .catch(this.handlePOWError);
             }
