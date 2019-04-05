@@ -60,6 +60,9 @@ window.onload = function() {
                     app.dragula.cancel(true)
                 });
             },
+            showLoading: function(show, msg) {
+                this.$refs.loading.showLoading(show, msg);
+            },
             run: function() {
                 // TODO: We should to save the pipeline first!
                 pow.build("!"+this.pipeline.id)
@@ -97,12 +100,14 @@ window.onload = function() {
                 opts = opts || {};
                 opts.skipConfirm=opts.skipConfirm||false;
                 if (!opts.skipConfirm && !confirm("Are you sure you want to clear the grid and load a new pipeline?")) return;
+                this.showLoading(true, `Loading pipeline (${id})...`);
                 pow.pipeline(`${id}`)
                     .then((res)=>{
                         pipelineManager.import(res.object);
                         if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
                         this.pipeline = res.object;
                         this.loaded("pipeline");
+                        this.showLoading(false);
                     });
             },
             pipelineNew: function() {

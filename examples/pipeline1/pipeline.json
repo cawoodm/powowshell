@@ -4,7 +4,7 @@
   "description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
   "parameters": {
     "DataSource": {
-      "default": ".\\data\\names.txt",
+      "default": ".\\data\\voters.txt",
       "type": "string"
     },
     "p2": {

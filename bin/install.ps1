@@ -23,7 +23,7 @@ function main() {
         
         # Check if already installed
         #$PowowShell = Get-Module "PowowShell" # Unreliable
-        $PowowShell = Get-Command "pow"
+        $PowowShell = Get-Command "pow" -ErrorAction SilentlyContinue
         $PowExists = -not ($PowowShell -eq $null)
 
         # We install if forced or if we are not just Verifying

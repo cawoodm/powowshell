@@ -29,7 +29,7 @@ function Invoke-PowowShell {
 			$Command,
 			$p1,$p2,$p3
     )
-    
+
     # Save path we are started from
     $StartPath = (Get-Location).Path
     

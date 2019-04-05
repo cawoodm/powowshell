@@ -6,6 +6,7 @@ bak/
 *.bat
 !.map
 tmp*
+workspace.txt
 examples/**/step_*.ps1
 examples/**/run_*.ps1
 package-lock.json 

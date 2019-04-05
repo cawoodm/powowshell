@@ -25,11 +25,10 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
     const path = require("path");
     // @ts-ignore
     let testPipeline = fs.readFileSync(path.resolve(__dirname, "../examples/pipeline1/pipeline.json"), "utf8").trim();
-    //testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A1", "name":"Read Voters File", "reference":"../components/ReadFile.ps1", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B1", "name":"Convert2JSON", "reference":"../components/CSV2JSON.ps1", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C1", "name":"Select Name and Email", "reference":"../components/SelectFields.ps1", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
+    //testPipeline = { "id": "pipeline1", "name": "Send mail to young voters", "description": "Read voters.txt, get all voters under 21yrs of age and send them an email", "parameters": { "DataSource": { "default": ".\\data\\voters.txt", "type": "string" }, "p2": { "default": "{Get-Date}" } }, "globals": { "foo": "bar" }, "checks": { "run": "some checks that we have all we need (e.g. ./data/voters.txt) to run?" }, "input": {}, "output": {}, "steps": [ { "id":"A1", "name":"Read Voters File", "reference":"../components/ReadFile", "input":"", "parameters": { "Path": "{$PipelineParams.DataSource}" } }, { "id":"B1", "name":"Convert2JSON", "reference":"../components/CSV2JSON", "input": "A", "parameters": { "Delimiter": "|", "Header": "{\"name\", \"age\", \"email\", \"source\"}" } }, { "id":"C1", "name":"Select Name and Email", "reference":"../components/SelectFields", "input": "B", "parameters": { "Fields": "{\"name\", \"age\", \"email\"}" } } ] };
     // @ts-ignore
     let testComponent = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./CSV2JSON.json"), "utf8").trim());
-    console.log(testComponent);
-    process.exit();
+    //console.log(testComponent);process.exit();
     //testComponent = { "synopsis": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": { "FieldSeparator": { "type": "string", "default": ",", "description": "Specifies the field separator. Default is a comma." } }, "input":"text/csv", "output":"json/array"};
 
     try{
@@ -45,17 +44,17 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
         assert(()=>PM.addComponent("1", 1, {reference: "foo"}).reference === "foo", "Step A1 is set to foo")
         assert(PM.nextRow("A")===2, "Next empty row in column A is 2")
         assert(()=>PM.addComponent("B", null, {reference: "bar"}).reference === "bar", "Step B1 is set to bar")
-        assert(()=>PM.addComponent("C3", null, testComponent).reference=="CSV2JSON.ps1", "Add component to wrong row", true)
-        assert(()=>PM.addComponent("C1", null, testComponent).reference=="CSV2JSON.ps1", "Add C1 component")
-        assert(()=>PM.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1", "Add C component")
-        assert(()=>PM.addComponent("C", null, testComponent).reference=="CSV2JSON.ps1", "Add another C component")
+        assert(()=>PM.addComponent("B", null, testComponent).reference=="CSV2JSON", "Add component a cell with a step should fail", true)
+        assert(()=>PM.addComponent("C1", null, testComponent).reference=="CSV2JSON", "Add C1 component")
+        assert(()=>PM.addComponent("C", null, testComponent).reference=="CSV2JSON", "Add C component")
+        assert(()=>PM.addComponent("C", null, testComponent).reference=="CSV2JSON", "Add another C component")
         assert(()=>PM.getStep("C", 3).reference !== null, "Step C3 is set")
         let step = PM.getStep("C3");
         assert(()=>PM.setStep(step), "Set step works");
         assert(()=>step.parameters.length===3, "CSV2JSON should have 3 parameters");
 
         // Available inputs
-        assert(()=>PM.getAvailableInputs("C3").length==4, "Step 3 has 2 available inputs");
+        assert(()=>PM.getAvailableInputs("C1").length==3, "Step 3 has 3 available inputs (A1 B1 and B2)");
 
         // Moving steps
         assert(()=>PM.moveStep("C3", "A1"), "Step can't be moved over existing step", true);
@@ -65,7 +64,7 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
         PM.moveStep("C3", "D4")
         let c3 = PM.getStep("C3");
         let d4 = PM.getStep("D4");
-        assert(()=>d4.reference=="CSV2JSON.ps1" && c3.reference === null, "Step C3 moved to D4");
+        assert(()=>d4.reference=="CSV2JSON" && c3.reference === null, "Step C3 moved to D4");
 
         // Removing steps
         PM.removeStep("D4");
@@ -94,10 +93,10 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
         console.log("TEST cancelled:")
         console.log(e);
     }
-
-    if (FUNC.fails > 0) {
+    
+    if (FUNC.fails() > 0) {
         columnsToString();
-        console.log("\x1b[31m", `FAIL: pipeline-manager.js ${FUNC.fails()} of ${FUNC.tests()} tests`, "\x1b[0m")
+        console.log("\x1b[31m", `FAIL: pipeline-manager.js failed ${FUNC.fails()} of ${FUNC.tests()} tests`, "\x1b[0m")
         process.exit(1)
     } else {
         console.log("\x1b[32m", `SUCCESS: pipeline-manager.js passed ${FUNC.tests()} tests successfully`, "\x1b[0m");
