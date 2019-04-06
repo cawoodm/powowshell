@@ -28,21 +28,21 @@
 [CmdletBinding(DefaultParameterSetName="Std")]
 [OutputType([string])]
 param(
-
-	[Parameter(ParameterSetName="PWTest")]
-		[Switch]$PWTest,
-
-	[Parameter(ParameterSetName="PWOutput")]
-		[Switch]$PWOutput,
-		
 	[Parameter(ParameterSetName="Std",Mandatory,HelpMessage="The path to the files",Position=0)]
 		[string]$Path,
 		[string]$Filter,
-		[switch]$Recurse
-		
+		[switch]$Recurse,
+
+	[Parameter(ParameterSetName="POW")][string]$POWAction
 )
 Set-StrictMode -Version 3.0
 function main() {
+	if ($POWAction -like "test") {
+		Push-Location $PSScriptRoot
+		if ((.\FileList.ps1 -Path "C:\Windows" | ConvertFrom-Json).length -gt 0) {"OK: FileList self-test successful"} else {$Host.UI.WriteErrorLine("FAIL: FileList self-test failed!")}
+		Pop-Location
+    	return
+	}
 	$files = @()
 	Get-ChildItem -Path $Path -File -Filter $Filter -Recurse:$Recurse|
 	  ForEach-Object {
@@ -58,16 +58,6 @@ function main() {
 	}
 	$files | ConvertTo-Json
 }
-function PWTest() {
-	Push-Location $PSScriptRoot
-	if ((.\FileList.ps1 -Path "C:\Windows" | ConvertFrom-Json).length -gt 0) {"FileList: OK"} else {Write-Error "FileList: FAIL"}
-	Pop-Location
-}
-function PWOutput() {
-	'[{"name":"one.txt","fullName":"C:\\temp\\one.txt","size":1},{"name":"two.txt","fullName":"C:\\temp\\two.txt","size":2}]'
-}
-switch ($PsCmdlet.ParameterSetName) {
-	PWTest {PWTest}
-	PWOutput {PWOutput}
-	default {main}
-}
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+Set-StrictMode -Version Latest
+main

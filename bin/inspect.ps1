@@ -52,7 +52,7 @@ function main() {
 				}
 			}
 			if ($pipelineInputParam) {
-				$inputType = Get-IPType($cmd)
+				$inputType = Get-IPType($cmd); if ($inputType -like "none") {$inputType=$null}
 				$inputDesc = Get-IPDesc($cmd)
 			}
 			if ($pipelineInputParam -and -not $inputType) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="Pipeline input not described properly in annotated comments (.Inputs) of $Filename!"}}

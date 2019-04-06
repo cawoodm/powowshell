@@ -63,7 +63,6 @@ function LoadComponents($Path) {
 
     # Process each folder
     ForEach($script in $scripts) {
-        Write-Verbose "INSPECT $($script.Name)"
         try {
             & "$PSScriptRoot\inspect.ps1" $script.Fullname
         } catch {

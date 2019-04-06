@@ -33,7 +33,11 @@ function main() {
                 & node "$script" $verbose
                 if ($LASTEXITCODE) {throw "FAIL: $script"}
             } else {
-                & "./$script" | Out-Null
+                if ($verbose) {
+                    & "./$script"
+                } else {
+                    & "./$script" | Out-Null
+                }
             }
         }
         

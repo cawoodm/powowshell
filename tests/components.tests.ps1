@@ -6,20 +6,22 @@ function main() {
     try {
         # 1. Inspect and test each powershell component
         $i=0
-        ..\bin\components.ps1 ..\examples\components | ForEach-Object {
+        $components = ..\bin\components.ps1 ..\examples\components
+        foreach($component in $components) {
             $i++
-            $component = $_
-            try{$component.reference}catch{Write-Error "ERROR: $i. Something about $component"}
+            try{$component.reference+=""}catch{$Host.UI.WriteErrorLine("ERROR: $i. Something about $component is not right")}
             $reference = $component.reference
-            $_.POWMessages | ForEach-Object {
+            Write-Verbose "Component $reference"
+            $component.POWMessages | ForEach-Object {
                 $msg = $_
                 if ($msg.type -eq "WARNING") {Write-Warning $msg.message}
                 elseif ($msg.type -eq "ERROR") {$Host.UI.WriteErrorLine($msg.message)}
                 else {Write-Host $msg.message -ForegroundColor Cyan}
-                if ($component.parameters | Where name -like "POWAction") {
-                    # Self-testing
-                    & "..\examples\components\$reference.ps1" -POWAction test
-                }
+            }
+            if ($component.parameters | Where name -like "POWAction") {
+                # Self-testing
+                Write-Verbose "Self-testing $reference :"
+                & "..\examples\components\$reference.ps1" -POWAction test
             }
         }
 

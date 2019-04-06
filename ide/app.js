@@ -1,23 +1,19 @@
 "use strict";
 const electron = require("electron");
 const appConfig = require("electron-settings");
-//const path = require("path");const fs = require("fs");
+const path = require("path");const fs = require("fs");
 const app = electron.app;
 
 if (process.env.NODE_ENV!=="prod") {
 	require("electron-reload")(__dirname, {
-		electron: "C:/Users/Marc/AppData/Roaming/npm/electron.cmd",
+		electron: path.resolve(process.env.APPDATA, "/npm/electron.cmd"),
 		hardResetMethod: "exit"
 	});
 	require("electron-debug")();
 }
 
-// prevent window being garbage collected
 let mainWindow;
-
 function onClosed() {
-	// dereference the window
-	// for multiple windows store them in an array
 	mainWindow = null;
 } 
 

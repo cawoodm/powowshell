@@ -3,28 +3,30 @@
 ## POW.js
 * How to capture -Verbose output
 
-## POW CLI
-* Need to agree on `""` or `null/$null` for empty values in JSON
+## Examples
+* We need more realistic, complex pipelines
+* We need more components (API, HTTP, NodeJs, AWK, Python...)
+ * Components should declare their dependencies
 
 ## IDE
-* BUG: Drag & drop is broken
+* We need some arrows showing pipeline flow of data
+* We need some basic shapes showing the type of text/xxx input (e.g. csv, json) a component inputs/outputs
 * TODO: When dragging a step the inputs need to be changed/cleared
-* Verify pipeline
-* Build pipeline
-* Run pipeline
-* Load pipeline/components via fs instead of XHR?
 
-* Pipeline from Scratch
-  * Drag dummy components around the matrix -> DONE
-  * Load components list and configuration
-    * Read list of components from components
-      * list by folder
-    * Read list of installed modules from profile?
-      - list by module
-  * Configure components in IDE (forms)
+## POW CLI
+* When data is piped in, how do we differentiate between lines of text and bulk text (-raw)
+* We need some basic components for core operations
+ * Filter: Remove docs/lines not matching
+ * Map: Transform data
+ * Reduce: Summarize data
+ * Sequence: Generate a sequence of ...numbers, things
+ * Loop/Split: Split incoming data and output discreet values
+* If a component doesn't accept piped input we might still want to map an output to a parameter
+* Need to agree on `""` or `null/$null` for empty values in JSON
+
 
 ## Components
-* We need to deal with not passing on empty parameters
+* Read list of installed modules from profile?
 * Running pipeline as a step/component
 * Progress Bar?
   * `Write-Progress -Activity "Search in Progress" -Status "$I% Complete:" -PercentComplete $I;`

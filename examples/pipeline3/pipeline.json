@@ -1,10 +1,10 @@
 {
-	"id": "pipeline1",
-	"name": "Send mail to young voters",
-	"description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
+	"id": "pipeline3",
+	"name": "Log System Issues to a Database",
+	"description": "Read log files from a folder, extract certain records, reprocess and save to a database.",
 	"parameters": {
-		"DataSource": {
-			"default": ".\\data\\names.txt",
+		"LogsFolder": {
+			"default": ".\\data",
 			"type": "string"
 		},
 		"p2": {
@@ -12,21 +12,19 @@
 		}
 	},
 	"globals": {
-		"foo": "bar"
 	},
 	"checks": {
-		"run": "some checks that we have all we need (e.g. ./data/names.txt) to run?"
 	},
 	"input": {},
 	"output": {},
 	"steps": [
 		{
 			"id": "A1",
-			"name": "Open Names File",
-			"reference": "ReadFile",
+			"name": "Read Log Files",
+			"reference": "FileList",
 			"input": "",
 			"parameters": {
-				"Path": "{$PipelineParams.DataSource}"
+				"Path": "{$PipelineParams.LogsFolder}"
 			}
 		},
 		{
