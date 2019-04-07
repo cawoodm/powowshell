@@ -4,7 +4,7 @@ dist/
 bak/
 *.log
 *.bat
-!.map
+*.map
 tmp*
 workspace.txt
 examples/**/step_*.ps1

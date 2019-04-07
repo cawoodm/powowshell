@@ -10,6 +10,7 @@ pipelineManager.reset();
 app.components = {}
 
 app.getComponent = (reference) => {
+    if (!app.components) return alert("Components not loaded!")
     let res = app.components.filter((item)=>item.reference===reference);
     return res.length>0?res[0]:null;
 }

@@ -316,13 +316,15 @@ let pipelineManager = (function() {
      * @returns {Object} The new UI Step based on the component
      */
     function component2Step(id, component) {
+        let stepParams = {};
+        component.parameters.forEach((p)=>stepParams[p.name]=p.default||null);
         return {
             id: id,
             reference: component.reference,
             name: component.reference,
             description: component.description,
             synopsis: component.synopsis,
-            parameters: component.parameters||[],
+            parameters: stepParams,
             input: component.input||null,
             output: component.output||null
         };

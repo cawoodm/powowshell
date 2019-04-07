@@ -22,7 +22,7 @@ Clean, build and verify a pipeline
 
 #>
 #########################################
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 	param(
 			[Parameter(Mandatory)][String[]]
 			$Command,
@@ -30,10 +30,10 @@ Clean, build and verify a pipeline
     )
 #########################################
 function Invoke-PowowShell {
-	[CmdletBinding()]
+	[CmdletBinding(SupportsShouldProcess)]
 	param(
         [Parameter(Mandatory=$true)][String[]]
-        [ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install", "workspace", "pipeline", "preview")]
+        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "pipeline", "preview")]
         $Command,
         $p1,$p2,$p3
     )

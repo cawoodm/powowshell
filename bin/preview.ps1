@@ -33,7 +33,7 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory)][String]$Path,
-	$Parameters=@{},
+	$Parameters,
 	$InputObject
 )
 function main() {
@@ -42,9 +42,16 @@ function main() {
 	$StartPath = (Get-Location).Path
 
     try {
-        
+        Write-Verbose "JSON: $Parameters"
         if ($Parameters -is [hashtable]) {
             $ParamHash = $Parameters
+            $Parameters = "@ParamHash"
+        } elseif ($Parameters -like "{*") {
+            # Decode JSON and convert JSON Object to HashTable for Splatting
+            Write-Verbose "JSON: $Parameters"
+            $Parameters = ConvertFrom-Json $Parameters
+            $ParamHash = @{}
+            $Parameters.psobject.properties | ForEach-Object {$ParamHash[$_.Name] = $_.Value }
             $Parameters = "@ParamHash"
         } elseif ($Parameters -like "@*") {
             # Unsplat parameters if they are a '@{}' string

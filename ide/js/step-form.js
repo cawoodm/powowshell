@@ -6,7 +6,7 @@ const formBuilder = (function() {
             let frm = document.createElement("div");
             frm.setAttribute("id", "myForm");
             document.body.appendChild(frm);
-            let str = JSON.stringify(step) + "\n" + JSON.stringify(component);
+            //let str = JSON.stringify(step) + "\n" + JSON.stringify(component);console.log(str)
             for(let p = 0; p<component.parameters.length; p++) {
                 let compParam = component.parameters[p];
                 compParam.stepValue = step.parameters[compParam.name]||null;
@@ -19,7 +19,6 @@ const formBuilder = (function() {
                 parent: $root,
                 propsData: {
                   id: step.id,
-                  text: `<code>${str}</code>`,
                   oldStep: step,
                   step: stepClone,
                   component: component,
@@ -38,12 +37,13 @@ const StepForm = Vue.extend({
     },
     methods: {
         save() {
+            this.form2Step()
             this.$root.$emit("stepSave", this.step);
             this.close();
         },
         preview() {
+            this.form2Step()
             this.$root.$emit("stepPreview", this.step);
-            this.close();
         },
         help() {
             alert((this.component.synopsis||"") + "\n" + (this.component.description||""))
@@ -54,6 +54,12 @@ const StepForm = Vue.extend({
         close() {
             this.$destroy();
             this.$el.remove();
+        },
+        form2Step() {
+            for (let i=0; i < this.component.parameters.length; i++) {
+                let compParam = this.component.parameters[i];
+                this.step.parameters[compParam.name] = compParam.stepValue;
+            }
         }
     },
     computed: {

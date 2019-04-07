@@ -141,7 +141,14 @@ const pow = (function () {
         let path = step.reference;
         if (component.type == "component")
             path = "!" + path;
-        return execStrict(`pow preview "${path}"`);
+        let params = JSON.stringify(step.parameters).replace(/"/g, '`"');
+        console.log(`pow preview "${path}" "${params}"`);
+        if (component.output.match(/text\/json/))
+            // JSON Component returns an object
+            return execStrictJSON(`pow preview "${path}" "${params}"`);
+        else
+            // Normal component returns a string
+            return execStrict(`pow preview "${path}" "${params}"`);
     }
     /**
      * Inspect a component

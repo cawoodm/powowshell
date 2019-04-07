@@ -14,6 +14,7 @@
 * TODO: When dragging a step the inputs need to be changed/cleared
 
 ## POW CLI
+* Cleanup uses of Write-Host: fine if called by a human
 * When data is piped in, how do we differentiate between lines of text and bulk text (-raw)
 * We need some basic components for core operations
  * Filter: Remove docs/lines not matching
