@@ -1,15 +1,16 @@
-formBuilder = (function() {
+/* global pipelineManager */
+const formBuilder = (function() {
     let dialog;
     return {
         showForm: function($root, step, component) {
-            let frm = document.createElement('div');
-            frm.setAttribute('id', 'myForm');
+            let frm = document.createElement("div");
+            frm.setAttribute("id", "myForm");
             document.body.appendChild(frm);
             let str = JSON.stringify(step) + "\n" + JSON.stringify(component);
             for(let p = 0; p<component.parameters.length; p++) {
                 let compParam = component.parameters[p];
                 compParam.stepValue = step.parameters[compParam.name]||null;
-                compParam.rules=compParam.required?[value => !!value || 'Required parameter!']:[];
+                compParam.rules=compParam.required?[value => !!value || "Required parameter!"]:[];
             }
             // Have to clone step or we can't cancel out of the form
             let stepClone = Object.assign({}, step);
@@ -24,24 +25,28 @@ formBuilder = (function() {
                   component: component,
                   inputs: inputs
                 }
-            }).$mount('#myForm');
+            }).$mount("#myForm");
         }
     }
 })();
 const StepForm = Vue.extend({
-    props: ['id', 'step', 'oldStep', 'component', 'text', 'inputs'],
+    props: ["id", "step", "oldStep", "component", "text", "inputs"],
     data: function() {
         return {
             show: true
         }
     },
     methods: {
-        save(e) {
-            this.$root.$emit('stepSave', this.step);
+        save() {
+            this.$root.$emit("stepSave", this.step);
+            this.close();
+        },
+        preview() {
+            this.$root.$emit("stepPreview", this.step);
             this.close();
         },
         help() {
-            alert((this.component.synopsis||"") + `\n` + (this.component.description||""))
+            alert((this.component.synopsis||"") + "\n" + (this.component.description||""))
         },
         cancel() {
             this.close();
@@ -67,7 +72,10 @@ const StepForm = Vue.extend({
             <v-card-text>
                 <v-container grid-list-xs>
                     <v-layout row wrap>
-                        <v-flex xs12>
+                        <v-flex xs12 v-if="step.synopsis">
+                            <div class="subheading">{{step.synopsis}}</div>
+                        </v-flex>
+                        <v-flex xs12 v-if="step.description">
                             <div>{{step.description}}</div>
                         </v-flex>
                         <v-flex xs12>
@@ -96,7 +104,8 @@ const StepForm = Vue.extend({
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click="cancel()">Close</v-btn>
+                <v-btn color="red darken-1" flat @click="cancel()">Cancel</v-btn>
+                <v-btn color="green darken-1" flat @click="preview()">Preview</v-btn>
                 <v-btn color="blue darken-1" flat @click="save()">Save</v-btn>
             </v-card-actions>
         </v-card>

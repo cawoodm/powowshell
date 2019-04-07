@@ -1,6 +1,9 @@
 ﻿<#
     .Synopsis
     Add some days to today's date and return the date
+    
+    .Description
+    foo bar
 
     .Parameter days
     The number of days (integer) to add (or subtract) to todays date

@@ -26,17 +26,32 @@ param(
 function main() {
 	
 	try {
-		$Path = (Resolve-Path -Path $Path).Path
 		if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
-		$Filename = (Split-Path -Path $Path -Leaf)
-		Write-Verbose "Inspecting $Path ..."
+		$RealPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
+		if ($RealPath) {
+			$CompType = "component"
+			$RealPath = $RealPath.Path
+			Write-Verbose "Inspecting custom POW Component from $RealPath ..."
+			$Name = (Split-Path -Path $RealPath -Leaf)
+			$cmd = Get-Help -Full -Name $RealPath -ErrorAction SilentlyContinue
+			if ($null -eq $cmd) {throw "Invalid POW Component '$RealPath'!"}
+		} else {
+			$CompType = "cmdlet"
+			$RealPath = $Path
+			Write-Verbose "Inspecting installed CmdLet $Path ..."
+			$Name = $Path
+			$cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
+			#Trace-Command -Name cmdlet -Expression {$cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue} -PSHost
+			#$cmd = Measure-Command -Expression {Get-Help -Full -Name $Name -ErrorAction SilentlyContinue}
+			if ($null -eq $cmd) {throw "Invalid CmdLet '$RealPath'!"}
+		}
+		$reference = $Name -replace ".ps1", ""
 		$POWMessages=@()
-		$cmd = Get-Help -Full -Name $Path -ErrorAction SilentlyContinue
 		$paramsOut = @(); $inputType = ""; $inputDesc = "";
 		if ($cmd.PSObject.Properties.item("details")) {
 			$boolMap = @{"true"=$true;"false"=$false}
-			$parameters = Get-Help -Name $Path -Parameter * -EA 0
-			if ($null -eq $parameters) {$POWMessages+=[PSCustomObject]@{type="INFO";message="No parameters found in component '$Filename'!"}}
+			$parameters = Get-Help -Name $RealPath -Parameter * -EA 0
+			if ($null -eq $parameters) {$POWMessages+=[PSCustomObject]@{type="INFO";message="No parameters found in component '$Name'!"}}
 			$pipelineInputParam = $false;
 			foreach ($parameter in $parameters) {
 				if ($parameter.pipelineInput -like "true*") {
@@ -46,8 +61,8 @@ function main() {
 						"name" = $parameter.name;
 						"type" = $parameter.type.name;
 						"required" =  $boolMap[$parameter.required];
-						"default" = $parameter.defaultValue;
-						"description" = (&{if ($parameter.PSObject.Properties.Item("description") -and $parameter.description.length) {$parameter.description[0].text} else {""}})
+						"default" = (&{try{$parameter.defaultValue}catch{$null}})
+						"description" = (&{try{$parameter.description[0].text}catch{$null}})
 					};
 				}
 			}
@@ -55,18 +70,18 @@ function main() {
 				$inputType = Get-IPType($cmd); if ($inputType -like "none") {$inputType=$null}
 				$inputDesc = Get-IPDesc($cmd)
 			}
-			if ($pipelineInputParam -and -not $inputType) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="Pipeline input not described properly in annotated comments (.Inputs) of $Filename!"}}
-			if (-not $pipelineInputParam -and $inputType) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="Pipeline input not declared properly in parameters (ValueFromPipeline=`$true) of $Filename!"}}
+			if ($pipelineInputParam -and -not $inputType) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="Pipeline input not described properly in annotated comments (.Inputs) of $Name!"}}
+			if (-not $pipelineInputParam -and $inputType) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="Pipeline input not declared properly in parameters (ValueFromPipeline=`$true) of $Name!"}}
 		} else {
-			$POWMessages+=[PSCustomObject]@{type="ERROR";message="Invalid CmdLet in component '$Filename'!"}
+			$POWMessages+=[PSCustomObject]@{type="ERROR";message="Invalid CmdLet in component '$Name'!"}
 		}
 		$synopsis = Get-Synopsis($cmd)
 		$description = Get-Description($cmd)
 		$outputType = Get-OPType($cmd)
 		$outputDesc = Get-OPDesc($cmd)
-		$reference = $Filename -replace ".ps1", ""
 		$result = [PSCustomObject]@{
 			"reference" = $reference;
+			"type" = $CompType;
 			"synopsis" = $synopsis;
 			"description" = $description;
 			"parameters" = $paramsOut;
@@ -92,9 +107,9 @@ function main() {
 }
 function Get-Synopsis($cmd) {try{$cmd.details.description[0].Text}catch{$null}}
 function Get-Description($cmd) {try {return $cmd.description[0].Text}catch{$null}}
-function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower()}catch{$null}}
+function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
 function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{$null}}
-function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "`n")}catch{$null}}
+function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "[\r\n]")}catch{$null}}
 function Get-OPType($cmd) {try{([string](Get-OP($cmd))[0]).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
 function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{$null}}

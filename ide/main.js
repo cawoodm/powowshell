@@ -130,7 +130,7 @@ window.onload = function() {
                 let pipeline = pipelineManager.export();
                 pow.save(pipeline)
                     .then(()=>alert("Saved"))
-                    .catch((err)=>alert(err));
+                    .catch(this.handlePOWError);
             },
             redraw: function() {
                 // Must synch entire grid OR Vue.set(exactObject, newObject)
@@ -140,11 +140,19 @@ window.onload = function() {
         mounted: function() {
             let root = this;
             this.loading = {components: false, pipeline: false};
-            // Listen for save events
+            // Listen for events
             this.$root.$on("stepSave", (newStep) => {
-                //let oldStep = pipelineManager.getStep(newStep.id)
                 pipelineManager.setStep(newStep);
                 this.redraw();
+            });
+            this.$root.$on("stepPreview", (step) => {
+                let component = app.getComponent(step.reference);
+                pow.preview(step, component).then((obj)=>{
+                    if (obj.object)
+                        alert(JSON.stringify(obj.object, null, 2))
+                    else
+                        alert(obj.output)
+                }).catch(this.handlePOWError);
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings

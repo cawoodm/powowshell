@@ -26,7 +26,7 @@ function Invoke-PowowShell {
 	[CmdletBinding()]
 	param(
         [Parameter(Mandatory=$true)][String[]]
-        [ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install", "workspace", "pipeline")]
+        [ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install", "workspace", "pipeline", "preview")]
         $Command,
         $p1,$p2,$p3
     )
@@ -49,7 +49,7 @@ function Invoke-PowowShell {
         $Workspace=$null
         if (Test-Path "..\workspace.txt") {$Workspace = Get-Content "..\workspace.txt"}
         if ($p1 -is [string] -and $p1 -like "!*") {
-            if ($Command -in "inspect", "components") {
+            if ($Command -in "inspect", "components", "preview") {
                 $p1 = $p1.replace("!", "$Workspace\components\"); $p1+=".ps1"
             } elseif ($command -eq "workspace") {
                 # e.g. "!examples" should be relative to the root of the app

@@ -149,6 +149,18 @@ const pow = (function(){
     }
 
     /**
+     * Preview a step
+     * @param {StepDef} step Step definition
+     * @param {Object} component Component definition
+     * @returns {Promise} Promise with a POWResult containing an object (step result)
+     */
+    async function preview(step, component) {
+        let path = step.reference;
+        if (component.type=="component") path = "!"+path;
+        return execStrict(`pow preview "${path}"`);
+    }
+
+    /**
      * Inspect a component
      * @param {string} path Path to component (or "!componentReference" for default workspace)
      * @returns {Promise} Promise with a POWResult containing an object (component definition)
@@ -233,6 +245,7 @@ const pow = (function(){
         build: build,
         verify: verify,
         run: run,
+        preview: preview,
         inspect: inspect,
         components: components,
         pipeline: pipeline,

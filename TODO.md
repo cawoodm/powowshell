@@ -22,6 +22,7 @@
  * Sequence: Generate a sequence of ...numbers, things
  * Loop/Split: Split incoming data and output discreet values
 * If a component doesn't accept piped input we might still want to map an output to a parameter
+* Pipeline designer may need to preview a components outputs
 * Need to agree on `""` or `null/$null` for empty values in JSON
 
 

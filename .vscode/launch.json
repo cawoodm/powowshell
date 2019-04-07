@@ -22,8 +22,15 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Current File",
+            "name": "Launch Current JS",
             "program": "${file}"
+        },
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "Launch Current PS",
+            "script": "${file}",
+            "args": ["Get-Service", "export"]
         },
         {
             "type": "node",
