@@ -33,7 +33,7 @@ function Invoke-PowowShell {
 	[CmdletBinding(SupportsShouldProcess)]
 	param(
         [Parameter(Mandatory=$true)][String[]]
-        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "pipeline", "preview")]
+        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "pipeline", "preview", "examples")]
         $Command,
         $p1,$p2,$p3
     )
@@ -54,9 +54,9 @@ function Invoke-PowowShell {
         #  Lets you do this: pow inspect mycomponent
         #  instead of: pow inspect .\examples\components\mycomponent.ps1
         $Workspace=$null
-        if (Test-Path "..\workspace.txt") {$Workspace = Get-Content "..\workspace.txt"}
+        if (Test-Path "..\workspace.txt") {$Workspace = Get-Content "..\workspace.txt"} else {$Workspace = (Resolve-Path "..\").Path}
         if ($p1 -is [string] -and $p1 -like "!*") {
-            if ($Command -in "inspect", "components", "preview") {
+            if ($Command -in "inspect", "components", "preview", "examples") {
                 $p1 = $p1.replace("!", "$Workspace\components\"); $p1+=".ps1"
             } elseif ($command -eq "workspace") {
                 # e.g. "!examples" should be relative to the root of the app
