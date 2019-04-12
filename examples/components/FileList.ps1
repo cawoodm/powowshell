@@ -22,7 +22,8 @@
  none
  
  .Outputs
- text/json[name,fullName,size(int)]
+ text/json
+ {name,fullName,size(int)}
 
 #>
 [CmdletBinding(DefaultParameterSetName="Std")]

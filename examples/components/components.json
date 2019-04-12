@@ -1,6 +1,7 @@
 ﻿[
     {
         "reference":  "CSV2JSON",
+        "type":  "component",
         "synopsis":  "Convert CSV data to JSON format",
         "description":  "Accepts tabular CSV data and return contents as a JSON Array",
         "parameters":  [
@@ -16,45 +17,65 @@
                                "type":  "String[]",
                                "required":  false,
                                "default":  "",
-                               "description":  ""
+                               "description":  null
+                           },
+                           {
+                               "name":  "POWAction",
+                               "type":  "String",
+                               "required":  false,
+                               "default":  "",
+                               "description":  null
                            }
                        ],
         "input":  "text/csv",
         "inputDescription":  "A String in CSV format",
         "output":  "text/json",
-        "outputDescription":  "A JSON array object"
+        "outputDescription":  "A JSON array object",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "Data2JSON",
+        "type":  "component",
         "synopsis":  "Convert input data to JSON format",
-        "description":  "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the separator can be different and specified by the -Delimiter parameter",
+        "description":  "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the record and field separator can be anything.",
         "parameters":  [
-                           {
-                               "name":  "RecordSeparator",
-                               "type":  "String",
-                               "required":  false,
-                               "default":  "",
-                               "description":  ""
-                           },
                            {
                                "name":  "Delimiter",
                                "type":  "String",
                                "required":  true,
                                "default":  ",",
                                "description":  "Specifies the field separator. Default is a comma \",\")"
+                           },
+                           {
+                               "name":  "RecordSeparator",
+                               "type":  "String",
+                               "required":  false,
+                               "default":  "",
+                               "description":  "Specifies the record separator. Default is a newline."
+                           },
+                           {
+                               "name":  "POWAction",
+                               "type":  "String",
+                               "required":  false,
+                               "default":  "",
+                               "description":  null
                            }
                        ],
         "input":  "text/xsv",
         "inputDescription":  "Any separated data (e.g. CSV) with newlines between records",
         "output":  "text/json",
-        "outputDescription":  "An array of JSON objects corresponding to the rows of the input data"
+        "outputDescription":  "An array of JSON objects corresponding to the rows of the input data",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "DateAdder",
+        "type":  "component",
         "synopsis":  "Add some days to today\u0027s date and return the date",
-        "description":  {
-
-                        },
+        "description":  "foo bar",
         "parameters":  [
                            {
                                "name":  "days",
@@ -67,14 +88,16 @@
         "input":  "",
         "inputDescription":  "",
         "output":  "date",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "DOSCommand",
+        "type":  "component",
         "synopsis":  "Run any command with DOS CMD",
-        "description":  {
-
-                        },
+        "description":  null,
         "parameters":  [
                            {
                                "name":  "Command",
@@ -87,14 +110,16 @@
         "input":  "",
         "inputDescription":  "",
         "output":  "text",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "DOSDir",
+        "type":  "component",
         "synopsis":  "List files with DOS CMD",
-        "description":  {
-
-                        },
+        "description":  null,
         "parameters":  [
                            {
                                "name":  "Path",
@@ -107,27 +132,17 @@
         "input":  "",
         "inputDescription":  "",
         "output":  "text",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "ExecuteCmdlet",
+        "type":  "component",
         "synopsis":  "Execute any PowerShell Cmdlet",
         "description":  "Generic component which allows you to map up to 10 parameters to any cmdlet you like",
         "parameters":  [
-                           {
-                               "name":  "PWTest",
-                               "type":  "SwitchParameter",
-                               "required":  false,
-                               "default":  "False",
-                               "description":  ""
-                           },
-                           {
-                               "name":  "PWOutput",
-                               "type":  "SwitchParameter",
-                               "required":  false,
-                               "default":  "False",
-                               "description":  ""
-                           },
                            {
                                "name":  "ExecuteTemplate",
                                "type":  "String",
@@ -161,20 +176,29 @@
                                "type":  "String",
                                "required":  false,
                                "default":  "",
-                               "description":  ""
+                               "description":  null
+                           },
+                           {
+                               "name":  "POWAction",
+                               "type":  "String",
+                               "required":  false,
+                               "default":  "",
+                               "description":  null
                            }
                        ],
-        "input":  "text",
+        "input":  "",
         "inputDescription":  "",
-        "output":  "json[]",
-        "outputDescription":  ""
+        "output":  "text/json",
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "FieldAdd",
+        "type":  "component",
         "synopsis":  "Add a field to each object in an array",
-        "description":  {
-
-                        },
+        "description":  null,
         "parameters":  [
                            {
                                "name":  "Name",
@@ -191,34 +215,23 @@
                                "description":  "Value of the field to add"
                            }
                        ],
-        "input":  {
-
-                  },
-        "inputDescription":  {
-
-                             },
+        "input":  null,
+        "inputDescription":  null,
         "output":  "system.object",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+                            {
+                                "type":  "WARNING",
+                                "message":  "Pipeline input not described properly in annotated comments (.Inputs) of FieldAdd.ps1!"
+                            }
+                        ]
     },
     {
         "reference":  "FileList",
+        "type":  "component",
         "synopsis":  "Returns a list of files.",
         "description":  "Lists files with a specific filter (e.g. *.txt) or\nwithin a specified date range.",
         "parameters":  [
-                           {
-                               "name":  "PWTest",
-                               "type":  "SwitchParameter",
-                               "required":  false,
-                               "default":  "False",
-                               "description":  ""
-                           },
-                           {
-                               "name":  "PWOutput",
-                               "type":  "SwitchParameter",
-                               "required":  false,
-                               "default":  "False",
-                               "description":  ""
-                           },
                            {
                                "name":  "Path",
                                "type":  "String",
@@ -239,37 +252,57 @@
                                "required":  false,
                                "default":  "False",
                                "description":  "If $true, will search all sub-folders"
+                           },
+                           {
+                               "name":  "POWAction",
+                               "type":  "String",
+                               "required":  false,
+                               "default":  "",
+                               "description":  null
                            }
                        ],
         "input":  "",
         "inputDescription":  "",
         "output":  "text/json[name,fullname,size(int)]",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "JSONMapping",
+        "type":  "component",
         "synopsis":  "Map one form of JSON to another",
         "description":  "Used for transforming JSON between two types.\nLimitation: Resulting object is only 1-level deep",
         "parameters":  [
                            {
                                "name":  "Mapping",
                                "type":  "String",
-                               "required":  false,
+                               "required":  true,
                                "default":  "",
-                               "description":  ""
+                               "description":  null
+                           },
+                           {
+                               "name":  "POWAction",
+                               "type":  "String",
+                               "required":  true,
+                               "default":  "",
+                               "description":  null
                            }
                        ],
         "input":  "object(*)",
         "inputDescription":  "",
         "output":  "object(*)",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "ObjectAddField",
+        "type":  "component",
         "synopsis":  "Add a field to each object in an array",
-        "description":  {
-
-                        },
+        "description":  null,
         "parameters":  [
                            {
                                "name":  "Name",
@@ -286,17 +319,20 @@
                                "description":  "Value of the field to add"
                            }
                        ],
-        "input":  {
-
-                  },
-        "inputDescription":  {
-
-                             },
+        "input":  null,
+        "inputDescription":  null,
         "output":  "system.object",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+                            {
+                                "type":  "WARNING",
+                                "message":  "Pipeline input not described properly in annotated comments (.Inputs) of ObjectAddField.ps1!"
+                            }
+                        ]
     },
     {
         "reference":  "ReadFile",
+        "type":  "component",
         "synopsis":  "Read text from a file",
         "description":  "Read a single text file and return contents as a string.",
         "parameters":  [
@@ -311,26 +347,31 @@
         "input":  "",
         "inputDescription":  "",
         "output":  "text",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
     },
     {
         "reference":  "SelectFields",
+        "type":  "component",
         "synopsis":  "Selects only certain fields from the input",
-        "description":  {
-
-                        },
+        "description":  null,
         "parameters":  [
                            {
                                "name":  "Fields",
                                "type":  "String[]",
                                "required":  false,
                                "default":  "",
-                               "description":  ""
+                               "description":  null
                            }
                        ],
         "input":  "",
         "inputDescription":  "",
         "output":  "text/json",
-        "outputDescription":  ""
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
     }
 ]

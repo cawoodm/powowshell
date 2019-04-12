@@ -9,10 +9,17 @@
  .Parameter InputObject
 
  .Inputs
- object(*)
+ text/json
+ The JSON object to be transformed.
 
  .Outputs
- object(*)
+ text/json
+ The transformed output JSON object.
+
+ .Example
+ '{"Name":"John","Surname":"Doe"}}' | .\JSONMapping.ps1 -Mapping '{"Fullname":".Name +' ' + .Surname"}'
+ Convert an object with name+surname to a full name
+
 
 #>
 param(
