@@ -1,10 +1,9 @@
 ﻿<#
  .Synopsis
- Set the current workspace
+ Set/get the current workspace
 
  .Description
- Dry run a pipeline, suppressing real output to check for errors
- Run with -Verbose to see detailed steps
+ Defining a workspace allows you to use ! in pow commands to save typing the full path
 
  .Parameter Path
  The path to the folder containing components and pipelines
@@ -16,9 +15,17 @@
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][String]$Path
+    [String]$Path
 )
 function main() {
+
+    if (-not $Path) {
+        # Get workspace if nothing specified to set
+        Push-Location $PSScriptRoot
+        if (Test-Path "..\workspace.txt") {Get-Content "..\workspace.txt"}
+        Pop-Location
+        return
+    }
 
 	# Save path we are started from
     $StartPath = (Get-Location).Path
