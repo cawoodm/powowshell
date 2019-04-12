@@ -11,15 +11,15 @@
  .Parameter Path
  Path to the components directory
 
- .Parameter Export
- Export component definitions as JSON for IDE
+ .Parameter Action
+ Action export: Generate component definitions as JSON for IDE
+ Action list: List cached component definitions as JSON for IDE
 
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][String]$Path,
-    [string]$Action=$null
-
+    [ValidateSet("export", "list")][string]$Action=$null
 )
 function main() {
     $Path = $Path.replace('.ps1', '')
@@ -27,6 +27,9 @@ function main() {
 	$FullPath = (Resolve-Path -Path $Path).Path
     Push-Location $FullPath
     try {
+        if ($Action -like "list") {
+            return Get-Content .\components.json
+        }
         $Components = ListComponents
         if ($Action -like "export") {
             # Provide a serialized JSON export
