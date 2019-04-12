@@ -4,7 +4,6 @@ if (typeof process !== "undefined") {
     var pow = require("./js/pow").pow;
     pipelineManager = require("./js/pipeline-manager") //  eslint-disable-line
     var {dialog} = require("electron").remote
-    console.log(dialog)
 }
 pipelineManager.reset();
 app.components = {}
@@ -19,11 +18,6 @@ Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
 window.onload = function() {
-    pow.components()
-        .then((obj)=>{
-            app.components = obj.object;
-            app.root.loaded("components");
-        });
     app.root = new Vue({
         el: "#root",
         data: {
@@ -32,6 +26,7 @@ window.onload = function() {
         },
         methods: {
             loaded: function(what) {
+                console.log("loaded", what);
                 this.loading[what]=true;
                 // Check everything is loaded
                 if (!this.loading.pipeline || !this.loading.components) return;
@@ -94,6 +89,13 @@ window.onload = function() {
                     alert(e.message)
                 }
             },
+            componentsLoad: function() {
+                pow.components()
+                    .then((obj)=>{
+                        app.components = obj.object;
+                        app.root.loaded("components");
+                    }).catch(this.handlePOWError);
+            },
             pipelineLoad: function(id, opts) {
                 // Load pipeline definition
                 opts = opts || {};
@@ -146,6 +148,15 @@ window.onload = function() {
                 pipelineManager.setStep(newStep);
                 this.redraw();
             });
+            this.$root.$on("componentExamples", (reference) => {
+                pow.examples("!"+reference).then((obj)=>{
+                    obj.object.forEach((o)=>{
+                        let msg = o.code+"\n"+o.description;
+                        msg = msg.replace("`n", "\n");
+                        alert(o.code+"\n"+o.description)
+                    });
+                }).catch(this.handlePOWError);
+            });
             this.$root.$on("stepPreview", (step) => {
                 let component = app.getComponent(step.reference);
                 pow.preview(step, component).then((obj)=>{
@@ -156,10 +167,14 @@ window.onload = function() {
                 }).catch(this.handlePOWError);
             });
             if (app.DEVMODE) {
-                console.clear(); // Vue/electron junk warnings
-                pow.init("!examples")
+                //console.clear(); // Vue/electron junk warnings
+                pow.execOptions.debug=true;
+                pow.init("examples")
+                    .then(()=>root.componentsLoad())
                     .then(()=>root.pipelineLoad("pipeline1", {skipConfirm: true}))
                     .catch(this.handlePOWError);
+            } else {
+                root.componentsLoad();
             }
         }
     });

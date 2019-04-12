@@ -45,6 +45,9 @@ const StepForm = Vue.extend({
             this.form2Step()
             this.$root.$emit("stepPreview", this.step);
         },
+        examples() {
+            this.$root.$emit("componentExamples", this.step.reference);
+        },
         help() {
             alert((this.component.synopsis||"") + "\n" + (this.component.description||""))
         },
@@ -109,6 +112,7 @@ const StepForm = Vue.extend({
                 </v-container>
             </v-card-text>
             <v-card-actions>
+                <v-btn color="yellow darken-1" flat @click="examples()">Examples</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="red darken-1" flat @click="cancel()">Cancel</v-btn>
                 <v-btn color="green darken-1" flat @click="preview()">Preview</v-btn>

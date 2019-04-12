@@ -153,7 +153,7 @@ const pow = (function () {
     /**
      * Inspect a component
      * @param {string} path Path to component (or "!componentReference" for default workspace)
-     * @returns {Promise} Promise with a POWResult containing an object (component definition)
+     * @returns {Promise} Promise with a POWResult (.object=component definition)
      */
     async function inspect(path) {
         return execStrictJSON(`pow inspect "${path}" | ConvertTo-JSON -Depth 4`);
@@ -161,10 +161,18 @@ const pow = (function () {
     /**
      * Run a built pipeline
      * @param {string} path Path to the components ("!" for default workspace)
-     * @returns {Promise} Promise with a POWResult
+     * @returns {Promise} Promise with a POWResult (.object=Array of component definitions)
      */
     async function components(path = "!") {
-        return execStrictJSON(`pow components "${path}" export`);
+        return execStrictJSON(`pow components "${path}" list`);
+    }
+    /**
+     * Return an example of a component's usage
+     * @param {string} path Path to the component ("!" for default workspace)
+     * @returns {Promise} Promise with a POWResult(.object=Array of examples)
+     */
+    async function examples(path) {
+        return execStrictJSON(`pow examples "${path}" export`);
     }
     /**
      * Intercept a promise and parse the result as a POWResult
@@ -175,7 +183,7 @@ const pow = (function () {
     function _POWPromise(command, strict = false, json = false) {
         return new Promise(function (resolve, reject) {
             if (execOptions.debug)
-                console.debug("EXEC", command);
+                console.log("EXEC", command);
             pshell.exec(command, execOptions)
                 .then((out) => {
                 try {
@@ -235,6 +243,7 @@ const pow = (function () {
         preview: preview,
         inspect: inspect,
         components: components,
+        examples: examples,
         pipeline: pipeline,
         save: save,
         load: load,

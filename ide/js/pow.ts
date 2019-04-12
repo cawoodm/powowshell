@@ -170,7 +170,7 @@ console.log(`pow preview "${path}" "${params}"`)
     /**
      * Inspect a component
      * @param {string} path Path to component (or "!componentReference" for default workspace)
-     * @returns {Promise} Promise with a POWResult containing an object (component definition)
+     * @returns {Promise} Promise with a POWResult (.object=component definition)
      */
     async function inspect(path) {
         return execStrictJSON(`pow inspect "${path}" | ConvertTo-JSON -Depth 4`);
@@ -179,10 +179,20 @@ console.log(`pow preview "${path}" "${params}"`)
     /**
      * Run a built pipeline
      * @param {string} path Path to the components ("!" for default workspace)
-     * @returns {Promise} Promise with a POWResult
+     * @returns {Promise} Promise with a POWResult (.object=Array of component definitions)
      */
     async function components(path="!") {
-        return execStrictJSON(`pow components "${path}" export`);
+        return execStrictJSON(`pow components "${path}" list`);
+    }
+
+    
+    /**
+     * Return an example of a component's usage
+     * @param {string} path Path to the component ("!" for default workspace)
+     * @returns {Promise} Promise with a POWResult(.object=Array of examples)
+     */
+    async function examples(path:string) {
+        return execStrictJSON(`pow examples "${path}" export`);
     }
 
     /**
@@ -193,7 +203,7 @@ console.log(`pow preview "${path}" "${params}"`)
      */
     function _POWPromise(command, strict=false, json=false) {
         return new Promise(function(resolve, reject) {
-            if (execOptions.debug) console.debug("EXEC", command);
+            if (execOptions.debug) console.log("EXEC", command);
             pshell.exec(command, execOptions)
                 .then((out)=>{
                     try {
@@ -255,6 +265,7 @@ console.log(`pow preview "${path}" "${params}"`)
         preview: preview,
         inspect: inspect,
         components: components,
+        examples: examples,
         pipeline: pipeline,
         save: save,
         load: load,

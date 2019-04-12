@@ -6,9 +6,8 @@
     let FUNC = require("./functions")(verbose);
     let assert = FUNC.assert;
 
-    let POW = require("../ide/js/pow");
+    let pow = require("../ide/js/pow").pow;
     let path = require("path");
-    let pow = POW.pow;
 
     let workspacePath = path.resolve(__dirname, "../examples/");
 
