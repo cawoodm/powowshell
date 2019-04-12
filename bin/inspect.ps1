@@ -82,6 +82,7 @@ function main() {
 		$result = [PSCustomObject]@{
 			"reference" = $reference;
 			"type" = $CompType;
+			"path" = $RealPath;
 			"synopsis" = $synopsis;
 			"description" = $description;
 			"parameters" = $paramsOut;
