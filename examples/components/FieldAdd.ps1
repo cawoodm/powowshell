@@ -9,7 +9,7 @@
 		Value of the field to add
 
 #>
-[OutputType([Object])]
+[OutputType([string])]
 param(
 	[Parameter(Mandatory,ValueFromPipeline)][String]$InputObject,
 	[Parameter(Mandatory)][string]$Name,

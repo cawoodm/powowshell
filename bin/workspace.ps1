@@ -1,4 +1,4 @@
-﻿<#
+<#
  .Synopsis
  Set/get the current workspace
 

@@ -11,3 +11,4 @@ examples/**/step_*.ps1
 examples/**/run_*.ps1
 package-lock.json 
 ide\.eslintignore
+workspace.txt

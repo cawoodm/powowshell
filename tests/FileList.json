@@ -1,0 +1,44 @@
+﻿{
+    "reference":  "filelist",
+    "type":  "component",
+    "path":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\filelist.ps1",
+    "synopsis":  "Returns a list of files.",
+    "description":  "Lists files with a specific filter (e.g. *.txt) or\nwithin a specified date range.",
+    "parameters":  [
+                       {
+                           "name":  "Path",
+                           "type":  "String",
+                           "required":  true,
+                           "default":  "",
+                           "description":  "Specifies a path to one or more locations. Wildcards are permitted. The default location is the current directory (.)."
+                       },
+                       {
+                           "name":  "Filter",
+                           "type":  "String",
+                           "required":  false,
+                           "default":  "",
+                           "description":  "The wildcard for matching files (e.g. *.csv)"
+                       },
+                       {
+                           "name":  "Recurse",
+                           "type":  "SwitchParameter",
+                           "required":  false,
+                           "default":  "False",
+                           "description":  "If $true, will search all sub-folders"
+                       },
+                       {
+                           "name":  "POWAction",
+                           "type":  "String",
+                           "required":  false,
+                           "default":  "",
+                           "description":  null
+                       }
+                   ],
+    "input":  "",
+    "inputDescription":  "",
+    "output":  "text/json",
+    "outputDescription":  "{name,fullName,size(int)}",
+    "POWMessages":  [
+
+                    ]
+}

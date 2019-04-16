@@ -19,6 +19,8 @@ param(
     [String]$Output
 )
 $OutputPath=".\"
+$global:COMPONENTS=@{}
+$global:ADAPTORS=@{}
 function main() {
 
 	# Save path we are started from
@@ -41,11 +43,20 @@ function main() {
 
 function BuildingPipeline() {
 
+    # Get all known components as a HashTable
+    $global:COMPONENTS = @{}
+    # ASSUME: components a sibling of pipeline
+    & "$PSScriptRoot\components.ps1" "..\components\" | ForEach-Object {$global:COMPONENTS.add($_.reference, $_)}
+    
+    # Get all known adaptors as a HashTable
+    $global:ADAPTORS = @{}
+    & pow adaptors ! | ForEach-Object {$global:ADAPTORS.add($_.type, $_)}
+
     # Read pipeline.json definition
     $pipelineDef = ReadingPipelineDefinition("pipeline.json")
 
     # Validate definition
-    CheckingComponents($pipelineDef.steps)
+    Check-Steps($pipelineDef.steps)
 
     # Transform definition of components into Steps
     CreatingComponentSteps($pipelineDef)
@@ -72,94 +83,104 @@ function BuildingPipeline() {
 }
 
 function ReadingPipelineDefinition($Path) {
-
-    trap [System.ArgumentException] {
-        Write-Error ("Error Parsing Pipeline Definition: $Path" + $_)
-        throw [Exception] ""
+    try {
+        Get-Content -Raw ./pipeline.json | ConvertFrom-Json
+    } catch {
+        throw ("Error Parsing Pipeline Definition: $Path" + $_)
     }
-
-    Return Get-Content -Raw ./pipeline.json | ConvertFrom-Json
 }
 
-function CheckingComponents($components) {
+function Check-Steps($steps) {
 
-    # Make sure we have at least one component
-    if (-not $components -or -not $components.Count -or $components.Count -eq 0) {
-        Write-Error "No components found!"
-        Return
-    }
-    Write-Verbose "$($components.Count) components found"
+    # Make sure we have at least one step
+    if (-not $steps -or -not $steps.length -or $steps.length -eq 0) {throw "No steps found!"}
+    Write-Verbose "$($steps.length) steps found"
 
-    # Check each component
-    foreach($component in $components) {
-        # TODO: Support Cmdlets and maybe use Get-Command?
-        $path = Resolve-Component $component.reference
-        if (-not (Test-Path $path)) {
-            Write-Error "Component Id $($_.id) reference $path not found!"
-        }
+    # Check each step
+    foreach($step in $steps) {
+        Write-Verbose "1 $($step.reference)"
+        $component = $global:COMPONENTS[$step.reference]
+        if ($null -eq $component) {$component = & "$PSScriptRoot\inspect.ps1" $step.reference}
+        Write-Verbose "2 $component"
+        $global:COMPONENTS[$component.reference]=$component
+        Write-Verbose "$($component.reference) is a $($component.type)"
+        # Check same number of parameters
+        if ($component.parameters.length -eq 0 -and $step.parameters.length -gt 0) {throw "Step $($step.id) has parameters but component does not!"}
         # TODO: Check mandatory fields (e.g. id)
         # TODO: Check parameters against component definition? - Done in CreatingComponentSteps()
      }
 
-     #Write-Host "`tComponents checked out OK" -ForegroundColor Green
+     Write-Verbose "`tSteps checked out OK"
 
-}
-function Resolve-Component($reference) {
-    # Components assumed to be in sibling path to pipeline
-    "..\components\$reference.ps1"
 }
 function CreatingComponentSteps($pipelineDef) {
 		
     # Step template
     $stepHeader = "[CmdletBinding(SupportsShouldProcess)]"
     $PipelineParamsS = "param(`$PipelineParams=@{})"
-    $PipelineParamsI = "param([Parameter(ValueFromPipeline=`$true)][String]`$InputObject,`$PipelineParams=@{})"
-    $stepHeader2 = "function main() {"
-    $stepFooter = "}`nSet-StrictMode -Version Latest`nmain"
+    # TODO: Should we add the [type] of piped input here?
+    $PipelineParamsI = "param([Parameter(ValueFromPipeline=`$true)]`$InputObject,`$PipelineParams=@{})"
+    $stepHeaderMain = "function main() {"
+    $stepHeaderProcess = "process {"
+    $stepHeaderEnd = "end {"
+    $StepComment = $null
+    $stepFooterMain = "}`nSet-StrictMode -Version Latest`nmain"
+    $stepFooterStream = "}`n"
 
     $Count = 0
-    $validOutputs = @{"System.String"=$true;"System.Array"=$true;"System.Object"=$true}
+    $validOutputs = @{"text"=$true;"text/json"=$true}
 
     foreach($step in $pipelineDef.steps) {
         
         $id = $step.id
         $ref = $step.reference
         
-        # Inspect definition from component script
-        $compPath = Resolve-Component $step.reference;
-        $cmd = Get-Command $compPath
-        if (-not $cmd.Parameters) {
-            if ($step.parameters.PSObject.Properties.Count -gt 0) {
-                Write-Error "No parameters found for component '$ref'!"
-                Throw [Exception] ""
-            } else {
-                Write-Warning "No parameters found for component '$ref'!"
-            }
-        }
+        # Get component definition and path
+        $component = $global:COMPONENTS[$step.reference]
+        $compPath = $component.path
 
         # Pass PARAMETERS to the Component
-        $params0 = "`$params = " + (ReSerializeObject $step.parameters);
-
+        $params0 = "`t`$params = " + (ReSerializeObject $step.parameters);
+        $params0 = $params0 -replace "\n", "`n`t";
         
         if($step.input){$PipelineParams = $PipelineParamsI} else {$PipelineParams = $PipelineParamsS}
 
         # Pass piped INPUT to the Component
-        $inputSrc = if($step.input){'$InputObject | & '}else{'& '}
+        $inputSrc = if($step.input){'$InputObject | & '}else{'& '};
 
         # Validate OUTPUT of Component
-        $outputType = $cmd.OutputType.Name
+        $outputType = $component.output
         if (-not $outputType) {
-            Write-Warning "No OutputType found for component '$ref'!"
-        } elseif ($outputType -and -not $validOutputs.ContainsKey($outputType)) {
-            Write-Error "Invalid OutputType '$outputType' found for component '$ref'!"
-            Throw [Exception] ""
+            Write-Verbose "NOTE: No OutputType found for component '$ref'!"
+        } elseif (-not $global:ADAPTORS.ContainsKey($outputType)) {
+            #throw "No adaptor found for output ($outputType) of component '$ref'!"
+            Write-Warning "No adaptor found for output ($outputType) of component '$ref'!"
         }
 
+        # Add a comment
+        if ($step.name) {$StepComment = "`t# $($step.name)"} else {$StepComment=$null}
+
         # Actual core component call
-        $cmd1 = "$inputSrc$compPath @params" # >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt"
+        $cmd1 = "`t$inputSrc$compPath @params"
+
+        # Add output type
+        $stepOutputType=$null;if ($component.output) {$stepOutputType="[OutputType([$($component.output)])]"}
+
+        if ($step.stream -eq "process") {
+            $cmd1 = $cmd1.replace('$InputObject', '$_')
+            $stepHeader2 = $stepHeaderProcess
+            $stepFooter = $stepFooterStream 
+        } elseif ($step.stream -eq "end") {
+            $cmd1 = $cmd1.replace('$InputObject', '$input')
+            $stepHeader2 = $stepHeaderEnd
+            $stepFooter = $stepFooterStream 
+        } else {
+            $stepHeader2 = $stepHeaderMain
+            $stepFooter = $stepFooterMain
+        }
         
         # Build Step code
-        $stepHeader, $PipelineParams, $stepHeader2, $params0, $cmd1, $stepFooter -join "`n" > "$OutputPath\step_$id.ps1"
+        $stepHeader, $stepOutputType, $PipelineParams, $stepHeader2, $params0, $StepComment, $cmd1, $stepFooter -join "`n" > "$OutputPath\step_$id.ps1"
 
         $Count++
 
@@ -168,6 +189,7 @@ function CreatingComponentSteps($pipelineDef) {
     Write-Verbose "$Count steps created"
 
 }
+function Get-Step($id) {$pipelineDef.steps | Where-Object id -eq $id}
 
 <#
 	CreatingPipeline_prod
@@ -186,12 +208,21 @@ function CreatingPipeline_prod($pipelineDef) {
     $cmd += "`n"
     $cmd += "try {`n`n"
     
-    $pipelineDef.steps | ForEach-Object {$step = $_;
-    
-        $id = $step.id
+    foreach ($step in $pipelineDef.steps) {
         
-        $cmd += "`t# Run Step $($id): $($step.name)`n"
-        $cmd += "`tWrite-Verbose `"Running step $($id): $($step.name)`"`n"
+        $id = $step.id
+        $component = $global:COMPONENTS[$step.reference]
+        
+        $cmd += "`t# Run Step $($id) $($step.reference): $($step.name)`n"
+        $cmd += "`tWrite-Verbose `"Running step $($id) : $($step.name)`"`n"
+
+        # TODO: Add adaptors for mismatched pipes
+        if ($step.input) {
+            # TODO: Show type FROM and type TO when piping between steps
+            $predecessor = Get-Step $step.input
+            $precomp = $global:COMPONENTS[$predecessor.reference]
+            $cmd += "`t# FROM [$($precomp.output)] => TO [$($component.input)]`n"
+        }
         
         # Capture step OUTPUT
         $cmd += "`t`$OP_$id = "
@@ -230,8 +261,11 @@ function CreatingPipeline_trace($pipelineDef) {
     Write-Verbose "BUILDER CreatingPipeline_prod"
 
     # Can be run from anywhere, change to pipeline path
-    $cmd = "[CmdletBinding(SupportsShouldProcess)]"
-    $cmd = "Push-Location `$PSScriptRoot`n"
+    $cmd = ReSerializeParams $pipelineDef.parameters;
+    $cmd += ReSerializePipelineParams $pipelineDef.parameters;
+    $cmd += ("`$PipelineGlobals = " + (ReSerializeObject $pipelineDef.globals) + "`n");
+    $cmd += "`$ErrorActionPreference = 'Stop'`n"
+    $cmd += "Push-Location `$PSScriptRoot`n"
     #$cmd += "`$VerbosePreference='Continue'`n"
     $cmd += "#Create folder for trace files`n"
     $cmd += "New-Item -Path .\trace -ItemType Directory -ErrorAction SilentlyContinue | Out-Null`n"
@@ -250,7 +284,7 @@ function CreatingPipeline_trace($pipelineDef) {
         }
         
         # Run step LOGIC and capture OUTPUT
-        $cmd += ".\step_$($id).ps1 >.\trace\tmp_$($id)_output.txt 2>.\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt`n`n"
+        $cmd += ".\step_$($id).ps1 -PipelineParams `$PipelineParams > .\trace\tmp_$($id)_output.txt 2> .\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt`n`n"
         
     }
     
@@ -269,12 +303,17 @@ function CreatingPipeline_trace($pipelineDef) {
 function ReSerializeObject($obj) {
     Write-Verbose "BUILDER ReSerialieObject"
     $res = "@{`n"
-    $obj.PSObject.Properties | ForEach-Object {
-        $pVal = $_.Value; $pName = $_.Name
-        if ($pVal.Contains("`{") -and $pVal.EndsWith("}")) {
+    foreach($prop in $obj.PSObject.Properties) {
+        $pVal = $prop.Value; $pName = $prop.Name
+        # Map booleans to powershell literals ($true/$false)
+        if (([string]$pVal).Contains("`{") -and $pVal.EndsWith("}")) {
             # Parameter is code (a PowerShell Expression)
             # TODO: Escape code for PS
             $res += "`t$($pName) = " + $pVal.SubString(1, $pVal.Length-2) + "`n"
+        } elseif ($pVal -eq $true) {
+            $res += "`t$($pName) = `$true`n"
+        } elseif ($pVal -eq $false) {
+            $res += "`t$($pName) = `$false`n"
         } else {
             # Parameter is a String
             # TODO: Escape String for PS

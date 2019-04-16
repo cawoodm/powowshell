@@ -1,0 +1,59 @@
+{
+	"id": "procmon1",
+	"name": "Analyse a process monitoring result",
+	"description": "Read csv export from procmon and find stuff.",
+	"parameters": {
+		"Path": {
+			"default": "C:\\Marc\\Prg\\procmon\\Logfile1.CSV",
+			"type": "string"
+		}
+	},
+	"globals": {},
+	"input": {},
+	"output": {"type": "string"},
+	"steps": [
+		{
+			"id": "A1",
+			"name": "Read the ProcMon CSV log file",
+			"reference": "Import-CSV",
+			"input": "",
+			"stream": "",
+			"parameters": {
+                "Path": "{$PipelineParams.Path}",
+                "Encoding": "UTF8"
+			}
+		},
+		{
+			"id": "B1",
+			"name": "Get slow events",
+			"reference": "Where-Object",
+			"input": "A1",
+			"stream": "process",
+			"parameters": {
+				"FilterScript": "{{[double]$_.Duration -gt 0.00002}}"
+			}
+		},
+		{
+			"id": "C1",
+			"name": "Group By Operation",
+			"reference": "Group-Object",
+			"input": "B1",
+			"stream": "end",
+			"parameters": {
+				"Property": "Operation",
+				"NoElement": true,
+				"CaseSensitive": false
+			}
+		},
+		{
+			"id": "D1",
+			"name": "Top 10",
+			"reference": "Select-Object",
+			"input": "C1",
+			"stream": "end",
+			"parameters": {
+				"First": 10
+			}
+		}
+	]	
+}

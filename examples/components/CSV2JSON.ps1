@@ -21,16 +21,16 @@
  Return a JSON array with objects => [{name:"a", age: 1},{name:"b", age: 2}]
 
  .Example
- "name,age`na;1`nb;2" | .\CSV2JSON.ps1 -Delimiter ";"
+ "name;age`na;1`nb;2" | .\CSV2JSON.ps1 -Delimiter ";"
  Return a JSON array with objects => [{name:"a", age: 1},{name:"b", age: 2}]
  This example shows the usage of the Delimiter parameter
 
 #>
 [CmdLetBinding()]
-[OutputType([String])]
+[OutputType([string])]
 param(
     [Parameter(Mandatory,ValueFromPipeline,ParameterSetName="Std")]
-        $InputObject,
+        [string]$InputObject,
     [Parameter(ParameterSetName="Std")]
         [String]$Delimiter=",",
     [Parameter(ParameterSetName="Std")]

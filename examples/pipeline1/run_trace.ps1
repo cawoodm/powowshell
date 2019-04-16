@@ -1,18 +1,31 @@
-﻿Push-Location $PSScriptRoot
+﻿[CmdletBinding(SupportsShouldProcess)]
+param(
+	[string]$DataSource = ".\data\voters.txt",
+	$p2 = (Get-Date)
+)
+$PipelineParams = @{
+	DataSource = $DataSource;
+	p2 = $p2;
+};
+$PipelineGlobals = @{
+	foo = "bar"
+};
+$ErrorActionPreference = 'Stop'
+Push-Location $PSScriptRoot
 #Create folder for trace files
 New-Item -Path .\trace -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
 
 # Run Step A1: Open Names File
 Write-Verbose "Running step A1: Open Names File"
-.\step_A1.ps1 >.\trace\tmp_A1_output.txt 2>.\trace\tmp_A1_errors.txt 5>>.\trace\tmp_debug.txt
+.\step_A1.ps1 -PipelineParams $PipelineParams > .\trace\tmp_A1_output.txt 2> .\trace\tmp_A1_errors.txt 5>>.\trace\tmp_debug.txt
 
 # Run Step B1: Parse Names File
 Write-Verbose "Running step B1: Parse Names File"
-Get-Content -Raw .\trace\tmp_A1_output.txt | .\step_B1.ps1 >.\trace\tmp_B1_output.txt 2>.\trace\tmp_B1_errors.txt 5>>.\trace\tmp_debug.txt
+Get-Content -Raw .\trace\tmp_A1_output.txt | .\step_B1.ps1 -PipelineParams $PipelineParams > .\trace\tmp_B1_output.txt 2> .\trace\tmp_B1_errors.txt 5>>.\trace\tmp_debug.txt
 
 # Run Step C1: Select Name and Email
 Write-Verbose "Running step C1: Select Name and Email"
-Get-Content -Raw .\trace\tmp_B1_output.txt | .\step_C1.ps1 >.\trace\tmp_C1_output.txt 2>.\trace\tmp_C1_errors.txt 5>>.\trace\tmp_debug.txt
+Get-Content -Raw .\trace\tmp_B1_output.txt | .\step_C1.ps1 -PipelineParams $PipelineParams > .\trace\tmp_C1_output.txt 2> .\trace\tmp_C1_errors.txt 5>>.\trace\tmp_debug.txt
 
 # Return Output
 Write-Host "Trace output is in the trace\ folder of your pipeline"

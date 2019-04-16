@@ -17,31 +17,34 @@
   "steps": [
     {
       "id": "A1",
-      "reference": "ReadFile",
+      "reference": "readfile",
       "name": "Open Names File",
       "parameters": {
         "Path": "{$PipelineParams.DataSource}"
       },
-      "input": ""
+      "input": "",
+      "stream": ""
     },
     {
       "id": "B1",
-      "reference": "CSV2JSON",
+      "reference": "csv2json",
       "name": "Parse Names File",
       "parameters": {
         "Delimiter": "|",
         "Header": "{\"name\", \"age\", \"email\", \"source\"}"
       },
-      "input": "A1"
+      "input": "A1",
+      "stream": ""
     },
     {
       "id": "C1",
-      "reference": "SelectFields",
+      "reference": "selectfields",
       "name": "Select Name and Email",
       "parameters": {
         "Fields": "{\"name\", \"age\", \"email\"}"
       },
-      "input": "B1"
+      "input": "B1",
+      "stream": ""
     }
   ],
   "input": {},

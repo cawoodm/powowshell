@@ -1,5 +1,14 @@
 CHANGELOG
 
+v0.1.7 16.04.2019
+* Streamed pipelines
+* CmdLet support as components
+* Adaptors made but not yet used
+
+v0.1.6 09.04.2019
+* Save, build, verify and run from IDE
+* Preview step from IDE
+
 v0.1.5 26.03.2019
 * Return issues with component in POWMessages in `pow inspect`
 * Universally use `$ErrorActionPreference Stop` to ensure exceptions are thrown

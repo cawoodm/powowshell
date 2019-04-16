@@ -45,7 +45,7 @@
             
             // Test inspecting a single component
             out = await pow.inspect("!CSV2JSON"); assert(out.success, `Should inspect a component and see the reference: '${out.object.reference}'`)
-            assert(out.object.input.match(/text\/.sv/), `Should have 'text/*sv' as our component input: '${out.object.input}'`)
+            assert(out.object.inputFormat.match(/text\/.sv/), `Should have 'text/*sv' as our component input: '${out.object.inputFormat}'`)
 
             // Test pow components
             out = await pow.components("!"); assert(out.success && out.object.length > 5, `Should list components find some: '${out.object.length}'`)

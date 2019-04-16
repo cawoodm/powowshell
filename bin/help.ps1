@@ -33,7 +33,7 @@ function main() {
 	"POW! PowowShell Packs a Punch!"
 @"
 Usage: pow <command>
-Commands: "version", "help", "clean", "build", "verify", "run", "inspect", "components"
+Commands: "install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "pipeline", "preview", "examples", "adaptors"
 Command examples:
  * pow version: Print version information
  * pow help <command> : Help using a command
@@ -47,6 +47,9 @@ Command examples:
  * pow clean, build, verify <pipeline> : Delete a built pipeline, re-build it and verify it
  * pow inspect <component.ps1> : Inspects a component
  * pow components <components directory> : List components in a folder
+ * pow adaptors : List data I/O adaptors available
+ * pow preview <component.ps1> : Preview a component output (if supported)
+ * pow examples <component.ps1> : Show examples of component usage (if supported)
 "@
     }
 }

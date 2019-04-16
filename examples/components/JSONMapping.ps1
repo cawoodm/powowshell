@@ -22,6 +22,8 @@
 
 
 #>
+[CmdLetBinding()]
+[OutputType([String])]
 param(
     [Parameter(Mandatory,ValueFromPipeline,ParameterSetName = 'Standard')]
     $InputObject,

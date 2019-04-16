@@ -23,16 +23,35 @@ param(
 )
 function main() {
     $Path = $Path.replace('.ps1', '')
-    Write-Verbose "Path=$Path"
 	$FullPath = (Resolve-Path -Path $Path).Path
+    Write-Verbose "Components Path=$Path; FullPath=$FullPath"
     Push-Location $FullPath
     try {
-        if ($Action -like "list") {
-            return Get-Content .\components.json
+        # Check Cache
+        $CacheFile=$null;$JSON=$null
+        if (Test-Path .\components.json) {
+            $CacheFile = Get-Item .\components.json;
+            $JSON = Get-Content .\components.json
+            if ($JSON -like '*[[]*'){} else {$JSON=$null; $CacheFile=$null} # Cache is gone
         }
-        $Components = ListComponents
-        if ($Action -like "export") {
+        # Action = list : Return cached JSON
+        if ($Action -like "list" -and $CacheFile) {return $JSON}
+        # When did a component last change
+        $LastWriteTime = (Get-ChildItem .\ -File -Filter *.ps1 | Sort LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
+        if ($null -eq $CacheFile -or $LastWriteTime -gt $CacheFile.LastWriteTime) {
+            Write-Verbose "Component cache is stale"
+            $JSON=$null
+            $Components = ListComponents
+            # Update the cache
+            $JSON = $Components | ConvertTo-Json -Depth 4
+            $JSON | Set-Content .\components.json
+        } else {
+            Write-Verbose "Component cache is fresh"
+            $Components = $JSON | ConvertFrom-Json
+        }
+        if ($Action -like "export" -or $Action -like "list") {
             # Provide a serialized JSON export
+            if ($JSON) {return $JSON}
             $Components | ConvertTo-JSON -Depth 4
         } else {
             return $Components

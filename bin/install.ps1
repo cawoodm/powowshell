@@ -22,14 +22,16 @@ function main() {
         Push-Location $PSScriptRoot
         
         # Check if already installed
-        #$PowowShell = Get-Module "PowowShell" # Unreliable
-        $PowowShell = Get-Command "pow" -ErrorAction SilentlyContinue
-        $PowExists = -not ($PowowShell -eq $null)
+        #$PowowShell = Get-Module "PowowShell" # Unreliable: may exist but not be installed
+        #$PowowShell = (Get-Module "PowowShell" -EA 0) -or (Get-Alias "pow" -EA 0)
+        $PowowShell = Get-Command "Invoke-PowowShell" -ErrorAction SilentlyContinue
+        $PowExists = -not ($null -eq $PowowShell)
 
         # We install if forced or if we are not just Verifying
         if ($Force -or -not $Verify) {
             $Paths = $env:PSModulePath -split ";"
             $File = Get-Item .\powowshell.psm1
+            $File2 = Get-Item .\powowshell.psd1
             $PathFinal = $null
             # We install if forced or if pow does not exist
             if ($Force -or -not $PowExists) {
@@ -38,12 +40,22 @@ function main() {
                     $DestPath = $Path + "\PowowShell"
                     try {
                         if (Test-Path $DestPath) {} else {New-Item -ItemType directory $DestPath 2>$null | Out-Null}
-                        if (Test-Path "$DestPath\powowshell.psm1") {Write-Warning "PowowShell Module exists: You need to restart PowerShell to see the changes!"}
+                        #if (Test-Path "$DestPath\powowshell.psm1") {
+                        if ((Get-Module "PowowShell") -or (Get-Alias "pow")) {
+                            Write-Warning "PowowShell Module exists: You may need to restart PowerShell to see the changes!"
+                            Remove-Module -Name PowowShell
+                        }
                         $result = $File.CopyTo($DestPath + "\powowshell.psm1", $true) 2> $null
                         $PathFinal = $DestPath + "\powowshell.psm1"
-                        if (Test-Path $PathFinal) {break}
+                        if (Test-Path $PathFinal) {
+                            # Success
+                            $result = $File2.CopyTo($DestPath + "\powowshell.psd1", $true) 2> $null
+                            Write-Verbose "Import-Module -Name PowowShell -Global -Alias pow"
+                            Import-Module -Name PowowShell -Global -Alias pow
+                            break
+                        }
                     } catch {
-                        Write-Host "Could not install module to $Path !"
+                        Write-Host "Could not install module to $Path : $_"
                     }
                 }
                 # Point the powowshell module back to this bin\ directory
@@ -56,12 +68,15 @@ function main() {
                 Write-Host " Tip: Type install -force to re-install" -ForegroundColor Yellow
             }
             #if (Get-Command "pow" -errorAction SilentlyContinue) {$PowowShell=$true}
-            $PowowShell = Get-Command "pow"
+            write-verbose 'Get-Alias "pow"'
+            $PowowShell = Get-Alias "pow"
+            write-verbose "`$PowowShell=$PowowShell"
             $PowExists = -Not ($PowowShell -eq $null)
         }
 
         if ($PowExists) {
-            Write-Host "Yep, the 'pow' is CmdLet installed" -ForegroundColor Green
+            Write-Host "Yep, the 'Invoke-PowowShell' cmdLet is installed" -ForegroundColor Green
+            Write-Host "NOTE: You may need to run 'Import-Module -name PowowShell -Global' in PowerShell to use the 'pow' alias" -ForegroundColor Cyan
             Write-Host " Type 'pow help' for a list of commands"
         } else {
             Write-Host "Nope, the 'pow' CmdLet is not installed!" -ForegroundColor Red

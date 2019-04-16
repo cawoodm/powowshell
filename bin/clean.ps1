@@ -1,4 +1,4 @@
-﻿<#
+<#
  .Synopsis
  Delete built pipeline
 

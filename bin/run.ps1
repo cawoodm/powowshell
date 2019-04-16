@@ -1,4 +1,4 @@
-﻿<#
+<#
  .Synopsis
  Run a pipeline
 
@@ -11,9 +11,8 @@
  .Parameter Parameters
  A hashmap of the parameters to pass to the pipeline (splatting)
 
- .Parameter Trace
- If set, will trace each step's input and output to the trace\ folder of the pipeline
- This can be useful for debugging
+ .Parameter Option
+ trace: will trace each step's input and output to the trace\ folder of the pipeline for debugging
 
  .Example
  pow run ./examples/pipeline1 @{DataSource="./data/names.txt"}
@@ -23,7 +22,7 @@
 param(
     [Parameter(Mandatory)][String]$Path,
 		$Parameters=@{},
-		[switch]$Trace=$false
+		[string]$Option
 )
 function main() {
 
@@ -49,7 +48,7 @@ function main() {
 	$Path = (Resolve-Path -Path $Path).Path
 	Push-Location $Path
 	try {
-		if ($Trace) {
+		if ($option -like "trace") {
 			& .\run_trace.ps1 @Parameters
 		} else {
 			& .\run_prod.ps1 @Parameters

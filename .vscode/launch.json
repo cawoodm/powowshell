@@ -30,7 +30,14 @@
             "request": "launch",
             "name": "Launch Current PS",
             "script": "${file}",
-            "args": ["Get-Service", "export"]
+            "args": []
+        },
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "Launch tmp.ps1",
+            "script": "${workspaceFolder}\\bak\\tmp.ps1",
+            "args": []
         },
         {
             "type": "node",

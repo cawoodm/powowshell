@@ -1,5 +1,21 @@
 # TODO
 
+# Adaptors
+We want to support any Cmdlet's output so...
+We provide adaptors which convert any data type to the canon: JSON string
+We need to know how a component expects I/O
+* Input: STDIN or PARAMS
+* Output: STDOUT or RETURN
+
+Types of components regarding PIPED I/O:
+* TYPE:         STDIN       PARAMS      STDOUT      RETURN
+* Source:       -           ?           Y           ?
+* Filter:       Y           ?           Y           ?
+* End-Point:    Y           ?           -           ?
+* Function:     -           ?           -           ?
+
+At some point we need to know if the JSON is an object or an array
+
 ## POW.js
 * How to capture -Verbose output
 

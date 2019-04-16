@@ -1,4 +1,4 @@
-﻿<#
+<#
 .Synopsis
 The POW Cmdlet (CLI) runs various POW CmdLets to work with PowowShell
 
@@ -24,9 +24,10 @@ Clean, build and verify a pipeline
 #########################################
 function Invoke-PowowShell {
     [CmdletBinding(SupportsShouldProcess)]
+    [Alias('pow')]
 	param(
         [Parameter(Mandatory=$true)][String[]]
-        [ValidateSet("version", "help", "clean", "build", "verify", "run", "inspect", "components", "install", "workspace", "pipeline", "preview", "examples")]
+        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "pipeline", "preview", "examples", "adaptors")]
         $Command,
         $p1,$p2,$p3
     )
@@ -47,10 +48,14 @@ function Invoke-PowowShell {
         #  Lets you do this: pow inspect mycomponent
         #  instead of: pow inspect .\examples\components\mycomponent.ps1
         $Workspace=$null
-        if (Test-Path "..\workspace.txt") {$Workspace = Get-Content "..\workspace.txt"} #else {$Workspace = (Resolve-Path "..\").Path}
+        if (Test-Path "..\workspace.txt") {$Workspace = Get-Content "..\workspace.txt"} else {$Workspace = (Resolve-Path "..\").Path}
         if ($p1 -is [string] -and $p1 -like "!*") {
             if ($Command -in "inspect", "components", "preview", "examples") {
                 $p1 = $p1.replace("!", "$Workspace\components\"); $p1+=".ps1"
+            } elseif ($command -eq "adaptors") {
+                # Adaptors are in /core/adaptors
+                $p1 = $p1.replace("!", "..\core\adaptors");
+                $p1 = Resolve-Path $p1
             } elseif ($command -eq "workspace") {
                 # e.g. "!examples" should be relative to the root of the app
                 $p1 = $p1.replace("!", "..\");
@@ -84,6 +89,6 @@ function Invoke-PowowShell {
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
-Set-Alias pow Invoke-PowowShell
 #########################################
+New-Alias -Name pow -Value Invoke-PowowShell -Force
 Export-ModuleMember -Function Invoke-PowowShell -Alias pow

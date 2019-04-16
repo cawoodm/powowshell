@@ -1,7 +1,8 @@
-﻿[
+[
     {
-        "reference":  "CSV2JSON",
+        "reference":  "csv2json",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\CSV2JSON.ps1",
         "synopsis":  "Convert CSV data to JSON format",
         "description":  "Accepts tabular CSV data and return contents as a JSON Array",
         "parameters":  [
@@ -27,17 +28,20 @@
                                "description":  null
                            }
                        ],
-        "input":  "text/csv",
+        "input":  "string",
+        "inputFormat":  "text/csv",
         "inputDescription":  "A String in CSV format",
-        "output":  "text/json",
+        "output":  "string",
+        "outputFormat":  "text/json",
         "outputDescription":  "A JSON array object",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "Data2JSON",
+        "reference":  "data2json",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\Data2JSON.ps1",
         "synopsis":  "Convert input data to JSON format",
         "description":  "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the record and field separator can be anything.",
         "parameters":  [
@@ -63,17 +67,20 @@
                                "description":  null
                            }
                        ],
-        "input":  "text/xsv",
+        "input":  "string",
+        "inputFormat":  "text/xsv",
         "inputDescription":  "Any separated data (e.g. CSV) with newlines between records",
-        "output":  "text/json",
+        "output":  "string",
+        "outputFormat":  "text/json",
         "outputDescription":  "An array of JSON objects corresponding to the rows of the input data",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "DateAdder",
+        "reference":  "dateadder",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\DateAdder.ps1",
         "synopsis":  "Add some days to today\u0027s date and return the date",
         "description":  "foo bar",
         "parameters":  [
@@ -86,16 +93,19 @@
                            }
                        ],
         "input":  "",
+        "inputFormat":  "",
         "inputDescription":  "",
-        "output":  "date",
+        "output":  "datetime",
+        "outputFormat":  "date",
         "outputDescription":  "",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "DOSCommand",
+        "reference":  "doscommand",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\DOSCommand.ps1",
         "synopsis":  "Run any command with DOS CMD",
         "description":  null,
         "parameters":  [
@@ -108,16 +118,19 @@
                            }
                        ],
         "input":  "",
+        "inputFormat":  "",
         "inputDescription":  "",
-        "output":  "text",
+        "output":  "",
+        "outputFormat":  "text",
         "outputDescription":  "",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "DOSDir",
+        "reference":  "dosdir",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\DOSDir.ps1",
         "synopsis":  "List files with DOS CMD",
         "description":  null,
         "parameters":  [
@@ -130,16 +143,19 @@
                            }
                        ],
         "input":  "",
+        "inputFormat":  "",
         "inputDescription":  "",
-        "output":  "text",
+        "output":  "",
+        "outputFormat":  "text",
         "outputDescription":  "",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "ExecuteCmdlet",
+        "reference":  "executecmdlet",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\ExecuteCmdlet.ps1",
         "synopsis":  "Execute any PowerShell Cmdlet",
         "description":  "Generic component which allows you to map up to 10 parameters to any cmdlet you like",
         "parameters":  [
@@ -187,16 +203,19 @@
                            }
                        ],
         "input":  "",
+        "inputFormat":  "",
         "inputDescription":  "",
-        "output":  "text/json",
+        "output":  "string",
+        "outputFormat":  "text/json",
         "outputDescription":  "",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "FieldAdd",
+        "reference":  "fieldadd",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\FieldAdd.ps1",
         "synopsis":  "Add a field to each object in an array",
         "description":  null,
         "parameters":  [
@@ -215,9 +234,11 @@
                                "description":  "Value of the field to add"
                            }
                        ],
-        "input":  null,
+        "input":  "string",
+        "inputFormat":  null,
         "inputDescription":  null,
-        "output":  "system.object",
+        "output":  "string",
+        "outputFormat":  "system.string",
         "outputDescription":  "",
         "POWMessages":  [
                             {
@@ -227,8 +248,9 @@
                         ]
     },
     {
-        "reference":  "FileList",
+        "reference":  "filelist",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\FileList.ps1",
         "synopsis":  "Returns a list of files.",
         "description":  "Lists files with a specific filter (e.g. *.txt) or\nwithin a specified date range.",
         "parameters":  [
@@ -262,16 +284,19 @@
                            }
                        ],
         "input":  "",
+        "inputFormat":  "",
         "inputDescription":  "",
-        "output":  "text/json[name,fullname,size(int)]",
-        "outputDescription":  "",
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "{name,fullName,size(int)}",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "JSONMapping",
+        "reference":  "jsonmapping",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\JSONMapping.ps1",
         "synopsis":  "Map one form of JSON to another",
         "description":  "Used for transforming JSON between two types.\nLimitation: Resulting object is only 1-level deep",
         "parameters":  [
@@ -290,17 +315,20 @@
                                "description":  null
                            }
                        ],
-        "input":  "object(*)",
-        "inputDescription":  "",
-        "output":  "object(*)",
-        "outputDescription":  "",
+        "input":  "object",
+        "inputFormat":  "text/json",
+        "inputDescription":  "The JSON object to be transformed.",
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "The transformed output JSON object.",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "ObjectAddField",
+        "reference":  "objectaddfield",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\ObjectAddField.ps1",
         "synopsis":  "Add a field to each object in an array",
         "description":  null,
         "parameters":  [
@@ -319,9 +347,11 @@
                                "description":  "Value of the field to add"
                            }
                        ],
-        "input":  null,
+        "input":  "string",
+        "inputFormat":  null,
         "inputDescription":  null,
-        "output":  "system.object",
+        "output":  "object",
+        "outputFormat":  "system.object",
         "outputDescription":  "",
         "POWMessages":  [
                             {
@@ -331,8 +361,9 @@
                         ]
     },
     {
-        "reference":  "ReadFile",
+        "reference":  "readfile",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\ReadFile.ps1",
         "synopsis":  "Read text from a file",
         "description":  "Read a single text file and return contents as a string.",
         "parameters":  [
@@ -345,16 +376,19 @@
                            }
                        ],
         "input":  "",
+        "inputFormat":  "",
         "inputDescription":  "",
-        "output":  "text",
+        "output":  "string",
+        "outputFormat":  "text",
         "outputDescription":  "",
         "POWMessages":  [
 
                         ]
     },
     {
-        "reference":  "SelectFields",
+        "reference":  "selectfields",
         "type":  "component",
+        "path":  "W:\\powershell\\powowshell\\examples\\components\\SelectFields.ps1",
         "synopsis":  "Selects only certain fields from the input",
         "description":  null,
         "parameters":  [
@@ -367,8 +401,10 @@
                            }
                        ],
         "input":  "",
+        "inputFormat":  "",
         "inputDescription":  "",
-        "output":  "text/json",
+        "output":  "string",
+        "outputFormat":  "text/json",
         "outputDescription":  "",
         "POWMessages":  [
 

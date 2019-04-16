@@ -1,4 +1,4 @@
-﻿<#
+<#
 .Synopsis
 The POW Cmdlet (CLI) runs various POW CmdLets to work with PowowShell
 
@@ -30,10 +30,11 @@ Clean, build and verify a pipeline
     )
 #########################################
 function Invoke-PowowShell {
-	[CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess)]
+    [Alias('pow')]
 	param(
         [Parameter(Mandatory=$true)][String[]]
-        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "pipeline", "preview", "examples")]
+        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "pipeline", "preview", "examples", "adaptors")]
         $Command,
         $p1,$p2,$p3
     )
@@ -58,6 +59,10 @@ function Invoke-PowowShell {
         if ($p1 -is [string] -and $p1 -like "!*") {
             if ($Command -in "inspect", "components", "preview", "examples") {
                 $p1 = $p1.replace("!", "$Workspace\components\"); $p1+=".ps1"
+            } elseif ($command -eq "adaptors") {
+                # Adaptors are in /core/adaptors
+                $p1 = $p1.replace("!", "..\core\adaptors");
+                $p1 = Resolve-Path $p1
             } elseif ($command -eq "workspace") {
                 # e.g. "!examples" should be relative to the root of the app
                 $p1 = $p1.replace("!", "..\");
@@ -91,7 +96,5 @@ function Invoke-PowowShell {
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
-Set-Alias pow Invoke-PowowShell
 #########################################
 Invoke-PowowShell $Command $p1 $p2 $p3
-#########################################

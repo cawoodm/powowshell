@@ -1,7 +1,14 @@
 #Thoughts
 
+# PS6: PWSH
+* We could use `ConvertTo-JSON -AsArray` to standardize arrays
+* `Get-Date | ConvertTo-Json` is better than PSv5
+
+# General PowerShell
+* Set-PSDebug (-Off or -Trace 1|2)
+
 # Components
-* Components can now self test with the `-POWAction test` parameter
+* Should we use a separate MyComponent.selftest.ps1 instead of the ugly `-POWAction test` parameter?
 
 # Globals
 * How do we let steps/components write globals

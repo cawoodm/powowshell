@@ -1,4 +1,4 @@
-﻿<#
+<#
  .Synopsis
  Verify a pipeline can run (by running it)
 
