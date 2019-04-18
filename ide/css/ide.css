@@ -9,9 +9,9 @@ td.step {width: 200px;height: 200px; overflow: hidden; padding: 5px;}
 }
 .stepName {
     font-size: medium;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
 }
 .stepContainer {
     width: 100%;

@@ -10,7 +10,7 @@ app.components = {}
 
 app.getComponent = (reference) => {
     if (!app.components) return alert("Components not loaded!")
-    let res = app.components.filter((item)=>item.reference===reference);
+    let res = app.components.filter((item)=>item.reference===reference.toLowerCase());
     return res.length>0?res[0]:null;
 }
 app.DEVMODE = true;
@@ -149,14 +149,17 @@ window.onload = function() {
                 pipelineManager.setStep(newStep);
                 this.redraw();
             });
-            this.$root.$on("componentExamples", (reference) => {
-                pow.examples("!"+reference).then((obj)=>{
-                    obj.object.forEach((o)=>{
-                        let msg = o.code+"\n"+o.description;
-                        msg = msg.replace("`n", "\n");
-                        alert(o.code+"\n"+o.description)
-                    });
-                }).catch(this.handlePOWError);
+            this.$root.$on("componentExamples", (reference, type) => {
+                let ref = type==="cmdlet"?reference:"!"+reference;
+                pow.examples(ref)
+                    .then((res)=>{
+                        if (!res.object || res.object.length===0) return alert("No examples found!")
+                        res.object.forEach((o)=>{
+                            let msg = o.code+"\n"+o.description;
+                            msg = msg.replace("`n", "\n");
+                            alert(o.code+"\n"+o.description)
+                        });
+                    }).catch(this.handlePOWError);
             });
             this.$root.$on("stepPreview", (step) => {
                 let component = app.getComponent(step.reference);

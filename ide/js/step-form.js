@@ -46,7 +46,7 @@ const StepForm = Vue.extend({
             this.$root.$emit("stepPreview", this.step);
         },
         examples() {
-            this.$root.$emit("componentExamples", this.step.reference);
+            this.$root.$emit("componentExamples", this.step.reference, this.component.type);
         },
         help() {
             alert((this.component.synopsis||"") + "\n" + (this.component.description||""))
@@ -91,8 +91,8 @@ const StepForm = Vue.extend({
                             <v-text-field label="Name" placeholder="A label for this step" v-model="step.name"></v-text-field>
                         </v-flex>
                         <v-flex xs6>
-                            <v-select :items="inputs" :label="'Input (' + component.input + ')'" v-model="step.input" v-if="step.input"></v-select>
-                            <v-text-field label="Input" placeholder="No Input" disabled v-if="!step.input"></v-text-field>
+                            <v-select :items="inputs" :label="'Piped Input (' + component.input + ')'" v-model="step.input" v-if="step.input"></v-select>
+                            <v-text-field label="Input" placeholder="No Piped Input" disabled v-if="!step.input"></v-text-field>
                         </v-flex>
                         <v-flex xs6>
                             <v-text-field :label="'Output (' + component.output + ')'" v-model="step.output" readonly>
