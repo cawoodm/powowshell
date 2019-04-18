@@ -30,7 +30,7 @@ window.onload = function() {
                 this.loading[what]=true;
                 // Check everything is loaded
                 if (!this.loading.pipeline || !this.loading.components) return;
-                this.$refs.componentList.setComponents(app.components);
+                
             },
             componentsUpdated: function() {
                 let root = this;
@@ -94,6 +94,7 @@ window.onload = function() {
                     .then((obj)=>{
                         app.components = obj.object;
                         app.root.loaded("components");
+                        this.$refs.componentList.setComponents(app.components);
                     }).catch(this.handlePOWError);
             },
             pipelineLoad: function(id, opts) {
@@ -167,11 +168,11 @@ window.onload = function() {
                 }).catch(this.handlePOWError);
             });
             if (app.DEVMODE) {
-                //console.clear(); // Vue/electron junk warnings
+                console.clear(); // Vue/electron junk warnings
                 pow.execOptions.debug=true;
                 pow.init("examples")
                     .then(()=>root.componentsLoad())
-                    .then(()=>root.pipelineLoad("pipeline1", {skipConfirm: true}))
+                    //.then(()=>root.pipelineLoad("procmon1", {skipConfirm: true}))
                     .catch(this.handlePOWError);
             } else {
                 root.componentsLoad();
