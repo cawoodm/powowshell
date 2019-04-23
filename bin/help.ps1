@@ -24,9 +24,9 @@ function main() {
         if (Test-Path ".\$Command.ps1") {
             Get-Help ".\$Command.ps1" -Detailed | more
         } else {
-            Write-Host "Unknown command '$Command'!" -ForegroundColor Red
-            Write-Host " * try 'pow help' for a list of commands" -ForegroundColor Cyan
-            Write-Host " * try 'pow help <command>' for help on a command" -ForegroundColor Cyan
+            Write-Host "WARNING:`tUnknown command '$Command'!" -ForegroundColor Red
+            Write-Host "INFO:`t * try 'pow help' for a list of commands" -ForegroundColor Cyan
+            Write-Host "INFO:`t * try 'pow help <command>' for help on a command" -ForegroundColor Cyan
         }
         Pop-Location
     } else {

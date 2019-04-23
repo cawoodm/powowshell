@@ -54,7 +54,7 @@ function main() {
 			& .\run_prod.ps1 @Parameters
 		}
 	} catch {
-		Write-Host "!!! PIPELINE RUN FAILED !!!" -ForegroundColor Red
+		Write-Host "ERROR: !!! PIPELINE RUN FAILED !!!" -ForegroundColor Red
 		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
 		#throw $_
 	} finally {

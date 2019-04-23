@@ -27,7 +27,7 @@ At some point we need to know if the JSON is an object or an array
 ## IDE
 * We need some arrows showing pipeline flow of data
 * We need some basic shapes showing the type of text/xxx input (e.g. csv, json) a component inputs/outputs
-* TODO: When dragging a step the inputs need to be changed/cleared
+* TODO: When dragging a step the inputs may need to be changed/cleared
 
 ## POW CLI
 * Cleanup uses of Write-Host: fine if called by a human

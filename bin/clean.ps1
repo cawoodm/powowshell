@@ -20,7 +20,7 @@ function main() {
 	Remove-Item -Force run_*.ps1
 	Remove-Item -Force *.log
 	Remove-Item -Force .\trace\*.txt
-	Write-Host "CLEAN successful" -ForegroundColor Green
+	Write-Host "SUCCESS: CLEAN completed" -ForegroundColor Green
 	Pop-Location
 }
 Set-StrictMode -Version Latest

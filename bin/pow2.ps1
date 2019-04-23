@@ -34,7 +34,7 @@ function Invoke-PowowShell {
     [Alias('pow')]
 	param(
         [Parameter(Mandatory=$true)][String[]]
-        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "pipeline", "preview", "examples", "adaptors")]
+        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "cmdlets", "pipeline", "preview", "examples", "adaptors")]
         $Command,
         $p1,$p2,$p3
     )

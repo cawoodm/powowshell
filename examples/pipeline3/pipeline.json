@@ -3,13 +3,6 @@
 	"name": "Log System Issues to a Database",
 	"description": "Read log files from a folder, extract certain records, reprocess and save to a database.",
 	"parameters": {
-		"LogsFolder": {
-			"default": ".\\data",
-			"type": "string"
-		},
-		"p2": {
-			"default": "{Get-Date}"
-		}
 	},
 	"globals": {
 	},
@@ -24,7 +17,7 @@
 			"reference": "FileList",
 			"input": "",
 			"parameters": {
-				"Path": "{$PipelineParams.LogsFolder}"
+				"Path": ".\\data\\test.log"
 			}
 		},
 		{

@@ -40,19 +40,21 @@ function main() {
 			$cmd = Get-Help -Examples -Name $Name -ErrorAction SilentlyContinue
 			if ($null -eq $cmd) {throw "Invalid CmdLet '$RealPath'!"}
         }
-        $result=@()
-        foreach($example in $cmd.examples.example) {
-            $res = [PSCustomObject]@{
-                title = $example.title -replace '-', '';
-                code = $example.code;
-                description = "";
-            }
-            foreach($line in $example.remarks) {
-                $sep = ""; if ($res.description) {$sep="`n"}
-                if ($line.Text) {$res.description += $line.Text + $sep;}
-            }
-            $result += $res
-        }
+		$result=@()
+		if ($cmd.PSObject.Properties["examples"] -and $cmd.examples) {
+			foreach($example in $cmd.examples.example) {
+				$res = [PSCustomObject]@{
+					title = $example.title -replace '-', '';
+					code = $example.code;
+					description = "";
+				}
+				foreach($line in $example.remarks) {
+					$sep = ""; if ($res.description) {$sep="`n"}
+					if ($line.Text) {$res.description += $line.Text + $sep;}
+				}
+				$result += $res
+			}
+		}
 		if ($Action -like "export") {
 			return (ConvertTo-Json $result -Depth 3)
 		} else {

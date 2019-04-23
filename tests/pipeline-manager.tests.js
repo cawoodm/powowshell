@@ -96,10 +96,10 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
     
     if (FUNC.fails() > 0) {
         columnsToString();
-        console.log("\x1b[31m", `FAIL: pipeline-manager.js failed ${FUNC.fails()} of ${FUNC.tests()} tests`, "\x1b[0m")
+        console.log("\x1b[31m", `FAIL: pipeline-manager.js failed ${FUNC.fails()} of ${FUNC.tests()} tests`)
         process.exit(1)
     } else {
-        console.log("\x1b[32m", `SUCCESS: pipeline-manager.js passed ${FUNC.tests()} tests successfully`, "\x1b[0m");
+        console.log("\x1b[32m", `SUCCESS: pipeline-manager.js passed ${FUNC.tests()} tests successfully`);
         process.exit(0)
     }
 })(console, process.argv.slice(2));

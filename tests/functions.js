@@ -12,7 +12,7 @@ function FUNC(verbose) {
                 let res = typeof cond === "function"?cond():eval(cond);
                 if (res) {
                     if (verbose && !exception) {
-                        console.log("\x1b[32m", "\tOK: "+msg);
+                        console.log("\x1b[32m", "\tSUCCESS: "+msg);
                         return true;
                     }
                 } else {
@@ -28,7 +28,7 @@ function FUNC(verbose) {
                     console.log(e);
                     throw new Error("HALT TEST: Unexpected exception");
                 } else {
-                    if (verbose) console.log("\x1b[32m", "\tOK: "+msg);
+                    if (verbose) console.log("\x1b[32m", "\tSUCCESS: "+msg);
                     return true;
                 }
             }

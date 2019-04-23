@@ -4,7 +4,7 @@
 
  .Description
  Will read and parse the pipeline.json file inside the pipeline folder.
- Next, each component listed is verified.
+ Each component is verified, tested and connected as a single powershell script.
    
  .Parameter Path
  The path to a pipeline directory to build
@@ -13,7 +13,7 @@
  The path to output the resulting powershell program (runnable pipeline)
 
 #>
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory)][String]$Path,
     [String]$Output
@@ -26,12 +26,15 @@ function main() {
 	# Save path we are started from
     $StartPath = (Get-Location).Path
     
-    $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
-	if ($null -eq $FullPath) {throw "Path to pipeline $Path not found!"}
-    if ($Output) {$OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue}
-    if ($null -eq $OutputPath) {throw "Output path $Output not found!"}
-    Push-Location $FullPath.Path
     try {
+        $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
+        if ($null -eq $FullPath) {throw "Path to pipeline $Path not found!"}
+        if ($Output) {
+            $OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue; 
+            if ($null -eq $OutputPath) {throw "Output path $Output not found!"}
+            $OutputPath = $OutputPath.Path
+        }
+        Push-Location $FullPath.Path
         BuildingPipeline
     } catch {
         $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
@@ -46,26 +49,26 @@ function BuildingPipeline() {
     # Get all known components as a HashTable
     $global:COMPONENTS = @{}
     # ASSUME: components a sibling of pipeline
-    & "$PSScriptRoot\components.ps1" "..\components\" | ForEach-Object {$global:COMPONENTS.add($_.reference, $_)}
+    Invoke-PowowShell components "..\components\" | ForEach-Object {$global:COMPONENTS.add($_.reference, $_)}
     
     # Get all known adaptors as a HashTable
     $global:ADAPTORS = @{}
-    & pow adaptors | ForEach-Object {$global:ADAPTORS.add($_.type, $_)}
+    Invoke-PowowShell adaptors ! | ForEach-Object {$global:ADAPTORS.add($_.type, $_)}
 
     # Read pipeline.json definition
     $pipelineDef = ReadingPipelineDefinition("pipeline.json")
 
     # Validate definition
-    Check-Steps($pipelineDef.steps)
+    CheckSteps($pipelineDef.steps)
 
     # Transform definition of components into Steps
-    CreatingComponentSteps($pipelineDef)
+    CreateComponentSteps($pipelineDef)
 
     # Transform definition of pipeline into run_trace.ps1
-    CreatingPipeline_trace($pipelineDef)
+    CreatePipeline_trace($pipelineDef)
 
     # Transform definition of pipeline into run_prod.ps1
-    CreatingPipeline_prod($pipelineDef)
+    CreatePipeline_prod($pipelineDef)
     
     Write-Host "SUCCESS: BUILD completed" -ForegroundColor Green
 
@@ -90,7 +93,7 @@ function ReadingPipelineDefinition($Path) {
     }
 }
 
-function Check-Steps($steps) {
+function CheckSteps($steps) {
 
     # Make sure we have at least one step
     if (-not $steps -or -not $steps.length -or $steps.length -eq 0) {throw "No steps found!"}
@@ -107,13 +110,13 @@ function Check-Steps($steps) {
         # Check same number of parameters
         if ($component.parameters.length -eq 0 -and $step.parameters.length -gt 0) {throw "Step $($step.id) has parameters but component does not!"}
         # TODO: Check mandatory fields (e.g. id)
-        # TODO: Check parameters against component definition? - Done in CreatingComponentSteps()
+        # TODO: Check parameters against component definition? - Done in CreateComponentSteps()
      }
 
      Write-Verbose "`tSteps checked out OK"
 
 }
-function CreatingComponentSteps($pipelineDef) {
+function CreateComponentSteps($pipelineDef) {
 		
     # Step template
     $stepHeader = "[CmdletBinding(SupportsShouldProcess)]"
@@ -192,13 +195,13 @@ function CreatingComponentSteps($pipelineDef) {
 function Get-Step($id) {$pipelineDef.steps | Where-Object id -eq $id}
 
 <#
-	CreatingPipeline_prod
+	CreatePipeline_prod
 	Create pipeline for production
 	 * No trace files are used
 	 * Performance is better
 #>
-function CreatingPipeline_prod($pipelineDef) {
-    Write-Verbose "BUILDER CreatingPipeline_prod"
+function CreatePipeline_prod($pipelineDef) {
+    Write-Verbose "BUILDER CreatePipeline_prod"
 
     # Can be run from anywhere, change to pipeline path
     $cmd = ReSerializeParams $pipelineDef.parameters;
@@ -251,14 +254,14 @@ function CreatingPipeline_prod($pipelineDef) {
 }
 
 <#
-	CreatingPipeline_trace
+	CreatePipeline_trace
 	Create pipeline for tracing
 	 * Trace files are generated
 	 * Better for debugging
 #>
-function CreatingPipeline_trace($pipelineDef) {
+function CreatePipeline_trace($pipelineDef) {
 
-    Write-Verbose "BUILDER CreatingPipeline_prod"
+    Write-Verbose "BUILDER CreatePipeline_prod"
 
     # Can be run from anywhere, change to pipeline path
     $cmd = ReSerializeParams $pipelineDef.parameters;

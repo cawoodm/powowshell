@@ -9,7 +9,7 @@ function main() {
         if ("int" -like $Filter) {$success += CheckAdaptorInt; $tests++}
         if ("datetime" -like $Filter) {$success += CheckAdaptorDateTime; $tests++}
         if ("object" -like $Filter) {$success += CheckAdaptorObject; $tests++}
-        if ($success -eq $tests) {Write-Host "OK: Adaptors passed all $tests tests" -ForegroundColor Green} else {$Host.UI.WriteErrorLine("FAIL: Adaptors passed $success of $tests - $($tests-$success) failed")}
+        if ($success -eq $tests) {Write-Host "SUCCESS: Adaptors passed all $tests tests" -ForegroundColor Green} else {$Host.UI.WriteErrorLine("FAIL: Adaptors passed $success of $tests - $($tests-$success) failed")}
     } catch {
 		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
 		#throw $_
@@ -23,7 +23,7 @@ function CheckAdaptorString {
     $success += CheckAdaptorOut "string" "foo" '{"value":"foo"}'; $tests++
     $success += CheckAdaptorOut "int" "foo","bar" '["foo","bar"]' -param; $tests++
     $success += CheckAdaptorIn "string" "foo" '{"value":"foo"}'; $tests++
-    if ($success -eq $tests) {Write-Verbose "`tOK: String Adaptor passed all tests";return 1} else {$Host.UI.WriteErrorLine("`tFAIL: String Adaptor - $success of $tests passed!"); return 0}
+    if ($success -eq $tests) {Write-Verbose "`tSUCCESS: String Adaptor passed all tests";return 1} else {$Host.UI.WriteErrorLine("`tFAIL: String Adaptor - $success of $tests passed!"); return 0}
 }
 function CheckAdaptorInt {
     $tests = 0; $success = 0
@@ -32,13 +32,13 @@ function CheckAdaptorInt {
     $success += CheckAdaptorOut "int" 42,24 '{"value":42}', '{"value":24}'; $tests++
     $success += CheckAdaptorOut "int" 42,24 '[42,24]' -param; $tests++
     $success += CheckAdaptorIn "int" 42 '{"value":42}'; $tests++
-    if ($success -eq $tests) {Write-Verbose "`tOK: Integer Adaptor passed all tests";return 1} else {$Host.UI.WriteErrorLine("`tFAIL: Integer Adaptor - $success of $tests passed!"); return 0}
+    if ($success -eq $tests) {Write-Verbose "`tSUCCESS: Integer Adaptor passed all tests";return 1} else {$Host.UI.WriteErrorLine("`tFAIL: Integer Adaptor - $success of $tests passed!"); return 0}
 }
 function CheckAdaptorDateTime {
     $tests = 0;$success = 0
     $success += CheckAdaptorOut "datetime" (Get-Date "2000-01-01 00:00:00") '{"Date":"2000-01-01T00:00:00.0000000"}'; $tests++
     $success += CheckAdaptorIn "datetime" (Get-Date "2000-01-01 00:00:00") '{"Date":"2000-01-01T00:00:00.0000000"}'; $tests++
-    if ($success -eq $tests) {Write-Verbose "`tOK: DateTime Adaptor passed all tests";return 1} else {$Host.UI.WriteErrorLine("`tFAIL: DateTime Adaptor - $success of $tests passed!"); return 0}
+    if ($success -eq $tests) {Write-Verbose "`tSUCCESS: DateTime Adaptor passed all tests";return 1} else {$Host.UI.WriteErrorLine("`tFAIL: DateTime Adaptor - $success of $tests passed!"); return 0}
 }
 function CheckAdaptorObject {
     
@@ -63,12 +63,12 @@ function CheckAdaptorObject {
     # Array with 2 items as a parameter
     $success += CheckAdaptorOut "object" $aa '[{"foo":"bar","age":20},{"foo":"bar","age":20}]' -param; $tests++
 
-    if ($success -eq $tests) {Write-Verbose "`tOK: Object Adaptor passed all tests"; return 1} else {$Host.UI.WriteErrorLine("`tFAIL: Object Adaptor - $success of $tests passed!"); return 0}
+    if ($success -eq $tests) {Write-Verbose "`tSUCCESS: Object Adaptor passed all tests"; return 1} else {$Host.UI.WriteErrorLine("`tFAIL: Object Adaptor - $success of $tests passed!"); return 0}
 }
 function CheckAdaptorIn($type, $should, $str) {
     try {
         $t = $str | & "..\core\adaptors\$type.in.ps1"
-        if ($null -eq (Compare-Object $t $should)) {Write-Verbose "`t`tOK: IN: $str";return 1} else {Write-Warning "`t`tFAIL: IN: $t should be $should"; return 0} 
+        if ($null -eq (Compare-Object $t $should)) {Write-Verbose "`t`tSUCCESS: IN: $str";return 1} else {Write-Warning "`t`tFAIL: IN: $t should be $should"; return 0} 
     } catch {
         throw "Error in adaptor $type.in.ps1: $_"
     }
@@ -80,7 +80,7 @@ function CheckAdaptorOut($type, $o, $should, [switch]$param) {
         } else {
             $t = $o | & "..\core\adaptors\$type.out.ps1"
         }
-        if ($null -eq (Compare-Object $t $should)) {Write-Verbose "`t`tOK: OUT: $should";return 1} else {Write-Warning "`t`tFAIL: OUT: $t should be $should"; return 0} 
+        if ($null -eq (Compare-Object $t $should)) {Write-Verbose "`t`tSUCCESS: OUT: $should";return 1} else {Write-Warning "`t`tFAIL: OUT: $t should be $should"; return 0} 
     } catch {
         throw "Error in adaptor $type.out.ps1: $_"
     }

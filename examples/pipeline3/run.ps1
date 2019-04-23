@@ -1,48 +1,71 @@
-﻿<#
- .Synopsis
- Me testing different ways of running a pipeline
+﻿[CmdletBinding(SupportsShouldProcess)]param([string]$Path=".\data\test.log")
 
-#>
-[CmdletBinding()]
-param(
-    [int]$runMode=3
-)
-Set-PSDebug -Strict
+function main() {
+    $PowStartPath = (Get-Location).Path; Push-Location $PSScriptRoot
+    try {
 
-Push-Location $PSScriptRoot
+        # Row 1
+        $input |
+            Import-Csv -Path $Path -Delimiter "," -Header "char", "int", "date", "double", "string" |                   # .\step_A1.ps1 |
+            ForEach-Object {[PSCustomObject]@{letter=$_.char; number=[int]$_.int; datetime=[datetime]$_.date}} |        # .\step_B1.ps1 |
+            Where-Object {$_.number -lt 5} |                                                                            # .\step_C1.ps1 |
+            Sort-Object -Property "datetime" -Descending                                                                # .\step_D1.ps1 |
+            Set-Variable -Name OP1
 
-# Clear trace folder
-if (-not (Test-Path './trace')) {New-Item -Path .\trace -Type directory | Out-Null}
-Remove-Item -Path .\trace\tmp_*.txt
 
-# Get our context by including all globals
-. .\globals.ps1
 
-if ($runMode -eq 3) {
 
-# Run component A (Source)
-.\step_A.ps1 >.\trace\tmp_A_output.txt 2>.\trace\tmp_A_errors.txt 5>>.\trace\tmp_debug.txt
 
-# Run component B (Transformation)
-Get-Content -Raw .\trace\tmp_A_output.txt | .\step_B.ps1 >.\trace\tmp_B_output.txt 2>.\trace\tmp_B_errors.txt 5>>.\trace\tmp_debug.txt
+        Get-Date | Out-Null # .\step_A2.ps1 with output suppressed
+        
+        Get-Date # .\step_B2.ps1 with output outputted
 
-# Run component C (Destination)
-Get-Content -Raw .\trace\tmp_B_output.txt | .\step_C.ps1 >.\trace\tmp_C_output.txt 2>.\trace\tmp_C_errors.txt 5>>.\trace\tmp_debug.txt
+        
+        
+        
+        
+        
+        Import-Csv -Path ".\data\test2.log" -Delimiter "," -Header "char", "int", "date", "double", "string" |          # .\step_A3.ps1 |
+            ForEach-Object {[PSCustomObject]@{letter=$_.char; number=[int]$_.int; datetime=[datetime]$_.date}} |        # .\step_B3.ps1 |
+            Split-Pipeline {$_.letter -ge "c"} |                                                                        # .\step_C3.ps1 |
+            Set-Variable -Name OP3
+        
+        
+        $OP3[0] # Letter >= c
+        
+        $OP3[1] # Letter < c
 
-# Return Output
-Get-Content -Raw .\trace\tmp_C_output.txt
-} elseif ($runMode -eq 1) {
+    } catch {
 
-} else {
-    # This mode shows the errors in the console if we don't redirect them
-    #$OP=@{}
-    $OP_A = .\step_A.ps1 #2>.\trace\tmp_A_errors.txt
-    $OP_B = $OP_A | .\step_B.ps1 #2>.\trace\tmp_B_errors.txt
-    #$OP_B2 = $OPA | .\step_B2.ps1
-    $OP_C = $OP_B | .\step_C.ps1 #2>.\trace\tmp_C_errors.txt
-    $OP_C
+        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+    } finally {
+        Set-Location $PowStartPath
+    }
 }
 
-# Restore path
-#CD $ENV.PathStarted
-Pop-Location
+<#
+ .Synopsis
+ Split piped input into two based on a boolean expression
+#>
+function Split-Pipeline {
+    param(
+        [object]$ScriptBlock,
+        [Parameter(ValueFromPipeline)][Object]$InputObject
+    )
+    end {
+        $ret1=@();$ret2=@();
+        $Input | ForEach-Object {
+            if ($ScriptBlock.Invoke()) {
+                $ret1 += $_
+            } else {
+                $ret2 += $_
+            }
+        }
+        @($ret1, $ret2)
+    }
+}
+
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+main

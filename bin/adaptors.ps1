@@ -10,40 +10,64 @@
  Path to the adaptors directory
 
  .Parameter Action
- Action export: Generate component definitions as JSON for IDE
- Action list: List cached component definitions as JSON for IDE
+ Action generate: Bypass adaptor cache and read adaptors
+ Action export: Export as JSON
 
 #>
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter(Mandatory)][String]$Path,
-    [ValidateSet("export", "list")][string]$Action=$null
+    [Parameter()][String]$Path,
+    [ValidateSet("generate", "export")][string[]]$Action=$null
 )
 function main() {
-    Write-Verbose "Path=$Path"
-	$FullPath = (Resolve-Path -Path $Path).Path
+    if ($Path) {
+        Write-Verbose "Path=$Path"
+        $FullPath = (Resolve-Path -Path $Path).Path
+    } else {
+        Push-Location $PSScriptRoot
+        $FullPath = (Resolve-Path -Path "..\core\adaptors").Path
+    }
+    Write-Verbose $FullPath
     Push-Location $FullPath
     try {
-        # The cached option
-        if ($Action -like "list" -and (Test-Path .\adaptors.json)) {
-            return Get-Content .\adaptors.json
+        # Check Cache
+        # ASSUME: Cache is in root of application
+        # $CachePath = (Resolve-Path "$PSScriptRoot\..\adaptors.json").Path
+        # Cache is in Path
+        $CachePath = ".\adaptors.json"
+        $CacheFile=$null;$JSON=$null
+        if (Test-Path $CachePath) {
+            $CacheFile = Get-Item $CachePath;
+            $JSON = Get-Content $CachePath -Raw
+            if ($JSON -match "^\["){Write-Verbose "Adaptors cache found: $CachePath"} else {$JSON=$null; $CacheFile=$null} # Cache is gone
         }
-        #TODO: Check cache freshness
-        # Process all .in files (ASSUME: .out.ps1 exists also)
-        $files = Get-ChildItem -Path .\ -File -Filter *.in.ps1
-        $Adaptors = @()
-        foreach ($file in $files) {
-            $Adaptors += [PSObject]@{
-                type = (Split-Path -Path $file.Fullname -Leaf).Replace(".in.ps1", "")
+        $Adaptors=$null
+        if ($Action -notlike "generate" -and $CacheFile) {
+            # Return cached JSON
+            try {
+                $Adaptors = $JSON | ConvertFrom-Json
+                Write-Verbose "Adaptor cache is fresh"
+            } catch {throw "Adaptor cache is corrupted (invalid JSON)!"}
+        }
+        if ($Action -like "generate" -or $null -eq $Adaptors) {
+            #TODO: Check cache freshness
+            # Process all .in files (ASSUME: .out.ps1 exists also)
+            $files = Get-ChildItem -Path .\ -File -Filter *.in.ps1
+            $Adaptors = @()
+            foreach ($file in $files) {
+                $Adaptors += [PSObject]@{
+                    type = (Split-Path -Path $file.Fullname -Leaf).Replace(".in.ps1", "")
+                }
             }
+            # Cache JSON
+            Write-Verbose "Writing adaptors cache"
+            $JSON = ($Adaptors) | ConvertTo-JSON -Depth 4
+            $JSON > .\adaptors.json
         }
         Write-Verbose "$($Adaptors.length) adaptors found"
-        # Cache JSON
-        $JSON = $Adaptors | ConvertTo-JSON -Depth 4
-        $JSON > .\adaptors.json
         if ($Action -like "export") {
             # Provide a serialized JSON export
-            $JSON
+            return $JSON
         } else {
             return $Adaptors
         }

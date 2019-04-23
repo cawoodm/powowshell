@@ -1,5 +1,7 @@
 ﻿[CmdletBinding(SupportsShouldProcess)]
-param()
+param(
+    [string]$filter="*"
+)
 function main() {
     $StartPath = (Get-Location).Path
     Push-Location $PSScriptRoot
@@ -8,6 +10,7 @@ function main() {
         $i=0
         $components = ..\bin\components.ps1 ..\examples\components
         foreach($component in $components) {
+            if ($component.reference -notlike $filter) {continue}
             $i++
             try{$component.reference+=""}catch{$Host.UI.WriteErrorLine("ERROR: $i. Something about $component is not right")}
             $reference = $component.reference
@@ -18,10 +21,12 @@ function main() {
                 elseif ($msg.type -eq "ERROR") {$Host.UI.WriteErrorLine($msg.message)}
                 else {Write-Host $msg.message -ForegroundColor Cyan}
             }
-            if ($component.parameters | Where name -like "POWAction") {
+            $SelfTest = $component.path.replace(".ps1", ".tests.ps1");
+            Write-Verbose "Self-test $SelfTest :"
+            if (Test-Path $SelfTest) {
                 # Self-testing
-                Write-Verbose "Self-testing $reference :"
-                & "..\examples\components\$reference.ps1" -POWAction test
+                Write-Verbose "Self-testing $SelfTest :"
+                & $SelfTest
             }
         }
 

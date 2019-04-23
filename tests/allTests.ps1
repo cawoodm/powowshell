@@ -1,6 +1,6 @@
 <#
  .Synopsis
- Tests of all functions
+ Tests of all functionality via *.tests.* files
 
  .Parameter Filter
  A wildcard match for test files
@@ -20,15 +20,16 @@ function main() {
     Push-Location $PSScriptRoot
     try {
         
-        $verbose = if ($VerbosePreference -eq "Continue") {"verbose"} else {""}
+        $verbose = if ($VerbosePreference -like "Continue") {"verbose"} else {""}
 
-        $scripts = DIR | Where name -like $Filter
-        foreach($script in $scripts) {
+        $scripts = Get-ChildItem |
+         Where-Object name -like $Filter |
+         Where-Object name -like "*.tests.*"
+         foreach($script in $scripts) {
             $script = $script.Name
-            if ("functions.js", "allTests.ps1", "workspace.txt" -contains $script) {continue}
             if ($script -notlike "*.ps1" -and $script -notlike "*.js") {continue}
             $script1 = $script.replace(".tests.", ".")
-            Write-Host "Testing $script1 :"
+            Write-Host "Testing $script :"
             if ($script -like "*.js") {
                 & node "$script" $verbose
                 if ($LASTEXITCODE) {throw "FAIL: $script"}
@@ -39,6 +40,7 @@ function main() {
                     & "./$script" | Out-Null
                 }
             }
+            [Console]::ResetColor()
         }
         
     } catch {

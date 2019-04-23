@@ -159,12 +159,19 @@ const pow = (function () {
         return execStrictJSON(`pow inspect "${path}" | ConvertTo-JSON -Depth 4`);
     }
     /**
-     * Run a built pipeline
+     * Return array of components
      * @param {string} path Path to the components ("!" for default workspace)
      * @returns {Promise} Promise with a POWResult (.object=Array of component definitions)
      */
     async function components(path = "!") {
         return execStrictJSON(`pow components "${path}" list`);
+    }
+    /**
+     * Return array of cmdlets
+     * @returns {Promise} Promise with a POWResult (.object=Array of cmdlet definitions)
+     */
+    async function cmdlets(filter=null) {
+        return execStrictJSON(`pow cmdlets export "${filter}"'`);
     }
     /**
      * Return an example of a component's usage
@@ -243,6 +250,7 @@ const pow = (function () {
         preview: preview,
         inspect: inspect,
         components: components,
+        cmdlets: cmdlets,
         examples: examples,
         pipeline: pipeline,
         save: save,

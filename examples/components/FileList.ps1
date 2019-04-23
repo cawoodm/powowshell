@@ -40,7 +40,7 @@ Set-StrictMode -Version 3.0
 function main() {
 	if ($POWAction -like "test") {
 		Push-Location $PSScriptRoot
-		if ((.\FileList.ps1 -Path "C:\Windows" | ConvertFrom-Json).length -gt 0) {"OK: FileList self-test successful"} else {$Host.UI.WriteErrorLine("FAIL: FileList self-test failed!")}
+		if ((.\FileList.ps1 -Path "C:\Windows" | ConvertFrom-Json).length -gt 0) {"SUCCESS: FileList self-test successful"} else {$Host.UI.WriteErrorLine("FAIL: FileList self-test failed!")}
 		Pop-Location
     	return
 	}

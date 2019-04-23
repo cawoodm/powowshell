@@ -6,6 +6,7 @@ Each adaptor must provide INPUT adaption: converting JSON to the component's inp
 
 The benefit of adaptors is that you always have a common language between components.
 The disadvantage is performance since you are constantly converting between formats.
+A later optimization will be to drop adaptors between components which are compatible. There is no need (except in trace mode) to adapt/deserialize between say Get-ChildItem and Where-Object since the latter accepts any object
 
 Adaptors need to work in 2 modes:
 * Parameter mode: where they are passed a value/object as a parameter

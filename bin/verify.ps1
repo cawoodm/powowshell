@@ -78,7 +78,7 @@ function main() {
         # Show params
         $cmd = Get-Command .\run_prod.ps1
         #"`nParameters:"
-        $cmd.Parameters.Keys | Where {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
+        $cmd.Parameters.Keys | Where-Object {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
             #if ($cmd.Parameters[$_].Attributes[0].Mandatory) {"$_ (mandatory)"} else {$_}
         }
     } catch {

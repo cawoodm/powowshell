@@ -40,7 +40,7 @@ param(
 		[string]$POWAction
 )
 if ($POWAction -like "test") {
-  if (("a|1|M`nb|2|F" | & "$PSScriptRoot\Data2JSON.ps1" -Delimiter "|" | ConvertFrom-Json)[1].gender -eq "F") {"OK: Data2JSON"} else {Write-Error "FAIL: Data2Json"}; return
+  if (("a|1|M`nb|2|F" | & "$PSScriptRoot\Data2JSON.ps1" -Delimiter "|" | ConvertFrom-Json)[1].gender -eq "F") {"SUCCESS: Data2JSON"} else {Write-Error "FAIL: Data2Json"}; return
 }
 ,
 # The Magic Happens Here...

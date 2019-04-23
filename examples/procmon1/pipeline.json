@@ -14,7 +14,7 @@
 	"steps": [
 		{
 			"id": "A1",
-			"name": "Read the ProcMon CSV log file",
+			"name": "ProcMon CSV log",
 			"reference": "Import-CSV",
 			"input": "",
 			"stream": "",
@@ -53,6 +53,26 @@
 			"stream": "end",
 			"parameters": {
 				"First": 10
+			}
+		},
+		{
+			"id": "E1",
+			"name": "Select Name, Count",
+			"reference": "Select-Object",
+			"input": "D1",
+			"stream": "process",
+			"parameters": {
+				"Property": "{@('Name', 'Count')}"
+			}
+		},
+		{
+			"id": "F1",
+			"name": "JSON Output",
+			"reference": "ConvertTo-JSON",
+			"input": "E1",
+			"stream": "end",
+			"parameters": {
+				"Depth": 3
 			}
 		}
 	]	

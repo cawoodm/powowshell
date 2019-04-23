@@ -18,7 +18,7 @@
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][String]$Path,
+    [Parameter(Mandatory)][string]$Path,
     [ValidateSet("export", "list")][string]$Action=$null
 )
 function main() {
@@ -37,7 +37,7 @@ function main() {
         # Action = list : Return cached JSON
         if ($Action -like "list" -and $CacheFile) {return $JSON}
         # When did a component last change
-        $LastWriteTime = (Get-ChildItem .\ -File -Filter *.ps1 | Sort LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
+        $LastWriteTime = (Get-ChildItem .\ -File -Filter *.ps1 | ? name -notlike *.tests.ps1* | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
         if ($null -eq $CacheFile -or $LastWriteTime -gt $CacheFile.LastWriteTime) {
             Write-Verbose "Component cache is stale"
             $JSON=$null
@@ -46,8 +46,8 @@ function main() {
             $JSON = $Components | ConvertTo-Json -Depth 4
             $JSON | Set-Content .\components.json
         } else {
+            try {$Components = $JSON | ConvertFrom-Json} catch {throw "Component cache is corrupted (invalid JSON)!"}
             Write-Verbose "Component cache is fresh"
-            $Components = $JSON | ConvertFrom-Json
         }
         if ($Action -like "export" -or $Action -like "list") {
             # Provide a serialized JSON export
@@ -81,10 +81,11 @@ function ListComponents() {
 function LoadComponents($Path) {
 
     # Get list of .ps1 scripts components (1 level)
-    $scripts = Get-ChildItem -Path $Path -File -Filter *.ps1
+    #  - Don't include components tests (*.tests.ps1)
+    $scripts = Get-ChildItem -Path $Path -File -Filter *.ps1 | Where-Object name -notlike *.tests.ps1
 
     # Process each folder
-    ForEach($script in $scripts) {
+    foreach($script in $scripts) {
         try {
             & "$PSScriptRoot\inspect.ps1" $script.Fullname
         } catch {

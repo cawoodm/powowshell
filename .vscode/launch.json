@@ -14,10 +14,11 @@
             ]
         },
         {
-            "type": "node",
+            "type": "PowerShell",
             "request": "launch",
-            "name": "powTests",
-            "program": "${workspaceFolder}\\tests\\powTests.js"
+            "name": "AD HOC (PS)",
+            "script": "${workspaceFolder}\\bin\\build2.ps1",
+            "args": ["${workspaceFolder}\\examples\\procmon1"]
         },
         {
             "type": "node",
@@ -42,8 +43,9 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}\\ide\\app.js"
+            "name": "Launch Any Program",
+            "program": "${command:prompt-debug.resolve}",
+            "cwd": "${workspaceFolder}"
         },
         {
             "type": "node",
