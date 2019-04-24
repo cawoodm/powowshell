@@ -7,20 +7,21 @@
 
  .Parameter Action
  Action generate: Generate cmdlet definitions as collection
- Action export: List (cached) cmdlet definitions as JSON
+ Action list: List (cached) cmdlet definitions
+ Action export: Return (cached) cmdlet definitions as JSON
 
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet("generate", "export")][string]$Action=$null,
+    [ValidateSet("generate", "export", "list")][string]$Action=$null,
     [string]$Filter
 )
 function main() {
     try {
         # Check Cache
         Set-Location $PSScriptRoot
-        # ASSUME: Cache is in root of application
-        $CachePath = "..\cmdlets.json"
+        # ASSUME: Cache is in .\cache of application
+        $CachePath = "..\cache\cmdlets.json"
         $CacheFile=$null;$JSON=$null
         if (Test-Path $CachePath) {
             $CacheFile = Get-Item $CachePath;
@@ -33,6 +34,8 @@ function main() {
                 $NoFilter = ($null -eq $Filter -or $Filter -eq "");
                 if ($Action -like "export" -and $NoFilter) {
                     $CmdLets = $JSON
+                } elseif ($NoFilter) {
+                    $Cmdlets = ($JSON | ConvertFrom-Json)
                 } else {
                     $Cmdlets = ($JSON | ConvertFrom-Json) | Where-Object {$_.reference -like $Filter}
                 }
@@ -41,9 +44,10 @@ function main() {
                 return $Cmdlets
             } catch {throw "Cmdlet cache is corrupted: $_"}
         }
-        return
         # Get all installed Cmdlets
-        $Cmdlets = Get-Command |
+        #  - excluding drives ("*:")
+        $Cmdlets = Get-Command -Type CmdLet |
+            Where-Object Name -notlike "*:" |
             Sort-Object -Property Name |
             ForEach-Object {pow inspect $_}
         # Update the cache

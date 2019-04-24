@@ -1,6 +1,6 @@
 <#
 .Synopsis
-The POW Cmdlet (CLI) runs various POW CmdLets to work with PowowShell
+The POW Cmdlet (CLI) runs various POW commands to work with PowowShell
 
 .Description
 Place in your powershell modules directory so you can run "POW" from anywhere in powershell
