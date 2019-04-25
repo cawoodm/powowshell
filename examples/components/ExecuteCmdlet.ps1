@@ -30,30 +30,14 @@
 [CmdletBinding(DefaultParameterSetName="Std")] 
 [OutputType([String])]
 param(
-
-	[Parameter(ParameterSetName="Std",Mandatory)]
+	[Parameter(Mandatory)]
 		[String]$ExecuteTemplate,
-	[Parameter(ParameterSetName="Std")]
 		[Int32]$Depth=2,
-	[Parameter(ParameterSetName="Std")]
 		[String]$p0,
-	[Parameter(ParameterSetName="Std")]
 		[String]$p1,
-	[Parameter(ParameterSetName="Std")]
-		[String]$p2,
-
-	[Parameter(ParameterSetName="POW")]
-		[string]$POWAction
-	
+		[String]$p2
 )
 Set-StrictMode -Version Latest
-if ($POWAction -like "test") {
-	# Test Case
-	Push-Location $PSScriptRoot
-	if ((.\ExecuteCmdlet.ps1 -ExecuteTemplate "Get-ChildItem {0} {1}" -p0 "C:\" | ConvertFrom-Json).length -gt 0) {"ExecuteCmdlet: OK"} else {Write-Error "ExecuteCmdlet: FAIL"}
-	Pop-Location
-	return
-}
 Write-Verbose ("ExecuteTemplate=" + $ExecuteTemplate)
 $command = $ExecuteTemplate -f $p0, $p1, $p2
 Invoke-Expression -Command $command | ConvertTo-Json -Depth $Depth
