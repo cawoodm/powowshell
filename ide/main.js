@@ -6,11 +6,17 @@ if (typeof process !== "undefined") {
     var {dialog} = require("electron").remote
 }
 pipelineManager.reset();
-app.components = {}
+app.components = {};
+app.cmdlets = {};
 
 app.getComponent = (reference) => {
     if (!app.components) return alert("Components not loaded!")
-    let res = app.components.filter((item)=>item.reference===reference.toLowerCase());
+    let ref = reference.toLowerCase();
+    let res = app.components.filter((item)=>item.reference===ref);
+    if (res.length===0) {
+        if (!app.cmdlets) return alert("Cmdlets not loaded!")
+        res = app.cmdlets.filter((item)=>item.reference===ref);
+    }       
     return res.length>0?res[0]:null;
 }
 app.DEVMODE = true;
@@ -21,17 +27,10 @@ window.onload = function() {
     app.root = new Vue({
         el: "#root",
         data: {
-            panels: [false, true],
+            panels: [false, true, false],
             pipeline: {}
         },
         methods: {
-            loaded: function(what) {
-                console.log("loaded", what);
-                this.loading[what]=true;
-                // Check everything is loaded
-                if (!this.loading.pipeline || !this.loading.components) return;
-                
-            },
             componentsUpdated: function() {
                 let root = this;
                 // Make .drag elements draggable
@@ -74,9 +73,9 @@ window.onload = function() {
             },
             handlePOWError: function(err) {
                 let message = err.message;
-                err.messages.forEach((msg)=>{
-                    message += "\n" + msg.type + ": " + msg.message;
-                });
+                if (err.constructor.name === "POWError") message += "\nPOWError:\n";
+                if (err.messages && Array.isArray(err.messages))
+                    err.messages.forEach((msg)=>message += "\n" + msg.type + ": " + msg.message);
                 alert(message);
             },
             showDialog: function(id) {
@@ -93,8 +92,14 @@ window.onload = function() {
                 pow.components()
                     .then((obj)=>{
                         app.components = obj.object;
-                        app.root.loaded("components");
                         this.$refs.componentList.setComponents(app.components);
+                    }).catch(this.handlePOWError);
+            },
+            cmdletsLoad: function() {
+                pow.cmdlets()
+                    .then((obj)=>{
+                        app.cmdlets = obj.object;
+                        this.$refs.cmdletList2.setCmdlets(app.cmdlets);
                     }).catch(this.handlePOWError);
             },
             pipelineLoad: function(id, opts) {
@@ -108,7 +113,6 @@ window.onload = function() {
                         pipelineManager.import(res.object);
                         if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
                         this.pipeline = res.object;
-                        this.loaded("pipeline");
                         this.showLoading(false);
                     }).catch(this.handlePOWError);
             },
@@ -143,7 +147,6 @@ window.onload = function() {
         },
         mounted: function() {
             let root = this;
-            this.loading = {components: false, pipeline: false};
             // Listen for events
             this.$root.$on("stepSave", (newStep) => {
                 pipelineManager.setStep(newStep);
@@ -157,7 +160,7 @@ window.onload = function() {
                         res.object.forEach((o)=>{
                             let msg = o.code+"\n"+o.description;
                             msg = msg.replace("`n", "\n");
-                            alert(o.code+"\n"+o.description)
+                            alert(msg)
                         });
                     }).catch(this.handlePOWError);
             });
@@ -173,12 +176,16 @@ window.onload = function() {
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
                 pow.execOptions.debug=true;
-                pow.init("examples")
-                    .then(()=>root.componentsLoad())
+                pow.init("!examples")
+                    .then(()=>{
+                        root.componentsLoad()
+                        root.cmdletsLoad()
+                    })
                     //.then(()=>root.pipelineLoad("procmon1", {skipConfirm: true}))
                     .catch(this.handlePOWError);
             } else {
                 root.componentsLoad();
+                root.cmdletsLoad();
             }
         }
     });

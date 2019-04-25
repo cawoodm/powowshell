@@ -155,10 +155,10 @@ const pow = (function(){
      * @returns {Promise} Promise with a POWResult containing an object (step result)
      */
     async function preview(step, component) {
-        let path = step.reference;
-        if (component.type=="component") path = "!"+path;
+        let path = component.executable;
+        //if (component.type=="component") path = "!"+path;
         let params = JSON.stringify(step.parameters).replace(/"/g, '`"');
-console.log(`pow preview "${path}" "${params}"`)
+        //console.log(`pow preview "${path}" "${params}"`)
         if (component.output.match(/text\/json/))
             // JSON Component returns an object
             return execStrictJSON(`pow preview "${path}" "${params}"`);
@@ -177,14 +177,21 @@ console.log(`pow preview "${path}" "${params}"`)
     }
 
     /**
-     * Run a built pipeline
+     * Return array of components
      * @param {string} path Path to the components ("!" for default workspace)
      * @returns {Promise} Promise with a POWResult (.object=Array of component definitions)
      */
-    async function components(path="!") {
-        return execStrictJSON(`pow components "${path}" list`);
+    async function components(path = "!") {
+        return execStrictJSON(`pow components "${path}" export`);
     }
 
+    /**
+     * Return array of cmdlets
+     * @returns {Promise} Promise with a POWResult (.object=Array of cmdlet definitions)
+     */
+    async function cmdlets(filter="") {
+        return execStrictJSON(`pow cmdlets export "${filter}"`);
+    }
     
     /**
      * Return an example of a component's usage
@@ -207,6 +214,7 @@ console.log(`pow preview "${path}" "${params}"`)
             pshell.exec(command, execOptions)
                 .then((out)=>{
                     try {
+                        if (execOptions.debug) console.log("STDOUT", out.stdout.substring(0,200));
                         let result = _processResult(out, json);
                         if (strict && !result.success)
                             reject(new POWError(`Failure of '${command}'!`, result.messages))
@@ -240,16 +248,21 @@ console.log(`pow preview "${path}" "${params}"`)
             messages.push(new POWMessage("ERROR", out.stderr))
         }
 
-        // Get stdout as a series of INFO messages
-        let outlines = out.stdout.split(/\r?\n/);
-        for (let o=0; o < outlines.length; o++)
-            messages.push(new POWMessage("INFO", outlines[o]))
-
         let obj = null;
         // Process JSON output
-        if (json) try{obj = JSON.parse(out.stdout)}catch(e){
-            messages.unshift(new POWMessage("ERROR", e.message))
-            throw new POWError(`Invalid JSON Object: ${e.message}`, messages)
+        if (json) {
+            try{
+                obj = JSON.parse(out.stdout)
+            } catch(e) {
+                messages.unshift(new POWMessage("ERROR", e.message))
+                throw new POWError(`Invalid JSON Object: ${e.message}`, messages)
+            }
+        } else {
+            // Get stdout as a series of INFO messages
+            let outlines = out.stdout.split(/\r?\n/);
+            for (let o=0; o < outlines.length && o < 25; o++) {
+                messages.push(new POWMessage("INFO", outlines[o]))
+            }
         }
             
         return new POWResult(success, out.stdout, messages, obj)
@@ -265,6 +278,7 @@ console.log(`pow preview "${path}" "${params}"`)
         preview: preview,
         inspect: inspect,
         components: components,
+        cmdlets: cmdlets,
         examples: examples,
         pipeline: pipeline,
         save: save,

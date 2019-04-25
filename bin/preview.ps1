@@ -51,7 +51,7 @@ function main() {
             Write-Verbose "JSON: $Parameters"
             $Parameters = ConvertFrom-Json $Parameters
             $ParamHash = @{}
-            $Parameters.psobject.properties | ForEach-Object {$ParamHash[$_.Name] = $_.Value }
+            $Parameters.psobject.properties | Where-Object Value -ne $null | ForEach-Object {$ParamHash[$_.Name] = $_.Value }
             $Parameters = "@ParamHash"
         } elseif ($Parameters -like "@*") {
             # Unsplat parameters if they are a '@{}' string

@@ -78,6 +78,7 @@ function main() {
             Write-Host "Yep, the 'Invoke-PowowShell' cmdLet is installed" -ForegroundColor Green
             Write-Host "NOTE: You may need to run 'Import-Module -name PowowShell -Global' in PowerShell to use the 'pow' alias" -ForegroundColor Cyan
             Write-Host " Type 'pow help' for a list of commands"
+            Write-Host " Type 'pow cmdlets generate' to generate a list of cmdlets for the IDE (may take several minutes)"
         } else {
             Write-Host "Nope, the 'pow' CmdLet is not installed!" -ForegroundColor Red
         }

@@ -27,7 +27,7 @@
             out = pow.getWorkspace(); assert(out.match(/examples/),`Workspace should be set to 'examples': (${out})`)
 
             // Test loading pipeline
-            out = await pow.pipeline("!pipeline1"); assert(out.success, `Load of pipeline1 should succeed: '${out.messages[0].message}'`)
+            out = await pow.pipeline("!pipeline1"); assert(out.success, `Load of pipeline1 should succeed: '${out.object.id}'`)
             assert(out.object.id=="pipeline1", `ID of pipeline1 should be set: '${out.object.id}'`)
             let pipeline1 = out.object;
             
@@ -39,7 +39,7 @@
             out = await pow.verify("!pipeline1"); assert(out.success, `Verification of pipeline1 should succeed: '${out.messages[0].message}'`)
             
             // Test running a pipeline
-            out = await pow.run("!pipeline1"); assert(out.success, `Running a pipeline1 should succeed: '${out.messages[0].message}'`)
+            out = await pow.run("!pipeline1"); assert(out.success, `Running a pipeline1 should succeed: '${out.object.length} items'`)
             assert(out.object[0].name === "John Doe", `Should have 'John Doe' in our pipeline output: '${out.object[0].name}'`)
             //out.messages.forEach((msg)=>{console.log(msg.type, msg.message)})
             
@@ -49,6 +49,9 @@
 
             // Test pow components
             out = await pow.components("!"); assert(out.success && out.object.length > 5, `Should list components find some: '${out.object.length}'`)
+            
+            // Test pow cmdlets
+            out = await pow.cmdlets("a*"); assert(out.success && out.object.length > 5, `Should list a* cmdlets find some: '${out.object.length}'`)
 
             // Test pow save
             out = await pow.save(pipeline1); assert(out.success, `Should save the pipeline: ${out.success}`)

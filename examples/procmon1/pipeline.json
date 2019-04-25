@@ -4,7 +4,7 @@
 	"description": "Read csv export from procmon and find stuff.",
 	"parameters": {
 		"Path": {
-			"default": "C:\\Marc\\Prg\\procmon\\Logfile1.CSV",
+			"default": ".\\data\\Logfile.csv",
 			"type": "string"
 		}
 	},

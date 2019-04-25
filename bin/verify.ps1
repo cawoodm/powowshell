@@ -65,15 +65,15 @@ function main() {
         $outputWar = Get-Content .\warnings.log -Raw
         if ($outputErr) {
             Write-Host "VERIFICATION ERRORS" -ForegroundColor Red
-            Write-Host "Your pipeline ran to completion but generated error output:"
+            Write-Host "Your pipeline was verified but generated error output:"
             Write-Host  $outputErr -ForegroundColor Red
         } elseif ($outputWar) {
             Write-Host "VERIFICATION ERRORS" -ForegroundColor Yellow
-            Write-Host "Your pipeline ran to completion but generated warning output:"
+            Write-Host "Your pipeline was verified but generated warning output:"
             Write-Host  $outputWar -ForegroundColor Yellow
         } else {
             Write-Host "VERIFICATION OK" -ForegroundColor Green
-            Write-Host "Your pipeline ran to completion with no errors"
+            Write-Host "Your pipeline was verified with no errors"
         }
         # Show params
         $cmd = Get-Command .\run_prod.ps1

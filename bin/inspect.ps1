@@ -27,49 +27,59 @@ function main() {
 	
 	try {
 		if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
-		$RealPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
-		if ($RealPath) {
+		# Add .ps1 to components with a path so `pow inspect !csv2json` works
+		if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path+=".ps1"}
+		$Executable = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
+		if ($Executable) {
 			$CompType = "component"
-			$RealPath = $RealPath.Path
-			Write-Verbose "Inspecting custom POW Component from $RealPath ..."
-			$Name = (Split-Path -Path $RealPath -Leaf)
-			$cmd = Get-Help -Full -Name $RealPath -ErrorAction SilentlyContinue
-			$cmd2 = Get-Command -Name $RealPath -ErrorAction SilentlyContinue
-			if ($null -eq $cmd) {throw "Invalid POW Component '$RealPath'!"}
+			$Executable = $Executable.Path
+			Write-Verbose "Inspecting custom POW Component from $Executable ..."
+			$Name = (Split-Path -Path $Executable -Leaf)
+			$NiceName = ($Name -replace ".ps1", "")
+			$cmd = Get-Help -Full -Name $Executable -ErrorAction SilentlyContinue
+			$cmd2 = Get-Command -Name $Executable -ErrorAction SilentlyContinue
+			if ($null -eq $cmd) {throw "Invalid POW Component '$Executable'!"}
 			$outputType = Get-OPType($cmd2)
 			$outputFormat = Get-OPReturn($cmd)
 		} else {
 			$CompType = "cmdlet"
-			$RealPath = $Path
+			$Executable = $Path
 			Write-Verbose "Inspecting installed CmdLet $Path ..."
 			$Name = $Path
 			$cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
+			$NiceName = $cmd.details.name
 			$cmd2 = Get-Command -Name $Name -ErrorAction SilentlyContinue
-			if ($null -eq $cmd) {throw "Invalid CmdLet '$RealPath'!"}
+			if ($null -eq $cmd) {throw "Invalid CmdLet '$Executable'!"}
 			$outputType = Get-OPReturn($cmd)
 			$outputFormat = Get-OPType($cmd2)
 		}
-		$reference = ($Name -replace ".ps1", "").ToLower()
+		# PS1: Should we use extension or not ???
+		$reference = $Name.ToLower()
+		
 		$POWMessages=@()
 		$paramsOut = @(); $inputFormat = ""; $inputDesc = ""; $inputType=$null
 		if ($cmd.PSObject.Properties.item("details")) {
 			$boolMap = @{"true"=$true;"false"=$false}
-			$parameters = Get-Help -Name $RealPath -Parameter * -EA 0
+			#$parameters = Get-Help -Name $Executable -Parameter * -EA 0
+			$parameters = try{$cmd.Syntax.syntaxItem[0].parameter}catch{$null}
 			if ($null -eq $parameters) {$POWMessages+=[PSCustomObject]@{type="INFO";message="No parameters found in component '$Name'!"}}
 			$pipelineInputParam = $false;
 			foreach ($parameter in $parameters) {
+				$paramType = Get-ParamType $parameter
 				if ($parameter.pipelineInput -like "true*") {
 					$pipelineInputParam = $true;
-					$inputType = $parameter.type.name.ToLower();
-				} else {
-					$paramsOut += [PSCustomObject]@{
-						"name" = $parameter.name;
-						"type" = $parameter.type.name;
-						"required" =  $boolMap[$parameter.required];
-						"default" = (&{try{$parameter.defaultValue}catch{$null}})
-						"description" = (&{try{$parameter.description[0].text}catch{$null}})
-					};
+					$inputType = $paramType;
 				}
+				$paramValues = Get-ParamValues $parameter
+				
+				$paramsOut += [PSCustomObject]@{
+					"name" = $parameter.name;
+					"type" = $paramType
+					"required" =  $boolMap[$parameter.required];
+					"default" = (&{try{$parameter.defaultValue}catch{$null}})
+					"description" = (&{try{$parameter.description[0].text}catch{$null}})
+					"values" = $paramValues;
+				};
 			}
 			if ($pipelineInputParam) {
 				$inputFormat = Get-IPType($cmd); if ($inputFormat -like "none") {$inputFormat=$null}
@@ -93,8 +103,9 @@ function main() {
 		$outputDesc = Get-OPDesc($cmd)
 		$result = [PSCustomObject]@{
 			"reference" = $reference;
+			"name" = $NiceName;
 			"type" = $CompType;
-			"path" = $RealPath;
+			"executable" = $Executable;
 			"synopsis" = $synopsis;
 			"description" = $description;
 			"parameters" = $paramsOut;
@@ -125,6 +136,11 @@ function Get-Description($cmd) {try {return $cmd.description[0].Text}catch{$null
 function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
 function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{$null}}
 function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "[\r\n]")}catch{$null}}
+function Get-ParamValues($param) {try{@($param.parameterValueGroup.parameterValue | ConvertTo-Json)}catch{$null}}
+function Get-ParamType($param) {
+	try{return [string]$param.parameterValue}catch{}
+	try{return [string]$param.type.name}catch{}
+}
 function Get-OPReturn($cmd) {try{([string](Get-OP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}

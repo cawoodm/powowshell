@@ -24,7 +24,6 @@ function main() {
         Write-Host "SUCCESS: pow build" -ForegroundColor Green
 
         & pow verify ../examples/pipeline1 "@{DataSource='.\data\names.txt'}" | Out-Null
-        & pow verify !pipeline1 "DataSource=.\data\names.txt" | Out-Null
         Write-Host "SUCCESS: pow verify" -ForegroundColor Green
 
         & pow run !pipeline1 -WhatIf @{DataSource='.\data\names.txt'} | Out-Null
@@ -33,10 +32,16 @@ function main() {
         & pow components ! export | Out-Null
         Write-Host "SUCCESS: pow components" -ForegroundColor Green
 
+        $cmd = & pow inspect Invoke-WebRequest
+        if ($cmd.parameters[0].Name -eq "Uri" -and $cmd.parameters[0].Required -eq $true){Write-Host "SUCCESS: pow inspect Invoke-WebRequest cmdlet" -ForegroundColor Green}
+
+        $cmd = & pow inspect !CSV2JSON
+        if ($cmd.parameters[0].Name -eq "InputObject" -and $cmd.parameters[0].Required -eq $true){Write-Host "SUCCESS: pow inspect CSV2JSON componenet" -ForegroundColor Green}
+
         & pow examples !CSV2JSON | Out-Null
         Write-Host "SUCCESS: pow examples" -ForegroundColor Green
 
-        & pow cmdlets | Out-Null
+        & pow cmdlets list | Out-Null
         Write-Host "SUCCESS: pow cmdlets" -ForegroundColor Green
 
         & pow preview !DateAdder 2 | Out-Null

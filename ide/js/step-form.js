@@ -67,7 +67,7 @@ const StepForm = Vue.extend({
     },
     computed: {
         title: function() {
-            return `${this.id}: ${this.component.reference}`;
+            return `${this.id}: ${this.component.name}`;
         }
     },
     template: `
@@ -100,7 +100,7 @@ const StepForm = Vue.extend({
                             </v-text-field>
                         </v-flex>
                         <v-flex xs12 v-for="p in component.parameters" :key="p.name">
-                        <v-text-field :label="p.name + (p.required?'*':'')" :placeholder="p.default+''" :rules="p.rules" v-model="p.stepValue" clearable>
+                        <v-text-field :label="p.name + (p.required?'*':'')" :placeholder="p.default?p.default:''" :rules="p.rules" v-model="p.stepValue" clearable>
                             <v-tooltip slot="append" bottom v-if="p.description">
                                 <v-icon slot="activator" color="gray lighten-2">help</v-icon>
                                 <span>{{p.description}}</span>
@@ -115,7 +115,7 @@ const StepForm = Vue.extend({
                 <v-btn color="yellow darken-1" flat @click="examples()">Examples</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="red darken-1" flat @click="cancel()">Cancel</v-btn>
-                <v-btn color="green darken-1" flat @click="preview()">Preview</v-btn>
+                <v-btn color="green darken-1" flat @click="preview()" :disabled="!!component.input">Preview</v-btn>
                 <v-btn color="blue darken-1" flat @click="save()">Save</v-btn>
             </v-card-actions>
         </v-card>

@@ -12,7 +12,8 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$Filter="*"
+    [string]$Filter="*",
+    [switch]$DebugMode=$false
 )
 function main() {
     # Save path we are started from
@@ -21,6 +22,7 @@ function main() {
     try {
         
         $verbose = if ($VerbosePreference -like "Continue") {"verbose"} else {""}
+        $Debug = if ($DebugMode) {"debug"} else {""}
 
         $scripts = Get-ChildItem |
          Where-Object name -like $Filter |
@@ -31,7 +33,7 @@ function main() {
             $script1 = $script.replace(".tests.", ".")
             Write-Host "Testing $script :"
             if ($script -like "*.js") {
-                & node "$script" $verbose
+                & node "$script" $verbose $Debug
                 if ($LASTEXITCODE) {throw "FAIL: $script"}
             } else {
                 if ($verbose) {

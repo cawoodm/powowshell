@@ -51,7 +51,7 @@ function Invoke-PowowShell {
         if (Test-Path "..\workspace.txt") {$Workspace = Get-Content "..\workspace.txt"} else {$Workspace = (Resolve-Path "..\").Path}
         if ($p1 -is [string] -and $p1 -like "!*") {
             if ($Command -in "inspect", "components", "preview", "examples", "adaptors") {
-                $p1 = $p1.replace("!", "$Workspace\components\"); $p1+=".ps1"
+                $p1 = $p1.replace("!", "$Workspace\components\");
             } elseif ($command -eq "workspace") {
                 # e.g. "!examples" should be relative to the root of the app
                 $p1 = $p1.replace("!", "..\");

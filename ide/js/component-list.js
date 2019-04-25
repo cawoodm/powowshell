@@ -1,3 +1,4 @@
+/* global Vue */
 Vue.component("component-list", {
     props: ["store"],
     data: function() {

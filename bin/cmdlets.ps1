@@ -18,12 +18,16 @@ param(
 )
 function main() {
     try {
+        
+        # Save path we are started from
+        $StartPath = (Get-Location).Path
+
         # Check Cache
         Set-Location $PSScriptRoot
         # ASSUME: Cache is in .\cache of application
         $CachePath = "..\cache\cmdlets.json"
         $CacheFile=$null;$JSON=$null
-        if (Test-Path $CachePath) {
+        if ($Action -notlike "generate" -and (Test-Path $CachePath)) {
             $CacheFile = Get-Item $CachePath;
             $JSON = Get-Content $CachePath -Raw
             if ($JSON -match "^\["){} else {$JSON=$null; $CacheFile=$null} # Cache is gone
@@ -40,7 +44,10 @@ function main() {
                     $Cmdlets = ($JSON | ConvertFrom-Json) | Where-Object {$_.reference -like $Filter}
                 }
                 Write-Verbose "Cmdlet cache is fresh"
-                if ($Action -like "export"){return $CmdLets | ConvertTo-Json -Depth 10}
+                if ($Action -like "export") {
+                    if ($NoFilter) {return $JSON}
+                    return $CmdLets | ConvertTo-Json -Depth 10
+                }
                 return $Cmdlets
             } catch {throw "Cmdlet cache is corrupted: $_"}
         }
@@ -57,7 +64,7 @@ function main() {
         $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
         #throw $_
     } finally {
-        Pop-Location
+        Set-Location $StartPath
     }
 }
 

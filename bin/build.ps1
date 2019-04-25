@@ -46,7 +46,9 @@ function BuildingPipeline() {
     # Get all known components as a HashTable
     $global:COMPONENTS = @{}
     # ASSUME: components a sibling of pipeline
-    & "$PSScriptRoot\components.ps1" "..\components\" | ForEach-Object {$global:COMPONENTS.add($_.reference, $_)}
+    & "$PSScriptRoot\components.ps1" "..\components\" | ForEach-Object {
+        $global:COMPONENTS.add($_.reference, $_)
+    }
     
     # Get all known adaptors as a HashTable
     $global:ADAPTORS = @{}
@@ -56,7 +58,7 @@ function BuildingPipeline() {
     $pipelineDef = ReadingPipelineDefinition("pipeline.json")
 
     # Validate definition
-    Check-Steps($pipelineDef.steps)
+    CheckSteps($pipelineDef.steps)
 
     # Transform definition of components into Steps
     CreatingComponentSteps($pipelineDef)
@@ -72,13 +74,14 @@ function BuildingPipeline() {
     $p=$Path; if ($Output) {$p=$Output}
     "Usage:`n  POW run $p"
     "OR`n  POW run $p -Trace"
+    "OR`n  $p\run_prod.ps1"
 
     # Show params
     $cmd = Get-Command .\run_prod.ps1
     "`nParameters:"
-    $cmd.Parameters.Keys | Where {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
-        " $_"
-    }
+    $cmd.Parameters.Keys |
+        Where-Object {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} |
+        ForEach-Object {" $_"};
 
 }
 
@@ -90,7 +93,7 @@ function ReadingPipelineDefinition($Path) {
     }
 }
 
-function Check-Steps($steps) {
+function CheckSteps($steps) {
 
     # Make sure we have at least one step
     if (-not $steps -or -not $steps.length -or $steps.length -eq 0) {throw "No steps found!"}
@@ -128,7 +131,6 @@ function CreatingComponentSteps($pipelineDef) {
     $stepFooterStream = "}`n"
 
     $Count = 0
-    $validOutputs = @{"text"=$true;"text/json"=$true}
 
     foreach($step in $pipelineDef.steps) {
         
@@ -137,7 +139,7 @@ function CreatingComponentSteps($pipelineDef) {
         
         # Get component definition and path
         $component = $global:COMPONENTS[$step.reference]
-        $compPath = $component.path
+        $compPath = $component.executable
 
         # Pass PARAMETERS to the Component
         $params0 = "`t`$params = " + (ReSerializeObject $step.parameters);
@@ -241,9 +243,10 @@ function CreatingPipeline_prod($pipelineDef) {
     # Clean up
     $cmd += "`n"
     $cmd += "} catch {`n"
-    $cmd += "   throw `$_`n"
+    $cmd += ('$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")'+"`n")
+    $cmd += "`tthrow `$_`n"
     $cmd += "} finally {`n"
-    $cmd += "   Pop-Location`n"
+    $cmd += "`tPop-Location`n"
     $cmd += "}`n"
     
     $cmd > "$OutputPath\run_prod.ps1"
@@ -362,9 +365,9 @@ function ReSerializePipelineParams($obj) {
     Write-Verbose "BUILDER ReSerializePipelineParams"
     if ($obj -is [array]) {throw "Parameters object should not be an array!"}
     $res = "`$PipelineParams = @{`n";
-    $obj.PSObject.Properties | ForEach-Object {
-        Write-Verbose $_.Name
-        $pVal = $_.Value; $pName = $_.Name
+    foreach($param in $obj.PSObject.Properties) {
+        Write-Verbose $param.Name
+        $pVal = $param.Value; $pName = $param.Name
         # TODO: Escape String for PS
         $res += "`t$($pName) = `$$($pName);`n"
     }

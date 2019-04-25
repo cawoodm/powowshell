@@ -17,7 +17,7 @@
   "steps": [
     {
       "id": "A1",
-      "reference": "readfile",
+      "reference": "ReadFile.ps1",
       "name": "Open Names File",
       "parameters": {
         "Path": "{$PipelineParams.DataSource}"
@@ -27,7 +27,7 @@
     },
     {
       "id": "B1",
-      "reference": "csv2json",
+      "reference": "CSV2JSON.ps1",
       "name": "Parse Names File",
       "parameters": {
         "Delimiter": "|",
@@ -38,7 +38,7 @@
     },
     {
       "id": "C1",
-      "reference": "selectfields",
+      "reference": "SelectFields.ps1",
       "name": "Select Name and Email",
       "parameters": {
         "Fields": "{\"name\", \"age\", \"email\"}"

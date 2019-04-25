@@ -14,6 +14,7 @@
 #>
 [OutputType([String])]
 param(
+    [Parameter(ValueFromPipeline)][Object]$InputObject,
     [String[]]$Fields
 )
 

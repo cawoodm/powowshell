@@ -140,7 +140,7 @@ function CreateComponentSteps($pipelineDef) {
         
         # Get component definition and path
         $component = $global:COMPONENTS[$step.reference]
-        $compPath = $component.path
+        $compPath = $component.executable
 
         # Pass PARAMETERS to the Component
         $params0 = "`t`$params = " + (ReSerializeObject $step.parameters);

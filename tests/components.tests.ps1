@@ -21,7 +21,7 @@ function main() {
                 elseif ($msg.type -eq "ERROR") {$Host.UI.WriteErrorLine($msg.message)}
                 else {Write-Host $msg.message -ForegroundColor Cyan}
             }
-            $SelfTest = $component.path.replace(".ps1", ".tests.ps1");
+            $SelfTest = $component.executable.replace(".ps1", ".tests.ps1");
             Write-Verbose "Self-test $SelfTest :"
             if (Test-Path $SelfTest) {
                 # Self-testing

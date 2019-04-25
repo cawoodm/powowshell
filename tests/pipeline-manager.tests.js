@@ -42,13 +42,13 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
         
         // Getting and Adding Steps
         assert(()=>PM.getStep(1, 1).reference === null, "Step A1 is initialized")
-        assert(()=>PM.addComponent("1", 1, testComponent).reference === "csv2json", "Step A1 is set to CSV2JSON")
+        assert(()=>PM.addComponent("1", 1, testComponent).reference.match(/csv2json/), "Step A1 is set to CSV2JSON")
         assert(PM.nextRow("A")===2, "Next empty row in column A is 2")
-        assert(()=>PM.addComponent("B", null, testComponent2).reference === "filelist", "Step B1 is set to FileList")
-        assert(()=>PM.addComponent("B", null, testComponent).reference=="csv2json", "Add component a cell with a step should fail", true)
-        assert(()=>PM.addComponent("C1", null, testComponent).reference=="csv2json", "Add C1 component")
-        assert(()=>PM.addComponent("C", null, testComponent).reference=="csv2json", "Add C component")
-        assert(()=>PM.addComponent("C", null, testComponent).reference=="csv2json", "Add another C component")
+        assert(()=>PM.addComponent("B", null, testComponent2).reference.match(/filelist/), "Step B1 is set to FileList")
+        assert(()=>PM.addComponent("B", null, testComponent).reference.match(/csv2json/), "Add component a cell with a step should fail", true)
+        assert(()=>PM.addComponent("C1", null, testComponent).reference.match(/csv2json/), "Add C1 component")
+        assert(()=>PM.addComponent("C", null, testComponent).reference.match(/csv2json/), "Add C component")
+        assert(()=>PM.addComponent("C", null, testComponent).reference.match(/csv2json/), "Add another C component")
         assert(()=>PM.getStep("C", 3).reference !== null, "Step C3 is set")
         let step = PM.getStep("C3");
         assert(()=>PM.setStep(step), "Set step works");
@@ -64,7 +64,7 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
         PM.moveStep("C3", "D4")
         let c3 = PM.getStep("C3");
         let d4 = PM.getStep("D4");
-        assert(()=>d4.reference=="csv2json" && c3.reference === null, "Step C3 moved to D4");
+        assert(()=>d4.reference.match(/csv2json/) && c3.reference === null, "Step C3 moved to D4");
 
         // Removing steps
         PM.removeStep("D4");
@@ -72,9 +72,9 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
 
         // Import
         assert(()=>PM.import(testPipeline), "Pipeline import");
-        assert(()=>PM.getStep("A1").reference.match(/readfile/), "Test pipeline step A1 is ReadFile")
-        assert(()=>PM.getStep("B1").reference.match(/csv2json/), "Test pipeline step B1 is CSV2JSON")
-        assert(()=>PM.getStep("C1").reference.match(/selectfields/), "Test pipeline step C1 is SelectFields")
+        assert(()=>PM.getStep("A1").reference.match(/readfile/i), "Test pipeline step A1 is ReadFile")
+        assert(()=>PM.getStep("B1").reference.match(/csv2json/i), "Test pipeline step B1 is CSV2JSON")
+        assert(()=>PM.getStep("C1").reference.match(/selectfields/i), "Test pipeline step C1 is SelectFields")
         assert(()=>typeof PM.getStep("A1").parameters.Path === "string", "Step A1 of imported pipeline has a 'Path' parameter")
         
         // Export
