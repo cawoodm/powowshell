@@ -1,5 +1,7 @@
 # TODO
 
+Get-Help is crazy slow on some PCs - shall we cache it?
+
 # Adaptors
 We want to support any Cmdlet's output so...
 We provide adaptors which convert any data type to the canon: JSON string

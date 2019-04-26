@@ -53,10 +53,16 @@ function main() {
         }
         # Get all installed Cmdlets
         #  - excluding drives ("*:")
-        $Cmdlets = Get-Command -Type CmdLet |
-            Where-Object Name -notlike "*:" |
-            Sort-Object -Property Name |
-            ForEach-Object {pow inspect $_}
+        $CmdletsAll = (Get-Command -Type CmdLet).Where({$_.Name -notlike "*:"})
+        Write-Verbose "$($CmdletsAll.count) Cmdlets found"
+        # Sort by Name
+        $CmdletsAll = $CmdletsAll | Sort-Object Name # | Select -First 10
+        # Parse each CmdLet using `pow inspect`
+        $Cmdlets = [System.Collections.ArrayList]@()
+        foreach($cmdlet in $CmdletsAll) {
+            $cm = & "$PSScriptRoot\inspect.ps1" -Path $cmdlet.name
+            $null = $Cmdlets.add($cm)
+        }
         # Update the cache
         ($Cmdlets | ConvertTo-Json -Depth 10) | Set-Content $CachePath
         return $Cmdlets

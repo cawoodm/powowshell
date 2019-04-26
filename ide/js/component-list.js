@@ -33,7 +33,7 @@ Vue.component("component-list", {
                 <v-text-field v-model="filter" prepend-inner-icon="search"></v-text-field>
             </v-list-tile>
             <v-list-tile v-for="component in filteredComponents" class="drag component" :d-ref="component.reference" :key="component.reference">
-            <v-icon>file_copy</v-icon>{{component.reference}}
+            <v-icon>file_copy</v-icon>{{component.name}}
             </v-list-tile>
         </v-list>
     </v-expansion-panel-content>    

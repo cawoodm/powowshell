@@ -33,7 +33,7 @@ Vue.component("cmdlet-list", {
                 <v-text-field v-model="filter" prepend-inner-icon="search"></v-text-field>
             </v-list-tile>
             <v-list-tile v-for="cmdlet in filteredCmdlets" class="drag cmdlet" :d-ref="cmdlet.reference" :key="cmdlet.reference">
-            <v-icon>file_copy</v-icon>{{cmdlet.path}}
+            <v-icon>file_copy</v-icon>{{cmdlet.name}}
             </v-list-tile>
         </v-list>
     </v-expansion-panel-content>    

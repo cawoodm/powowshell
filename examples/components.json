@@ -3,9 +3,10 @@
         "reference":  "awk.ps1",
         "name":  "AWK",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\AWK.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\AWK.ps1",
         "synopsis":  "AWK processes large amounts of text with power and ease",
         "description":  "AWK is a powerful text processing tool which can stream process large volumes of data\nextracting and transforming it with ease",
+        "whatif":  true,
         "parameters":  [
                            {
                                "name":  "InputObject",
@@ -46,26 +47,6 @@
                                "default":  null,
                                "description":  "The field separator (FS) variable in AWK specifies how data fields are separated\nThe default is a space but you can process CSV files with -Delimiter \",\" or \";\"",
                                "values":  null
-                           },
-                           {
-                               "name":  "WhatIf",
-                               "type":  {
-
-                                        },
-                               "required":  false,
-                               "default":  null,
-                               "description":  null,
-                               "values":  null
-                           },
-                           {
-                               "name":  "Confirm",
-                               "type":  {
-
-                                        },
-                               "required":  false,
-                               "default":  null,
-                               "description":  null,
-                               "values":  null
                            }
                        ],
         "input":  "String",
@@ -82,9 +63,10 @@
         "reference":  "csv2json.ps1",
         "name":  "CSV2JSON",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\CSV2JSON.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\CSV2JSON.ps1",
         "synopsis":  "Convert CSV data to JSON format",
         "description":  "Accepts tabular CSV data and return contents as a JSON Array",
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "InputObject",
@@ -125,9 +107,10 @@
         "reference":  "curl.ps1",
         "name":  "CURL",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\CURL.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\CURL.ps1",
         "synopsis":  "CURL is a wrapper for Invoke-WebRequest to GET data from the web via HTTP",
         "description":  "CURL offers only basic GET functionality with headers",
+        "whatif":  true,
         "parameters":  [
                            {
                                "name":  "Url",
@@ -143,26 +126,6 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The HTTP method to be used (e.g. GET or POST)",
-                               "values":  null
-                           },
-                           {
-                               "name":  "WhatIf",
-                               "type":  {
-
-                                        },
-                               "required":  false,
-                               "default":  null,
-                               "description":  null,
-                               "values":  null
-                           },
-                           {
-                               "name":  "Confirm",
-                               "type":  {
-
-                                        },
-                               "required":  false,
-                               "default":  null,
-                               "description":  null,
                                "values":  null
                            }
                        ],
@@ -180,9 +143,10 @@
         "reference":  "data2json.ps1",
         "name":  "Data2JSON",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\Data2JSON.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\Data2JSON.ps1",
         "synopsis":  "Convert input data to JSON format",
         "description":  "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the record and field separator can be anything.",
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "InputObject",
@@ -223,9 +187,10 @@
         "reference":  "dateadder.ps1",
         "name":  "DateAdder",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\DateAdder.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\DateAdder.ps1",
         "synopsis":  "Add some days to today\u0027s date and return the date",
         "description":  "foo bar",
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "days",
@@ -250,9 +215,10 @@
         "reference":  "doscommand.ps1",
         "name":  "DOSCommand",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\DOSCommand.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\DOSCommand.ps1",
         "synopsis":  "Run any command with DOS CMD",
         "description":  null,
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "Command",
@@ -277,9 +243,10 @@
         "reference":  "dosdir.ps1",
         "name":  "DOSDir",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\DOSDir.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\DOSDir.ps1",
         "synopsis":  "List files with DOS CMD",
         "description":  null,
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "Path",
@@ -304,9 +271,10 @@
         "reference":  "executecmdlet.ps1",
         "name":  "ExecuteCmdlet",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\ExecuteCmdlet.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\ExecuteCmdlet.ps1",
         "synopsis":  "Execute any PowerShell Cmdlet",
         "description":  "Generic component which allows you to map up to 10 parameters to any cmdlet you like",
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "ExecuteTemplate",
@@ -363,9 +331,10 @@
         "reference":  "fieldadd.ps1",
         "name":  "FieldAdd",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\FieldAdd.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\FieldAdd.ps1",
         "synopsis":  "Add a field to each object in an array",
         "description":  null,
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "InputObject",
@@ -409,9 +378,10 @@
         "reference":  "filelist.ps1",
         "name":  "FileList",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\FileList.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\FileList.ps1",
         "synopsis":  "Returns a list of files.",
         "description":  "Lists files with a specific filter (e.g. *.txt) or\nwithin a specified date range.",
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "Path",
@@ -454,9 +424,10 @@
         "reference":  "jsonmapping.ps1",
         "name":  "JSONMapping",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\JSONMapping.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\JSONMapping.ps1",
         "synopsis":  "Map one form of JSON to another",
         "description":  "Used for transforming JSON between two types.\nLimitation: Resulting object is only 1-level deep",
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "InputObject",
@@ -489,9 +460,10 @@
         "reference":  "objectaddfield.ps1",
         "name":  "ObjectAddField",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\ObjectAddField.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\ObjectAddField.ps1",
         "synopsis":  "Add a field to each object in an array",
         "description":  null,
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "InputObject",
@@ -535,9 +507,10 @@
         "reference":  "readfile.ps1",
         "name":  "ReadFile",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\ReadFile.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\ReadFile.ps1",
         "synopsis":  "Read text from a file",
         "description":  "Read a single text file and return contents as a string.",
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "Path",
@@ -562,9 +535,10 @@
         "reference":  "selectfields.ps1",
         "name":  "SelectFields",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\SelectFields.ps1",
+        "executable":  "W:\\powershell\\powowshell\\examples\\components\\SelectFields.ps1",
         "synopsis":  "Selects only certain fields from the input",
         "description":  null,
+        "whatif":  false,
         "parameters":  [
                            {
                                "name":  "InputObject",

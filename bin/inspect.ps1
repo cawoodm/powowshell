@@ -33,11 +33,15 @@ function main() {
 		if ($Executable) {
 			$CompType = "component"
 			$Executable = $Executable.Path
-			Write-Verbose "Inspecting custom POW Component from $Executable ..."
+			Write-Verbose "$(Get-Date -f O) Inspecting custom POW Component from $Executable ..."
 			$Name = (Split-Path -Path $Executable -Leaf)
 			$NiceName = ($Name -replace ".ps1", "")
+			Write-Verbose "$(Get-Date -f O) START Get-Help -Full ..."
 			$cmd = Get-Help -Full -Name $Executable -ErrorAction SilentlyContinue
+			Write-Verbose "$(Get-Date -f O) END Get-Help -Full ..."
+			Write-Verbose "$(Get-Date -f O) START Get-Command ..."
 			$cmd2 = Get-Command -Name $Executable -ErrorAction SilentlyContinue
+			Write-Verbose "$(Get-Date -f O) END Get-Command ..."
 			if ($null -eq $cmd) {throw "Invalid POW Component '$Executable'!"}
 			$outputType = Get-OPType($cmd2)
 			$outputFormat = Get-OPReturn($cmd)
@@ -47,16 +51,16 @@ function main() {
 			Write-Verbose "Inspecting installed CmdLet $Path ..."
 			$Name = $Path
 			$cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
-			$NiceName = $cmd.details.name
 			$cmd2 = Get-Command -Name $Name -ErrorAction SilentlyContinue
 			if ($null -eq $cmd) {throw "Invalid CmdLet '$Executable'!"}
+			$NiceName = $cmd.details.name
 			$outputType = Get-OPReturn($cmd)
 			$outputFormat = Get-OPType($cmd2)
 		}
 		# PS1: Should we use extension or not ???
 		$reference = $Name.ToLower()
 		
-		$POWMessages=@()
+		$POWMessages=@(); $whatif=$false; $confirm=$false; $passthru=$false;
 		$paramsOut = @(); $inputFormat = ""; $inputDesc = ""; $inputType=$null
 		if ($cmd.PSObject.Properties.item("details")) {
 			$boolMap = @{"true"=$true;"false"=$false}
@@ -65,6 +69,9 @@ function main() {
 			if ($null -eq $parameters) {$POWMessages+=[PSCustomObject]@{type="INFO";message="No parameters found in component '$Name'!"}}
 			$pipelineInputParam = $false;
 			foreach ($parameter in $parameters) {
+				if ($parameter.name -eq "WhatIf") {$whatif = $true; continue;}
+				if ($parameter.name -eq "Confirm") {$confirm = $true; continue;}
+				if ($parameter.name -eq "PassThru") {$passthru = $true; continue;}
 				$paramType = Get-ParamType $parameter
 				if ($parameter.pipelineInput -like "true*") {
 					$pipelineInputParam = $true;
@@ -92,6 +99,9 @@ function main() {
 		}
 		$synopsis = Get-Synopsis($cmd)
 		$description = Get-Description($cmd)
+		# Weird "none or" outputs
+		$outputType = $outputType -replace 'None or ', ''
+		$outputType = $outputType -replace 'None, ', ''
 		# Use 'string' instead of 'system.string'
 		$outputType = $outputType -replace '^system\.', ''
 		$inputType = $inputType -replace '^system\.', ''
@@ -108,6 +118,7 @@ function main() {
 			"executable" = $Executable;
 			"synopsis" = $synopsis;
 			"description" = $description;
+			"whatif" = $whatif;
 			"parameters" = $paramsOut;
 			"input" = $inputType;
 			"inputFormat" = $inputFormat;
