@@ -1,79 +1,126 @@
 {
-	"id": "procmon1",
-	"name": "Analyse a process monitoring result",
-	"description": "Read csv export from procmon and find stuff.",
-	"parameters": {
-		"Path": {
-			"default": ".\\data\\Logfile.csv",
-			"type": "string"
-		}
-	},
-	"globals": {},
-	"input": {},
-	"output": {"type": "string"},
-	"steps": [
-		{
-			"id": "A1",
-			"name": "ProcMon CSV log",
-			"reference": "Import-CSV",
-			"input": "",
-			"stream": "",
-			"parameters": {
-                "Path": "{$PipelineParams.Path}",
-                "Encoding": "UTF8"
-			}
-		},
-		{
-			"id": "B1",
-			"name": "Get slow events",
-			"reference": "Where-Object",
-			"input": "A1",
-			"stream": "process",
-			"parameters": {
-				"FilterScript": "{{[double]$_.Duration -gt 0.00002}}"
-			}
-		},
-		{
-			"id": "C1",
-			"name": "Group By Operation",
-			"reference": "Group-Object",
-			"input": "B1",
-			"stream": "end",
-			"parameters": {
-				"Property": "Operation",
-				"NoElement": true,
-				"CaseSensitive": false
-			}
-		},
-		{
-			"id": "D1",
-			"name": "Top 10",
-			"reference": "Select-Object",
-			"input": "C1",
-			"stream": "end",
-			"parameters": {
-				"First": 10
-			}
-		},
-		{
-			"id": "E1",
-			"name": "Select Name, Count",
-			"reference": "Select-Object",
-			"input": "D1",
-			"stream": "process",
-			"parameters": {
-				"Property": "{@('Name', 'Count')}"
-			}
-		},
-		{
-			"id": "F1",
-			"name": "JSON Output",
-			"reference": "ConvertTo-JSON",
-			"input": "E1",
-			"stream": "end",
-			"parameters": {
-				"Depth": 3
-			}
-		}
-	]	
+  "id": "procmon1",
+  "name": "Analyse a process monitoring result",
+  "description": "Read csv export from procmon and find stuff.",
+  "parameters": {
+    "Path": {
+      "default": ".\\data\\Logfile.csv",
+      "type": "string"
+    }
+  },
+  "globals": {},
+  "steps": [
+    {
+      "id": "A1",
+      "reference": "Import-CSV",
+      "name": "Read a ProcMon CSV log of performance profiling events",
+      "stream": "",
+      "parameters": {
+        "Path": "{$PipelineParams.Path}",
+        "Encoding": "UTF8",
+        "Delimiter": null,
+        "LiteralPath": null,
+        "Header": null
+      },
+      "input": ""
+    },
+    {
+      "id": "B1",
+      "reference": "Where-Object",
+      "name": "Get slow events",
+      "stream": "process",
+      "parameters": {
+        "FilterScript": "{{[double]$_.Duration -gt 0.00002}}",
+        "Property": null,
+        "Value": null,
+        "InputObject": null,
+        "EQ": null
+      },
+      "input": "A1"
+    },
+    {
+      "id": "C1",
+      "reference": "Group-Object",
+      "name": "Group By Operation",
+      "stream": "end",
+      "parameters": {
+        "Property": "Operation",
+        "NoElement": true,
+        "CaseSensitive": null,
+        "AsHashTable": null,
+        "AsString": null,
+        "InputObject": null,
+        "Culture": null
+      },
+      "input": "B1"
+    },
+    {
+      "id": "D1",
+      "reference": "Select-Object",
+      "name": "Top 10",
+      "stream": "end",
+      "parameters": {
+        "First": 10,
+        "Property": null,
+        "InputObject": null,
+        "ExcludeProperty": null,
+        "ExpandProperty": null,
+        "Unique": null,
+        "Last": null,
+        "Skip": null,
+        "Wait": null
+      },
+      "input": "C1"
+    },
+    {
+      "id": "E1",
+      "reference": "sort-object",
+      "name": "Sort by Duration",
+      "description": null,
+      "stream": "end",
+      "parameters": {
+        "Property": "Count",
+        "Descending": true,
+        "Unique": null,
+        "InputObject": null,
+        "Culture": null,
+        "CaseSensitive": null
+      },
+      "input": "D1"
+    },
+    {
+      "id": "F1",
+      "reference": "Select-Object",
+      "name": "Select Name, Count",
+      "stream": "process",
+      "parameters": {
+        "Property": "{@('Name', 'Count')}",
+        "InputObject": null,
+        "ExcludeProperty": null,
+        "ExpandProperty": null,
+        "Unique": null,
+        "Last": null,
+        "First": null,
+        "Skip": null,
+        "Wait": null
+      },
+      "input": "E1"
+    },
+    {
+      "id": "G1",
+      "reference": "ConvertTo-JSON",
+      "name": "JSON Output",
+      "stream": "end",
+      "parameters": {
+        "Depth": 3,
+        "InputObject": null,
+        "Compress": null
+      },
+      "input": "F1"
+    }
+  ],
+  "input": {},
+  "output": {
+    "type": "string"
+  }
 }
