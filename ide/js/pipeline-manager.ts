@@ -37,8 +37,8 @@ let pipelineManager = (function() {
     const COLS = pipeCols.length;
     const ROWS = 9;
     let columns = [];
-    const pipelineDefNull: POWType.PipelineDef = {id: null, name: null, description: null, parameters: [], globals: {}, steps: [], input: {}, output: {}};
-    let pipelineDef: POWType.PipelineDef = pipelineDefNull;
+    const pipelineDefNull = function() {return {id: null, name: null, description: null, parameters: [], globals: {}, steps: [], input: {}, output: {}}};
+    let pipelineDef: POWType.PipelineDef = pipelineDefNull();
 
     // Public members
     return {
@@ -47,7 +47,7 @@ let pipelineManager = (function() {
          */ 
         reset: function() {
             columns = [];
-            pipelineDef = pipelineDefNull;
+            pipelineDef = pipelineDefNull();
             for (let c=0; c<pipeCols.length; c++) {
                 let column = [];
                 for (let r=0; r<ROWS; r++) {
@@ -94,7 +94,7 @@ let pipelineManager = (function() {
                 let step = pipelineStepToStep(stepI.id, stepI)
                 importStep(step);
             }
-            this.pipelineDef = def;
+            pipelineDef = def;
             return true;
         },
         /**
@@ -102,9 +102,9 @@ let pipelineManager = (function() {
          * @returns {Object}
          */ 
         export: function() {
-            let res = pipelineDefNull;
+            let res = pipelineDefNull();
             // Export all properties in pipelineDef
-            Object.assign(res, this.pipelineDef)
+            Object.assign(res, pipelineDef)
             // Overwriting all non-empty steps
             res.steps.length = 0;
             for (let r=1; r<=ROWS; r++) {
@@ -222,7 +222,7 @@ let pipelineManager = (function() {
          * @returns {Object} The in-memory pipeline which was loaded
          */
         getDefinition: function() {
-            return this.pipelineDef;
+            return pipelineDef;
         },
         /**
          * @returns {number} The number of columns
@@ -303,7 +303,6 @@ let pipelineManager = (function() {
             id: id,
             reference: stepI.reference,
             description: stepI.description,
-            synopsis: stepI.synopsis,
             name : stepI.name,
             parameters: stepI.parameters,
             input: stepI.input
@@ -321,12 +320,11 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: component.reference,
-            name: component.reference,
-            description: component.description,
-            synopsis: component.synopsis,
+            name: component.name,
+            description: null,
             parameters: stepParams,
-            input: component.input||null,
-            output: component.output||null
+            input: null,
+            output: null
         };
     }
     /**
@@ -340,7 +338,6 @@ let pipelineManager = (function() {
             id: id,
             reference: step.reference,
             description: step.description,
-            synopsis: step.synopsis,
             name: step.name ,
             parameters: step.parameters,
             input: step.input,

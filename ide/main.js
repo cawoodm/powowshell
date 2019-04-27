@@ -76,6 +76,7 @@ window.onload = function() {
                 if (err.constructor.name === "POWError") message += "\nPOWError:\n";
                 if (err.messages && Array.isArray(err.messages))
                     err.messages.forEach((msg)=>message += "\n" + msg.type + ": " + msg.message);
+                console.log(message);
                 alert(message);
             },
             showDialog: function(id) {
@@ -136,6 +137,7 @@ window.onload = function() {
             },
             pipelineSave: function() {
                 let pipeline = pipelineManager.export();
+                console.log(pipeline)
                 pow.save(pipeline)
                     .then(()=>alert("Saved"))
                     .catch(this.handlePOWError);

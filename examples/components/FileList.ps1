@@ -29,21 +29,12 @@
 [CmdletBinding(DefaultParameterSetName="Std")]
 [OutputType([string])]
 param(
-	[Parameter(ParameterSetName="Std",Mandatory,HelpMessage="The path to the files",Position=0)]
-		[string]$Path,
-		[string]$Filter,
-		[switch]$Recurse,
-
-	[Parameter(ParameterSetName="POW")][string]$POWAction
+	[string]$Path,
+	[string]$Filter,
+	[switch]$Recurse
 )
 Set-StrictMode -Version 3.0
 function main() {
-	if ($POWAction -like "test") {
-		Push-Location $PSScriptRoot
-		if ((.\FileList.ps1 -Path "C:\Windows" | ConvertFrom-Json).length -gt 0) {"SUCCESS: FileList self-test successful"} else {$Host.UI.WriteErrorLine("FAIL: FileList self-test failed!")}
-		Pop-Location
-    	return
-	}
 	$files = @()
 	Get-ChildItem -Path $Path -File -Filter $Filter -Recurse:$Recurse|
 	  ForEach-Object {

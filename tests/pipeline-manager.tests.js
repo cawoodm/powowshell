@@ -30,7 +30,7 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
     let testComponent = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./CSV2JSON.json"), "utf8").trim());
     let testComponent2 = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./FileList.json"), "utf8").trim());
     //console.log(testComponent);process.exit();
-    //testComponent = { "synopsis": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": { "FieldSeparator": { "type": "string", "default": ",", "description": "Specifies the field separator. Default is a comma." } }, "input":"text/csv", "output":"json/array"};
+    //testComponent = { "name": "Convert CSV data to JSON format", "description": "Accepts tabular CSV data and return contents as a JSON Array", "parameters": { "FieldSeparator": { "type": "string", "default": ",", "description": "Specifies the field separator. Default is a comma." } }, "input":"text/csv", "output":"json/array"};
 
     try{
 
