@@ -317,6 +317,8 @@ function ReSerializeObject($obj) {
             $res += "`t$($pName) = `$true`n"
         } elseif ($pVal -eq $false) {
             $res += "`t$($pName) = `$false`n"
+        } elseif ($pVal -eq $null) {
+            # Don't produce null parameters
         } else {
             # Parameter is a String
             # TODO: Escape String for PS
