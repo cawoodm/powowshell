@@ -13,9 +13,10 @@ const pow = (function () {
      */
     async function init(workspacePath) {
         return new Promise(function (resolve, reject) {
-            _POWPromise(`pow workspace ${workspacePath}`, true).then((result) => {
+            _POWPromise(`pow workspace ${workspacePath} | ConvertTo-Json`, true, true).then((result) => {
                 if (result.success) {
-                    workspace = workspacePath;
+                    workspace = result.object; //workspacePath
+                    console.log("workspace set to", workspace);
                     resolve(result);
                 }
                 else

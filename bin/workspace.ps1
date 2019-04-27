@@ -19,25 +19,26 @@ param(
 )
 function main() {
 
-    if (-not $Path) {
-        # Get workspace if nothing specified to set
-        Push-Location $PSScriptRoot
-        if (Test-Path "..\workspace.txt") {Get-Content "..\workspace.txt"}
-        Pop-Location
-        return
-    }
-
 	# Save path we are started from
     $StartPath = (Get-Location).Path
     
 	try {
-        $WPath = (Resolve-Path -Path $Path).Path
-        if (-not (Test-Path "$Wpath\components")) {Write-Warning "$WPath does not appear to be a workspace. No components\ subfolder!"; return;}
-        # Workspace is always in root of this app otherwise pow commands will become relative to their execution location
+        if ($Path) {
+            $WPath = (Resolve-Path -Path $Path).Path
+            # ASSUME: Each workspace has a components subfolder
+            if (-not (Test-Path "$Wpath\components")) {Write-Warning "$WPath does not appear to be a workspace. No components\ subfolder!"; return;}
+            # Workspace is always in root of this app otherwise pow commands will become relative to their execution location
+            Push-Location $PSScriptRoot
+            $WPath > ..\workspace.txt
+            Pop-Location
+        }
+        
+        # Get workspace if nothing specified to set
         Push-Location $PSScriptRoot
-        $WPath > ..\workspace.txt
+        if (Test-Path "..\workspace.txt") {$WPath = [string](Get-Content "..\workspace.txt")}
         Pop-Location
-        Write-Host "Workspace set to '$WPath'" -ForegroundColor Cyan
+        # Must return a string so IDE can | convertto-json
+        return [string]$WPath
     } catch {
         $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     } finally {
