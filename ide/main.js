@@ -137,7 +137,6 @@ window.onload = function() {
             },
             pipelineSave: function() {
                 let pipeline = pipelineManager.export();
-                console.log(pipeline)
                 pow.save(pipeline)
                     .then(()=>alert("Saved"))
                     .catch(this.handlePOWError);

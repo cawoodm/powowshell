@@ -94,7 +94,7 @@ const StepForm = Vue.extend({
                             <v-text-field label="Description" placeholder="A description for this step" v-model="step.descriptions"></v-text-field>
                         </v-flex>
                         <v-flex xs6>
-                            <v-select :items="inputs" :label="'Piped Input (' + component.input + ')'" v-model="step.input" v-if="step.input"></v-select>
+                            <v-select :items="inputs" :label="'Piped Input (' + component.input + ')'" v-model="step.input" v-if="component.input"></v-select>
                             <v-text-field label="Input" placeholder="No Piped Input" disabled v-if="!component.input"></v-text-field>
                         </v-flex>
                         <v-flex xs6>
@@ -104,7 +104,7 @@ const StepForm = Vue.extend({
                         </v-flex>
                         <v-flex xs12 v-for="p in component.parameters" :key="p.name">
                         <v-checkbox v-if="p.type==='switch'" v-model="p.stepValue" :label="p.name + (p.required?'*':'')"></v-checkbox>
-                        <v-text-field :label="p.name + (p.required?'*':'')" :placeholder="p.default?p.default:''" :rules="p.rules" v-model="p.stepValue" clearable>
+                        <v-text-field v-else :label="p.name + (p.required?'*':'')" :placeholder="p.default?p.default:''" :rules="p.rules" v-model="p.stepValue" clearable>
                             <v-tooltip slot="append" bottom v-if="p.description">
                                 <v-icon slot="activator" color="gray lighten-2">help</v-icon>
                                 <span>{{p.description}}</span>

@@ -44,11 +44,11 @@ Vue.component('step-grid', {
                 <td v-for="step in row" :key="step.id" :id="step.id" :class="step.reference?'step drag':'step drag drop'">
                     <div :d-id="step.id" :class="'stepContainer'+(step.reference?' stepFilled':' stepEmpty')" @click="showDialog(step.id)">
                         <v-card height="200px" v-if="step.reference">
-                            <v-card-title class="blue white--text stepName" :title="step.name">
-                                {{ step.name }}
+                            <v-card-title class="blue white--text stepName" :title="step.reference">
+                                {{ step.reference }}
                             </v-card-title>
                             <v-card-text>
-                                <div class="stepReference">{{step.reference}}</div>
+                                <div class="stepReference">{{step.name}}</div>
                             </v-card-text>
                         </v-card>
                     </div>
