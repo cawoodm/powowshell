@@ -86,7 +86,11 @@ function main() {
 						$paramPipeMode+="name"
 					}
 				}
-				$paramValues = Get-ParamValues $parameter
+				if ($CompType -eq "component") {
+					$paramValues = Get-ParamValues $cmd2.parameters[$parameter.name]
+				} else {
+					$paramValues = Get-ParamValues $parameter
+				}
 				$paramsOut += [PSCustomObject]@{
 					"name" = $parameter.name;
 					"type" = $paramType
@@ -162,7 +166,10 @@ function Get-Description($cmd) {try {return $cmd.description[0].Text}catch{$null
 function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
 function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{$null}}
 function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "[\r\n]")}catch{$null}}
-function Get-ParamValues($param) {try{@($param.parameterValueGroup.parameterValue | ConvertTo-Json)}catch{$null}}
+function Get-ParamValues($param) {
+	try{@($param.parameterValueGroup.parameterValue | ConvertTo-Json)}catch{}
+	try{@($param.Attributes[1].ValidValues | ConvertTo-Json)}catch{}
+}
 function Get-ParamType($param) {
 	try{return [string]$param.parameterValue.toLower()}catch{}
 	try{return [string]$param.type.name.toLower()}catch{}
