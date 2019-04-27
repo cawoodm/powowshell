@@ -302,8 +302,9 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: stepI.reference,
-            description: stepI.description,
             name : stepI.name,
+            description: stepI.description,
+            stream : stepI.stream,
             parameters: stepI.parameters,
             input: stepI.input
         }
@@ -322,6 +323,7 @@ let pipelineManager = (function() {
             reference: component.reference,
             name: component.name,
             description: null,
+            stream: null,
             parameters: stepParams,
             input: null,
             output: null
@@ -337,8 +339,9 @@ let pipelineManager = (function() {
         return {
             id: id,
             reference: step.reference,
+            name: step.name,
             description: step.description,
-            name: step.name ,
+            stream: step.stream,
             parameters: step.parameters,
             input: step.input,
             output: step.output
