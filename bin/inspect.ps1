@@ -50,7 +50,15 @@ function main() {
 			$Executable = $Path
 			Write-Verbose "Inspecting installed CmdLet $Path ..."
 			$Name = $Path
-			$cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
+			# ASSUME: Cache path is from root
+			$CachePath = Resolve-Path "$PSScriptRoot\..\cache\cmdlets"
+			if (Test-Path "$CachePath\$Name.json") {
+				$cmd = Get-Content "$CachePath\$Name.json" | ConvertFrom-Json
+			} else {
+				$cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
+				if ($cmd.details.name -notlike $Name) {throw "'$Name' is an alias, please inspect the full name $($cmd.details.name)!"}
+				$cmd | convertto-json -depth 7 > "$CachePath\$($cmd.details.name).json"
+			}
 			if ($null -eq $cmd) {throw "Invalid CmdLet '$Executable'!"}
 			$NiceName = $cmd.details.name
 			$outputType = Get-OPReturn($cmd)
@@ -64,11 +72,12 @@ function main() {
 		$paramsOut = @(); $inputType=$null; $inputFormat = $null; $inputDesc = $null; $outputDesc=$null; $PipedParamCount=0;
 		if ($cmd.PSObject.Properties.item("details")) {
 			$boolMap = @{"true"=$true;"false"=$false}
+			$parameters = try{$cmd.parameters.parameter}catch{$null}
 			# Only Syntax.syntaxItem has parameterValueGroup.parameterValue on each parameter
-			$parameters = try{$cmd.Syntax.syntaxItem[0].parameter}catch{$null}
-			#$parameters = try{$cmd.parameters.parameter}catch{$null}
+			$parameters2 = try{$cmd.Syntax.syntaxItem[0].parameter}catch{$null}
 			$pipelineInputParam = $false;
 			foreach ($parameter in $parameters) {
+				$parameter2 = $parameters2 | Where-Object Name -eq $parameter.name
 				$paramPipeMode=$null; $paramPipe=$null;
 				if ($parameter.name -eq "WhatIf") {$whatif = $true; continue;}
 				if ($parameter.name -eq "Confirm") {$confirm = $true; continue;}
@@ -89,7 +98,7 @@ function main() {
 				if ($CompType -eq "component") {
 					$paramValues = Get-ParamValues $cmd2.parameters[$parameter.name]
 				} else {
-					$paramValues = Get-ParamValues $parameter
+					$paramValues = Get-ParamValues $parameter2 | Where-Object {$_ -ne $null}
 				}
 				$paramsOut += [PSCustomObject]@{
 					"name" = $parameter.name;
@@ -167,8 +176,11 @@ function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower() -replace "[
 function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{$null}}
 function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "[\r\n]")}catch{$null}}
 function Get-ParamValues($param) {
-	try{@($param.parameterValueGroup.parameterValue | ConvertTo-Json)}catch{}
-	try{@($param.Attributes[1].ValidValues | ConvertTo-Json)}catch{}
+	try{$param.parameterValueGroup.parameterValue}catch{}
+	# With strictmode on we don't get the ValidValues !?!
+	Set-StrictMode -Off
+	try{$param.Attributes.ValidValues}catch{}
+	Set-StrictMode -Version Latest
 }
 function Get-ParamType($param) {
 	try{return [string]$param.parameterValue.toLower()}catch{}
