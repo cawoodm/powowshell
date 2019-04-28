@@ -29,20 +29,12 @@
 [CmdLetBinding()]
 [OutputType([String])]
 param(
-  [Parameter(Mandatory,ValueFromPipeline,ParameterSetName="Std")]
-    [String]$InputObject,
-  [Parameter(Mandatory,ParameterSetName="Std")]
-    [String]$Delimiter=",",
-  [Parameter(ParameterSetName="Std")]
-  [String]$RecordSeparator,
-
-	[Parameter(ParameterSetName="POW")]
-		[string]$POWAction
+  [Parameter(Mandatory,ValueFromPipeline)]
+  [String]$InputObject,
+  [String]$Delimiter=",",
+  [String]$RecordSeparator
 )
-if ($POWAction -like "test") {
-  if (("a|1|M`nb|2|F" | & "$PSScriptRoot\Data2JSON.ps1" -Delimiter "|" | ConvertFrom-Json)[1].gender -eq "F") {"SUCCESS: Data2JSON"} else {Write-Error "FAIL: Data2Json"}; return
-}
-,
+
 # The Magic Happens Here...
 $result = ""
 $r = 0

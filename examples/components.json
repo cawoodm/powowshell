@@ -186,7 +186,7 @@
                                "type":  "string",
                                "piped":  null,
                                "pipedMode":  null,
-                               "required":  true,
+                               "required":  false,
                                "default":  ",",
                                "description":  "Specifies the field separator. Default is a comma \",\")",
                                "values":  null
@@ -456,9 +456,7 @@
                            },
                            {
                                "name":  "Recurse",
-                               "type":  {
-
-                                        },
+                               "type":  "switchparameter",
                                "piped":  null,
                                "pipedMode":  null,
                                "required":  false,
@@ -498,6 +496,16 @@
                            },
                            {
                                "name":  "Mapping",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  "",
+                               "description":  null,
+                               "values":  null
+                           },
+                           {
+                               "name":  "POWAction",
                                "type":  "string",
                                "piped":  null,
                                "pipedMode":  null,

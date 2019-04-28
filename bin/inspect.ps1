@@ -28,20 +28,15 @@ function main() {
 	try {
 		if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
 		# Add .ps1 to components with a path so `pow inspect !csv2json` works
-		if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path+=".ps1"}
+		if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
 		$Executable = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 		if ($Executable) {
 			$CompType = "component"
 			$Executable = $Executable.Path
-	Write-Verbose "$(Get-Date -f O) Inspecting custom POW Component from $Executable ..."
 			$Name = (Split-Path -Path $Executable -Leaf)
 			$NiceName = ($Name -replace ".ps1", "")
-	Write-Verbose "$(Get-Date -f O) START Get-Help -Full ..."
 			$cmd = Get-Help -Full -Name $Executable -ErrorAction SilentlyContinue
-	Write-Verbose "$(Get-Date -f O) END Get-Help -Full ..."
-	Write-Verbose "$(Get-Date -f O) START Get-Command ..."
 			$cmd2 = Get-Command -Name $Executable -ErrorAction SilentlyContinue
-	Write-Verbose "$(Get-Date -f O) END Get-Command ..."
 			if ($null -eq $cmd) {throw "Invalid POW Component '$Executable'!"}
 			$outputType = Get-OPType($cmd2)
 			$outputFormat = Get-OPReturn($cmd)
@@ -56,7 +51,9 @@ function main() {
 				$cmd = Get-Content "$CachePath\$Name.json" | ConvertFrom-Json
 			} else {
 				$cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
-				if ($cmd.details.name -notlike $Name) {throw "'$Name' is an alias, please inspect the full name $($cmd.details.name)!"}
+				if ($cmd.details.name -notlike $Name) {
+					throw "'$Name' is an alias, please inspect the full name $($cmd.details.name)!"
+				}
 				$cmd | convertto-json -depth 7 > "$CachePath\$($cmd.details.name).json"
 			}
 			if ($null -eq $cmd) {throw "Invalid CmdLet '$Executable'!"}
