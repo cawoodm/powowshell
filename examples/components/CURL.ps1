@@ -43,7 +43,9 @@ function main() {
     try {
         Write-Verbose "CURL: $($MyInvocation.BoundParameters -join ' ' )"
 
-        Invoke-WebRequest -Method $Method -Uri $Url
+        $res = Invoke-WebRequest -Method $Method -Uri $Url
+
+        return $res.Content
 
     } catch {
         $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")

@@ -48,8 +48,9 @@ function main() {
         $success += Assert {$global:cmd.parameters[0].type -eq "string" -and $global:cmd.parameters[0].required -eq $true} "Inspect component parameter InputObject basics"; $tests++
         $success += Assert {$global:cmd.parameters[0].piped -eq $true -and $global:cmd.parameters[0].pipedMode -eq "value"} "Inspect component parameter InputObject piping"; $tests++
         $global:cmd = ..\bin\inspect.ps1 ..\examples\components\CURL.ps1
+        $success += Assert {$global:cmd.parameters[1].default -eq "GET"} "Inspect CURL component parameter Method has the default value GET"; $tests++
         $success += Assert {$global:cmd.parameters[1].values.length -gt 1} "Inspect CURL component parameter Method has values"; $tests++
-        if ($success -eq $tests) {SuccessMsg "SUCCESS: Inspect CSV2JSON works"} else {ErrMsg "FAIL: Inspect failed $($tests-$success) of $tests tests!"}
+        if ($success -eq $tests) {SuccessMsg "SUCCESS: Inspect works"} else {ErrMsg "FAIL: Inspect failed $($tests-$success) of $tests tests!"}
 
         # Test Pipeline1
         if ((..\examples\pipeline1\run_prod.ps1 | ConvertFrom-Json)[1].age -eq "100") {"Pipeline: OK"} else {ErrMsg "Pipeline: FAIL"}

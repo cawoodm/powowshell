@@ -41,10 +41,11 @@ function main() {
                     try {
                         if (Test-Path $DestPath) {} else {New-Item -ItemType directory $DestPath 2>$null | Out-Null}
                         #if (Test-Path "$DestPath\powowshell.psm1") {
-                        if ((Get-Module "PowowShell") -or (Get-Alias "pow")) {
+                        if ((Get-Module "PowowShell" -EA 0) -or (Get-Alias "pow" -EA 0)) {
                             Write-Warning "PowowShell Module exists: You may need to restart PowerShell to see the changes!"
                             Remove-Module -Name PowowShell
                         }
+                        Write-Verbose "Copying $File to $DestPath\powowshell.psm1 ..."
                         $result = $File.CopyTo($DestPath + "\powowshell.psm1", $true) 2> $null
                         $PathFinal = $DestPath + "\powowshell.psm1"
                         if (Test-Path $PathFinal) {

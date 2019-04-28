@@ -1,6 +1,8 @@
 # TODO
 
-Get-Help is crazy slow on some PCs - shall we cache it?
+* Get-Help is crazy slow on some PCs - shall we cache it?
+* We need to save a pipeline before running it in the IDE
+* We need a concept of "dirty" in the IDE so we know if a pipeline has been changed
 
 # Adaptors
 We want to support any Cmdlet's output so...

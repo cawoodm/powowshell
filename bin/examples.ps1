@@ -24,6 +24,8 @@ param(
 function main() {
 	
 	try {
+		# Add .ps1 to components with a path so `pow inspect !csv2json` works
+		if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path+=".ps1"}
 		$RealPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 		if ($RealPath) {
 			$CompType = "component"

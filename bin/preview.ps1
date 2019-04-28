@@ -42,13 +42,14 @@ function main() {
 	$StartPath = (Get-Location).Path
 
     try {
+		# Add .ps1 to components with a path so `pow inspect !csv2json` works
+		if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path+=".ps1"}
         Write-Verbose "JSON: $Parameters"
         if ($Parameters -is [hashtable]) {
             $ParamHash = $Parameters
             $Parameters = "@ParamHash"
         } elseif ($Parameters -like "{*") {
             # Decode JSON and convert JSON Object to HashTable for Splatting
-            Write-Verbose "JSON: $Parameters"
             $Parameters = ConvertFrom-Json $Parameters
             $ParamHash = @{}
             $Parameters.psobject.properties | Where-Object Value -ne $null | ForEach-Object {$ParamHash[$_.Name] = $_.Value }

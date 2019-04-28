@@ -9,7 +9,7 @@ const formBuilder = (function() {
             //let str = JSON.stringify(step) + "\n" + JSON.stringify(component);console.log(str)
             for(let p = 0; p<component.parameters.length; p++) {
                 let compParam = component.parameters[p];
-                compParam.stepValue = step.parameters[compParam.name]||null;
+                compParam.stepValue = step.parameters[compParam.name]||compParam.default||null;
                 compParam.rules=compParam.required?[value => !!value || "Required parameter!"]:[];
             }
             // Have to clone step or we can't cancel out of the form
@@ -102,16 +102,21 @@ const StepForm = Vue.extend({
                                 <!--<v-icon slot="append" color="blue lighten-2">keyboard_arrow_right</v-icon>-->
                             </v-text-field>
                         </v-flex>
-                        <v-flex xs12 v-for="p in component.parameters" :key="p.name">
-                        <v-checkbox v-if="p.type==='switch'" v-model="p.stepValue" :label="p.name + (p.required?'*':'')"></v-checkbox>
-                        <v-text-field v-else :label="p.name + (p.required?'*':'')" :placeholder="p.default?p.default:''" :rules="p.rules" v-model="p.stepValue" clearable>
-                            <v-tooltip slot="append" bottom v-if="p.description">
+                        <template v-for="compParam in component.parameters" :key="compParam.name">
+                            <v-flex xs1>
+                                <v-tooltip bottom v-if="compParam.description">
                                 <v-icon slot="activator" color="gray lighten-2">help</v-icon>
-                                <span>{{p.description}}</span>
-                                <span v-if="p.required"><br>* Required parameter!</span>
-                            </v-tooltip>
-                            </v-text-field>
-                        </v-flex>
+                                <span>{{compParam.description}}</span>
+                                <span v-if="compParam.required"><br>* Required parameter!</span>
+                                </v-tooltip>
+                            </v-flex>
+                            <v-flex xs11>
+                                <v-checkbox v-if="compParam.type==='switch'" v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')"></v-checkbox>
+                                <v-combobox v-if="compParam.values"  v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')" :items="compParam.values"></v-combobox>
+                                <v-text-field v-else :label="compParam.name + (compParam.required?'*':'')" :placeholder="compParam.default?compParam.default:''" :rules="compParam.rules" v-model="compParam.stepValue" clearable>
+                                </v-text-field>
+                            </v-flex>
+                        </template>
                     </v-layout>
                 </v-container>
             </v-card-text>
