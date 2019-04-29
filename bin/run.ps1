@@ -19,6 +19,7 @@
 
 #>
 [CmdletBinding(SupportsShouldProcess)]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
 param(
     [Parameter(Mandatory)][String]$Path,
 		$Parameters=@{},
@@ -54,13 +55,14 @@ function main() {
 			& .\run_prod.ps1 @Parameters
 		}
 	} catch {
-		Write-Host "ERROR: !!! PIPELINE RUN FAILED !!!" -ForegroundColor Red
+		Show-Message "ERROR: !!! PIPELINE RUN FAILED !!!" Red
 		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
 		#throw $_
 	} finally {
 		Set-Location $StartPath
 	}
 }
+function  Show-Message($msg, $Color) {Write-Host $Msg -ForegroundColor $Color}
 
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest

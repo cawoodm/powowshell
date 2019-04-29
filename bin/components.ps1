@@ -39,7 +39,7 @@ function main() {
         # Action = export : Return cached JSON
         if ($Action -like "export" -and $CacheFile) {return $JSON}
         # When did a component last change
-        $LastWriteTime = (Get-ChildItem .\ -File -Filter *.ps1 | ? name -notlike *.tests.ps1* | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
+        $LastWriteTime = (Get-ChildItem .\ -File -Filter *.ps1 | Where-Object name -notlike *.tests.ps1* | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
         if ($Action -like "generate" -or $null -eq $CacheFile -or $LastWriteTime -gt $CacheFile.LastWriteTime) {
             if ($Action -notlike "generate") {Write-Verbose "Component cache is stale"}
             $JSON=$null
@@ -72,7 +72,7 @@ function ListComponents() {
     ForEach($folder in $folders) {
         LoadComponents($folder)
     }
-    
+
     # Process current folder
     LoadComponents(".\")
 }

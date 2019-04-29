@@ -27,6 +27,7 @@
 
 #>
 [CmdletBinding(SupportsShouldProcess)]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
 param(
     [Parameter(Mandatory)][String]$Path,
     $Parameters=@{}
@@ -35,7 +36,7 @@ function main() {
 
 	# Save path we are started from
     $StartPath = (Get-Location).Path
-    
+
     if ($Parameters -is [string]) {
         if ($Parameters -like '@*') {
             $Parameters = Invoke-Expression $Parameters
@@ -58,39 +59,41 @@ function main() {
 	Push-Location $Path
 	try {
         if (-not (Test-Path .\run_prod.ps1)) {throw "Pipeline is not built!"}
-        if (Test-Path .\errors.log) {DEL .\errors.log}
-        if (Test-Path .\warnings.log) {DEL .\warnings.log}
-        $output = & .\run_prod.ps1 @Parameters -WhatIf 2> .\errors.log 3> .\warnings.log
+        if (Test-Path .\errors.log) {Remove-Item .\errors.log}
+        if (Test-Path .\warnings.log) {Remove-Item .\warnings.log}
+        $null = & .\run_prod.ps1 @Parameters -WhatIf 2> .\errors.log 3> .\warnings.log
         $outputErr = Get-Content .\errors.log -Raw
         $outputWar = Get-Content .\warnings.log -Raw
         if ($outputErr) {
-            Write-Host "VERIFICATION ERRORS" -ForegroundColor Red
-            Write-Host "Your pipeline was verified but generated error output:"
-            Write-Host  $outputErr -ForegroundColor Red
+            Show-Message "VERIFICATION ERRORS" Red
+            Show-Message "Your pipeline was verified but generated error output:"
+            Show-Message $outputErr Red
+            if ($outputWar) {Show-Message $outputWar Yellow}
         } elseif ($outputWar) {
-            Write-Host "VERIFICATION ERRORS" -ForegroundColor Yellow
-            Write-Host "Your pipeline was verified but generated warning output:"
-            Write-Host  $outputWar -ForegroundColor Yellow
+            Show-Message "VERIFICATION ERRORS" Yellow
+            Show-Message "Your pipeline was verified but generated warning output:"
+            Show-Message $outputWar Yellow
         } else {
-            Write-Host "VERIFICATION OK" -ForegroundColor Green
-            Write-Host "Your pipeline was verified with no errors"
+            Show-Message "VERIFICATION OK" Green
+            Show-Message "Your pipeline was verified with no errors"
         }
         # Show params
-        $cmd = Get-Command .\run_prod.ps1
+        #$cmd = Get-Command .\run_prod.ps1
         #"`nParameters:"
-        $cmd.Parameters.Keys | Where-Object {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | % {
-            #if ($cmd.Parameters[$_].Attributes[0].Mandatory) {"$_ (mandatory)"} else {$_}
-        }
+        #$cmd.Parameters.Keys | Where-Object {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | Where-Object {
+        #    #if ($cmd.Parameters[$_].Attributes[0].Mandatory) {"$_ (mandatory)"} else {$_}
+        #}
     } catch {
-        Write-Host "!!! PIPELINE VERIFICATION FAILED !!!" -ForegroundColor Red
+        Show-Message "!!! PIPELINE VERIFICATION FAILED !!!" Red
         $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
         #throw $_
     } finally {
-        DEL .\errors.log -ErrorAction SilentlyContinue
-        DEL .\warnings.log -ErrorAction SilentlyContinue
+        Remove-Item .\errors.log -ErrorAction SilentlyContinue
+        Remove-Item .\warnings.log -ErrorAction SilentlyContinue
 		Set-Location $StartPath
 	}
 }
+function  Show-Message($msg, $Color) {Write-Host $Msg -ForegroundColor $Color}
 
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest

@@ -43,7 +43,7 @@ function Invoke-PowowShell {
     $StartPath = (Get-Location).Path
 
     try {
-    
+
         # Change to bin\ path
         $BinPath = $PSScriptRoot
         # If we are installed as a module, our bin\ path is stored in path.txt
@@ -91,10 +91,10 @@ function Invoke-PowowShell {
     } finally {
         Set-Location $StartPath
     }
-    
+
 }
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 #########################################
-Invoke-PowowShell $Command $p1 $p2 $p3
+Invoke-PowowShell -Command $Command -p1 $p1 -p2 $p2 -p3 $p3

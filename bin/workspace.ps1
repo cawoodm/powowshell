@@ -21,7 +21,7 @@ function main() {
 
 	# Save path we are started from
     $StartPath = (Get-Location).Path
-    
+
 	try {
         if ($Path) {
             $WPath = (Resolve-Path -Path $Path).Path
@@ -32,7 +32,7 @@ function main() {
             $WPath > ..\workspace.txt
             Pop-Location
         }
-        
+
         # Get workspace if nothing specified to set
         Push-Location $PSScriptRoot
         if (Test-Path "..\workspace.txt") {$WPath = [string](Get-Content "..\workspace.txt")}

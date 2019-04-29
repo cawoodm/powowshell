@@ -1,6 +1,10 @@
+[CmdletBinding(SupportsShouldProcess)]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
+param()
 function main() {
-    $info = invoke-expression (get-content "$PSScriptRoot\powowshell.psd1" -raw)
+    $info = Invoke-Expression (get-content "$PSScriptRoot\powowshell.psd1" -raw)
     "PowowShell v$($info.ModuleVersion)"
     "PowerShell v" + $PSVersionTable.PSVersion.toString()
 }
+
 main

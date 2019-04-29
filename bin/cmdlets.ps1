@@ -1,6 +1,6 @@
 <#
  .Synopsis
- Return the list of all cmdlets installed on the system 
+ Return the list of all cmdlets installed on the system
 
  .Description
  The output is cached and will be used unless the action is "generate"
@@ -18,7 +18,7 @@ param(
 )
 function main() {
     try {
-        
+
         # Save path we are started from
         $StartPath = (Get-Location).Path
 

@@ -1,12 +1,12 @@
 <#
 	.Synopsis
 	Inspect a component (powershell script) to view it's input and outputs
-	
+
 	.Description
 	PowowShell expects components (scripts) to clearly define their interface.
 	This script returns basic information about a script
 	It always returns something for each .ps1 file
-	
+
 	.Parameter Path
 	The path to the .ps1 script
 
@@ -15,7 +15,7 @@
 
 	.Parameter ExportPath
 	Path to export to
-	
+
 #>
 [CmdletBinding()]
 param(
@@ -24,7 +24,7 @@ param(
 	[string]$ExportPath
 )
 function main() {
-	
+
 	try {
 		if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
 		# Add .ps1 to components with a path so `pow inspect !csv2json` works
@@ -64,8 +64,8 @@ function main() {
 		}
 		# PS1: Should we use extension or not ???
 		$reference = $Name.ToLower()
-		
-		$POWMessages=@(); $whatif=$false; $confirm=$false; $passthru=$false;
+
+		$POWMessages=@(); $whatif=$false; #$confirm=$false; $passthru=$false;
 		$paramsOut = @(); $inputType=$null; $inputFormat = $null; $inputDesc = $null; $outputDesc=$null; $PipedParamCount=0;
 		if ($cmd.PSObject.Properties.item("details")) {
 			$boolMap = @{"true"=$true;"false"=$false}
@@ -77,8 +77,8 @@ function main() {
 				$parameter2 = $parameters2 | Where-Object Name -eq $parameter.name
 				$paramPipeMode=$null; $paramPipe=$null;
 				if ($parameter.name -eq "WhatIf") {$whatif = $true; continue;}
-				if ($parameter.name -eq "Confirm") {$confirm = $true; continue;}
-				if ($parameter.name -eq "PassThru") {$passthru = $true; continue;}
+				#if ($parameter.name -eq "Confirm") {$confirm = $true; continue;}
+				#if ($parameter.name -eq "PassThru") {$passthru = $true; continue;}
 				$paramType = Get-ParamType $parameter
 				if ($parameter.pipelineInput -like "true*") {
 					$paramPipe=$true;
@@ -93,9 +93,9 @@ function main() {
 					}
 				}
 				if ($CompType -eq "component") {
-					$paramValues = Get-ParamValues $cmd2.parameters[$parameter.name]
+					$paramValues = GetParamValues $cmd2.parameters[$parameter.name]
 				} else {
-					$paramValues = Get-ParamValues $parameter2 | Where-Object {$_ -ne $null}
+					$paramValues = GetParamValues $parameter2 | Where-Object {$_ -ne $null}
 				}
 				$paramsOut += [PSCustomObject]@{
 					"name" = $parameter.name;
@@ -172,16 +172,18 @@ function Get-Description($cmd) {try {return $cmd.description[0].Text}catch{$null
 function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
 function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{$null}}
 function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "[\r\n]")}catch{$null}}
-function Get-ParamValues($param) {
-	try{$param.parameterValueGroup.parameterValue}catch{}
-	# With strictmode on we don't get the ValidValues !?!
+function GetParamValues($param) {
 	Set-StrictMode -Off
-	try{$param.Attributes.ValidValues}catch{}
+	$result = @()
+	if ($param.parameterValueGroup.parameterValue){$result = $param.parameterValueGroup.parameterValue}
+	# With strictmode on we don't get the ValidValues !?!
+	elseif ($param.Attributes.ValidValues) {$result = $param.Attributes.ValidValues}
 	Set-StrictMode -Version Latest
+	return $result
 }
 function Get-ParamType($param) {
-	try{return [string]$param.parameterValue.toLower()}catch{}
-	try{return [string]$param.type.name.toLower()}catch{}
+	try{return [string]$param.parameterValue.toLower()}catch{$null}
+	try{return [string]$param.type.name.toLower()}catch{$null}
 }
 function Get-OPReturn($cmd) {try{([string](Get-OP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}

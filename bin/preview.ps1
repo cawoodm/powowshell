@@ -31,13 +31,14 @@
 
 #>
 [CmdletBinding(SupportsShouldProcess)]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
 param(
     [Parameter(Mandatory)][String]$Path,
 	$Parameters,
 	$InputObject
 )
-function main() {
 
+function main() {
 	# Save path we are started from
 	$StartPath = (Get-Location).Path
 
@@ -63,7 +64,7 @@ function main() {
         # Read component/cmdlet definition
         Write-Verbose "PREVIEWING $Path ..."
         $component = & pow "inspect" $Path
-        
+
         # Build executable
         $exec = "& "
         if ($component.type -eq "component") {
@@ -73,7 +74,7 @@ function main() {
             $exec += $component.reference
         }
         $exec += " " + $Parameters
-        
+
         # Run executable
         Write-Verbose "PREVIEW EXEC: $exec"
         Invoke-Expression $exec

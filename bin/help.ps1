@@ -24,14 +24,14 @@ function main() {
         if (Test-Path ".\$Command.ps1") {
             Get-Help ".\$Command.ps1" -Detailed | more
         } else {
-            Write-Host "WARNING:`tUnknown command '$Command'!" -ForegroundColor Red
-            Write-Host "INFO:`t * try 'pow help' for a list of commands" -ForegroundColor Cyan
-            Write-Host "INFO:`t * try 'pow help <command>' for help on a command" -ForegroundColor Cyan
-            Write-Host "INFO:`t * try 'pow examples <component|cmdlet>' for examples using a component or cmdlet" -ForegroundColor Cyan
+            Show-Message "WARNING:`tUnknown command '$Command'!" Red
+            Show-Message "INFO:`t * try 'pow help' for a list of commands" Cyan
+            Show-Message "INFO:`t * try 'pow help <command>' for help on a command" Cyan
+            Show-Message "INFO:`t * try 'pow examples <component|cmdlet>' for examples using a component or cmdlet" Cyan
         }
         Pop-Location
     } else {
-	Write-Host "POW! PowowShell Packs a Punch!" -ForegroundColor Cyan
+	Show-Message "POW! PowowShell Packs a Punch!" Cyan
 @"
 Usage: pow <command>
 Commands: "install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "cmdlets", "pipeline", "preview", "examples", "adaptors"
@@ -59,6 +59,7 @@ Command examples:
 "@
     }
 }
+function  Show-Message($msg, $Color) {Write-Host $Msg -ForegroundColor $Color}
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

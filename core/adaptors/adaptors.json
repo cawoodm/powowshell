@@ -1,14 +1,14 @@
-﻿[
-    {
-        "type":  "datetime"
-    },
-    {
-        "type":  "int"
-    },
-    {
-        "type":  "object"
-    },
-    {
-        "type":  "string"
-    }
+[
+  {
+    "type": "datetime"
+  },
+  {
+    "type": "int"
+  },
+  {
+    "type": "object"
+  },
+  {
+    "type": "string"
+  }
 ]

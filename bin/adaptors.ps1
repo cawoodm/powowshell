@@ -31,12 +31,10 @@ function main() {
     Push-Location $FullPath
     try {
         # Check Cache
-        # ASSUME: Cache is in root of application
-        # $CachePath = (Resolve-Path "$PSScriptRoot\..\adaptors.json").Path
-        # Cache is in Path
-        $CachePath = ".\adaptors.json"
+        # ASSUME: Cache is off root of application
         $CacheFile=$null;$JSON=$null
-        if (Test-Path $CachePath) {
+        if (Test-Path "$PSScriptRoot\..\cache\adaptors.json") {
+            $CachePath = Resolve-Path "$PSScriptRoot\..\cache\adaptors.json"
             $CacheFile = Get-Item $CachePath;
             $JSON = Get-Content $CachePath -Raw
             if ($JSON -match "^\["){Write-Verbose "Adaptors cache found: $CachePath"} else {$JSON=$null; $CacheFile=$null} # Cache is gone
@@ -88,7 +86,7 @@ function LoadComponents() {
     ForEach($folder in $folders) {
         LoadComponents($folder)
     }
-    
+
     # Process current folder
     LoadComponents(".\")
 }
