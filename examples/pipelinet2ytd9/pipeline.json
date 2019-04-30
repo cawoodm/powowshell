@@ -1,0 +1,37 @@
+{
+  "id": "pipelinet2ytd9",
+  "name": null,
+  "description": null,
+  "parameters": [],
+  "globals": {},
+  "steps": [
+    {
+      "id": "A1",
+      "reference": "get-childitem",
+      "name": "Get-ChildItem",
+      "description": null,
+      "stream": null,
+      "parameters": {
+        "Path": "C:\\Windows\\System32",
+        "Filter": null,
+        "Include": null,
+        "Exclude": null,
+        "Recurse": null,
+        "Depth": null,
+        "Force": null,
+        "Name": null,
+        "UseTransaction": null,
+        "Attributes": null,
+        "Directory": null,
+        "File": null,
+        "Hidden": null,
+        "ReadOnly": null,
+        "System": null
+      },
+      "input": null,
+      "output": null
+    }
+  ],
+  "input": {},
+  "output": {}
+}

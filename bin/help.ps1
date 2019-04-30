@@ -59,7 +59,7 @@ Command examples:
 "@
     }
 }
-function  Show-Message($msg, $Color) {Write-Host $Msg -ForegroundColor $Color}
+function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

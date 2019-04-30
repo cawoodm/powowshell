@@ -17,7 +17,7 @@
 
             // Basic checks of powershell execution, error and output handling
             pow.execOptions.debug = !!debug;
-            out = await pow.exec("Get-Date1"); assert(out.success===false, "Should have no success")
+            out = await pow.exec("Get-Date1"); assert(out.success===false, "Should have no success calling unknown CmdLet")
             try{out = await pow.execStrict("Get-Date1"); assert(false, "Should have an exception - we should not be here!!!")} catch(e){assert(e.messages.length>0, "Should have exceptions in execStrict")}
             out = await pow.exec("Get-Date -f 'yyyy-MM-dd'"); assert(out.output.match(/\d{4}-\d{2}-\d{2}/), `Should have a date: ${out.output}`)
 
@@ -30,34 +30,36 @@
             out = await pow.pipeline("!pipeline1"); assert(out.success, `Load of pipeline1 should succeed: '${out.object.id}'`)
             assert(out.object.id=="pipeline1", `ID of pipeline1 should be set: '${out.object.id}'`)
             let pipeline1 = out.object;
-            
+
             // Test POW building a pipeline
             try{out = await pow.build(); assert(false, "NO!!!")} catch(e){assert(e.messages.length>0, "Build without ID should throw")}
             out = await pow.build("!pipeline1"); assert(out.success, `Build of pipeline1 should succeed: '${out.messages[0].message}'`)
-            
+
             // Test verifying a pipeline
             out = await pow.verify("!pipeline1"); assert(out.success, `Verification of pipeline1 should succeed: '${out.messages[0].message}'`)
-            
+
             // Test running a pipeline
             out = await pow.run("!pipeline1"); assert(out.success, `Running a pipeline1 should succeed: '${out.object.length} items'`)
             assert(out.object[0].name === "John Doe", `Should have 'John Doe' in our pipeline output: '${out.object[0].name}'`)
             //out.messages.forEach((msg)=>{console.log(msg.type, msg.message)})
-            
+
             // Test inspecting a single component
             out = await pow.inspect("!CSV2JSON"); assert(out.success, `Should inspect a component and see the reference: '${out.object.reference}'`)
             assert(out.object.inputFormat.match(/text\/.sv/), `Should have 'text/*sv' as our component input: '${out.object.inputFormat}'`)
 
             // Test pow components
             out = await pow.components("!"); assert(out.success && out.object.length > 5, `Should list components find some: '${out.object.length}'`)
-            
+
             // Test pow cmdlets
             out = await pow.cmdlets("a*"); assert(out.success && out.object.length > 5, `Should list a* cmdlets find some: '${out.object.length}'`)
 
             // Test pow save
             out = await pow.save(pipeline1); assert(out.success, `Should save the pipeline: ${out.success}`)
-            
+
         } catch(e) {
-            console.error("\x1b[31m", "TEST cancelled:\n", e.message, "\x1b[31m")
+            let stk = e.stack.split(/\n/)
+            console.error("\x1b[31m", "TEST cancelled:\n", e.message)
+            console.error(stk[1]);
             if (e.messages)
                 for (let i=0; i < e.messages.length && i < 10; i++) {
                     let msg = e.messages[i];

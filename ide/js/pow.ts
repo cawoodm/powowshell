@@ -93,14 +93,19 @@ const pow = (function(){
 
     /**
      * Save a pipeline definition to pipeline.json
-     * @param {string} path Path to the pipeline (e.g. "!pipeline1" for default workspace)
      * @param {POWPipelineDef} pipeline Path to the pipeline (e.g. "!pipeline1" for default workspace)
+     * @param {string} pipelineId Pipeline ID (ie.)
      * @returns {Promise} Promise with a POWResult
      */
-    async function save(pipeline: POWType.PipelineDef) {
+    async function save(pipeline: POWType.PipelineDef, pipelineId) {
+        pipelineId = pipelineId || pipeline.id;
+        pipeline.id = pipelineId;
         let data = JSON.stringify(pipeline, null, 2);
         return new Promise(function(resolve, reject) {
-            fs.writeFile(path.resolve(workspace, pipeline.id, "pipeline.json"), data, (err)=>{
+            if (!pipelineId) return reject(new POWError("No pipeline id specified!", []));
+            let directory = path.resolve(workspace, pipelineId);
+            if (!fs.existsSync(directory)) fs.mkdirSync(directory);
+            fs.writeFile(path.resolve(directory, "pipeline.json"), data, (err)=>{
                 if (!err) resolve(new POWResult(true, "Pipeline saved!", [], {}));
                 else reject(new POWError(err, []));
             })
@@ -193,7 +198,7 @@ const pow = (function(){
     async function cmdlets(filter="") {
         return execStrictJSON(`pow cmdlets export "${filter}"`);
     }
-    
+
     /**
      * Return an example of a component's usage
      * @param {string} path Path to the component ("!" for default workspace)
@@ -265,7 +270,7 @@ const pow = (function(){
                 messages.push(new POWMessage("INFO", outlines[o]))
             }
         }
-            
+
         return new POWResult(success, out.stdout, messages, obj)
     }
 
@@ -305,7 +310,7 @@ const POWResult = function(success, output, messages, object) {
     this.messages = messages || [];
 }
 /**
- * 
+ *
  * @param {string} type The type of message ERROR|WARN|INFO|DEBUG
  * @param {string} message The message text
  */

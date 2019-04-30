@@ -16,7 +16,7 @@ app.getComponent = (reference) => {
     if (res.length===0) {
         if (!app.cmdlets) return alert("Cmdlets not loaded!")
         res = app.cmdlets.filter((item)=>item.reference===ref);
-    }       
+    }
     return res.length>0?res[0]:null;
 }
 app.DEVMODE = true;
@@ -38,7 +38,7 @@ window.onload = function() {
                     revertOnSpill: true, // true=Go back if not dropped
                     accepts: function(el, target) {
                         return target.className.indexOf("drop")>=0;
-                    } 
+                    }
                 };
                 app.dragula = dragula([].slice.call(document.querySelectorAll(".drag")),dragOpts).on("drop", function (el, space) {
                     let id = el.getAttribute("d-id");
@@ -72,8 +72,9 @@ window.onload = function() {
                     }).catch(this.handlePOWError);
             },
             handlePOWError: function(err) {
-                let message = err.message;
-                if (err.constructor.name === "POWError") message += "\nPOWError:\n";
+                let message = "";
+                if (err.constructor.name === "POWError") message += "POWError:\n";
+                if (message) message += err.message+"\n";
                 if (err.messages && Array.isArray(err.messages))
                     err.messages.forEach((msg)=>message += "\n" + msg.type + ": " + msg.message);
                 console.log(message);
@@ -137,8 +138,10 @@ window.onload = function() {
             },
             pipelineSave: function() {
                 let pipeline = pipelineManager.export();
-                pow.save(pipeline)
-                    .then(()=>alert("Saved"))
+                // TODO: Use existing pipeline id or generate a new one
+                let pipelineId = pipeline.id || ("pipeline"+Math.random().toString(36).substring(7));
+                pow.save(pipeline, pipelineId)
+                    .then(()=>alert(`Saved ${pipelineId}`))
                     .catch(this.handlePOWError);
             },
             redraw: function() {

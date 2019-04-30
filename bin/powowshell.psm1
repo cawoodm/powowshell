@@ -37,18 +37,25 @@ function Invoke-PowowShell {
 
     try {
 
-        # Change to bin\ path
+        # Start in the bin\ path
         $BinPath = $PSScriptRoot
+
+        # For ease of development we keep all our commands in our program directory's bin\ path
+        #  and not in the powershell modules folder
+        #  Our modules folder contains a path.txt which points back to this bin\ path
         # If we are installed as a module, our bin\ path is stored in path.txt
         if (Test-Path "$BinPath\path.txt") {$BinPath = Get-Content "$BinPath\path.txt"}
         Push-Location $BinPath
+
+        # Ensure we have the USER and TEMP folders we need
+        if (-not (Test-Path "$env:USERPROFILE\powowshell")) {$null = New-Item -Path "$env:USERPROFILE\powowshell" -ItemType Directory}
+        if (-not (Test-Path "$([IO.Path]::GetTempPath())\powowshell")) {$null = New-Item -Path "$([IO.Path]::GetTempPath())\powowshell" -ItemType Directory}
 
         # Resolve ! paths with the workspace
         #  Doing this: (Resolve-Path .\examples).path > .\workspace.txt
         #  Lets you do this: pow inspect mycomponent
         #  instead of: pow inspect .\examples\components\mycomponent.ps1
-        $Workspace=$null
-        if (Test-Path "..\workspace.txt") {$Workspace = Get-Content "..\workspace.txt"} else {$Workspace = (Resolve-Path "..\").Path}
+        if (Test-Path "$env:USERPROFILE\powowshell\workspace.txt") {$Workspace = Get-Content "$env:USERPROFILE\powowshell\workspace.txt"} else {$Workspace = (Resolve-Path "..\").Path}
         if ($p1 -is [string] -and $p1 -like "!*") {
             if ($Command -in "inspect", "components", "preview", "examples", "adaptors") {
                 $p1 = $p1.replace("!", "$Workspace\components\");

@@ -25,15 +25,17 @@ function main() {
         # Check Cache
         Set-Location $PSScriptRoot
         # ASSUME: Cache is in .\cache of application
-        $CachePath = "..\cache\cmdlets.json"
+        $CacheDir = "..\cache"
+        $CachePath = "$CacheDir\cmdlets.json"
         $CacheFile=$null;$JSON=$null
         if ($Action -notlike "generate" -and (Test-Path $CachePath)) {
             $CacheFile = Get-Item $CachePath;
             $JSON = Get-Content $CachePath -Raw
             if ($JSON -match "^\["){} else {$JSON=$null; $CacheFile=$null} # Cache is gone
         }
-        # Return cached results
+
         if ($Action -notlike "generate" -and $CacheFile) {
+            # We can return cached results
             try {
                 $NoFilter = ($null -eq $Filter -or $Filter -eq "");
                 if ($Action -like "export" -and $NoFilter) {
@@ -53,7 +55,11 @@ function main() {
         }
         # Get all installed Cmdlets
         #  - excluding drives ("*:")
-        $CmdletsAll = (Get-Command -Type CmdLet).Where({$_.Name -notlike "*:"})
+        if ($Filter) {
+            $CmdletsAll = (Get-Command -Type CmdLet -Name $Filter).Where({$_.Name -notlike "*:"})
+        } else {
+            $CmdletsAll = (Get-Command -Type CmdLet).Where({$_.Name -notlike "*:"})
+        }
         Write-Verbose "$($CmdletsAll.count) Cmdlets found"
         # Sort by Name
         $CmdletsAll = $CmdletsAll | Sort-Object Name # | Select -First 10
@@ -62,10 +68,21 @@ function main() {
         foreach($cmdlet in $CmdletsAll) {
             $cm = & "$PSScriptRoot\inspect.ps1" -Path $cmdlet.name
             $null = $Cmdlets.add($cm)
+            # Cache each cmdlet (for development/diagnosis)
+            ConvertTo-Json -InputObject $cm -Depth 7 > "$CacheDir\cmdlets\$($cmdlet.name).json"
         }
-        # Update the cache
-        ($Cmdlets | ConvertTo-Json -Depth 10) | Set-Content $CachePath
-        return $Cmdlets
+        if ($null -eq $Filter) {
+            # Update the cache of all cmdlets
+            $JSON = ConvertTo-Json -Depth 10 -InputObject $Cmdlets
+            $JSON | Set-Content $CachePath
+        } elseif ($Action -like "export") {
+            $JSON = ConvertTo-Json -Depth 10 -InputObject $Cmdlets
+        }
+        if ($Action -like "export") {
+            return $JSON
+        } else {
+            return $Cmdlets
+        }
     } catch {
         $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
         #throw $_

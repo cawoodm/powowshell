@@ -82,7 +82,7 @@ function BuildingPipeline() {
         ForEach-Object {" $_"};
 
 }
-function  Show-Message($msg, $Color) {Write-Host $Msg -ForegroundColor $Color}
+function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
 function ReadingPipelineDefinition($Path) {
     try {
         Get-Content -Raw ./pipeline.json | ConvertFrom-Json

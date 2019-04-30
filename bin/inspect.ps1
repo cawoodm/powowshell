@@ -26,6 +26,8 @@ param(
 function main() {
 
 	try {
+		# A necessary evil here so we can query properties without try/catch or other shenanigans
+		Set-StrictMode -Off
 		if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
 		# Add .ps1 to components with a path so `pow inspect !csv2json` works
 		if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
@@ -46,7 +48,7 @@ function main() {
 			Write-Verbose "Inspecting installed CmdLet $Path ..."
 			$Name = $Path
 			# ASSUME: Cache path is from root
-			$CachePath = Resolve-Path "$PSScriptRoot\..\cache\cmdlets"
+			$CachePath = Resolve-Path "$PSScriptRoot\..\cache\help"
 			if (Test-Path "$CachePath\$Name.json") {
 				$cmd = Get-Content "$CachePath\$Name.json" | ConvertFrom-Json
 			} else {
@@ -173,17 +175,13 @@ function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower() -replace "[
 function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{$null}}
 function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "[\r\n]")}catch{$null}}
 function GetParamValues($param) {
-	Set-StrictMode -Off
-	$result = @()
-	if ($param.parameterValueGroup.parameterValue){$result = $param.parameterValueGroup.parameterValue}
-	# With strictmode on we don't get the ValidValues !?!
-	elseif ($param.Attributes.ValidValues) {$result = $param.Attributes.ValidValues}
-	Set-StrictMode -Version Latest
-	return $result
+	if ($param.parameterValueGroup.parameterValue){return $param.parameterValueGroup.parameterValue}
+	elseif ($param.Attributes.ValidValues) {return $param.Attributes.ValidValues}
+	# With strictmode on we don't get the ValidValues!
 }
 function Get-ParamType($param) {
-	try{return [string]$param.parameterValue.toLower()}catch{$null}
-	try{return [string]$param.type.name.toLower()}catch{$null}
+	if ($param.parameterValue.value) {return [string]$param.parameterValue.value.toLower()}
+	elseif ($param.type.name) {return [string]$param.type.name.toLower()}
 }
 function Get-OPReturn($cmd) {try{([string](Get-OP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
@@ -191,7 +189,6 @@ function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
 function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{$null}}
 
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-#[Console]::OuputEncoding = 'utf8'
-Set-StrictMode -Version Latest
+#Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

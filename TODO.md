@@ -1,6 +1,6 @@
 # TODO
 
-* Get-Help is crazy slow on some PCs - shall we cache it?
+* Move workspace.txt to $env:USERPROFILE\powowshell\workspace.txt
 * We need to save a pipeline before running it in the IDE
 * We need a concept of "dirty" in the IDE so we know if a pipeline has been changed
 

@@ -6,7 +6,7 @@ const app = electron.app;
 
 if (process.env.NODE_ENV!=="prod") {
 	require("electron-reload")(__dirname, {
-		electron: path.resolve(process.env.APPDATA, "/npm/electron.cmd"),
+		electron: path.resolve(process.env.APPDATA, "npm/electron.cmd"),
 		hardResetMethod: "exit"
 	});
 	require("electron-debug")();
@@ -15,7 +15,7 @@ if (process.env.NODE_ENV!=="prod") {
 let mainWindow;
 function onClosed() {
 	mainWindow = null;
-} 
+}
 
 function createMainWindow() {
 	const mainWindowStateKeeper = windowStateKeeper("main");

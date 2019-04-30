@@ -18,8 +18,6 @@ function main() {
         Push-Location $PSScriptRoot
 
         # Check if already installed
-        #$PowowShell = Get-Module "PowowShell" # Unreliable: may exist but not be installed
-        #$PowowShell = (Get-Module "PowowShell" -EA 0) -or (Get-Alias "pow" -EA 0)
         $PowowShell = Get-Command "Invoke-PowowShell" -ErrorAction SilentlyContinue
         $PowExists = -not ($null -eq $PowowShell)
 
