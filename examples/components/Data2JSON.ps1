@@ -1,69 +1,40 @@
 ﻿<#
  .Synopsis
-  Convert input data to JSON format
+  Convert input object to JSON format
 
  .Description
-  Accepts custom tabular data about people and return contents as a JSON Array
-	The data must be in the format:
-	NAME|AGE|GENDER
-	However, the record and field separator can be anything.
+  Accepts any object data about and return contents as JSON
 
- .Parameter Delimiter
-  Specifies the field separator. Default is a comma ",")
+ .Parameter Compress
+  Compress JSON output
 
- .Parameter RecordSeparator
-  Specifies the record separator. Default is a newline.
+ .Parameter AsArray
+  Always return a JSON array
 
  .Inputs
-  text/xsv
-  Any separated data (e.g. CSV) with newlines between records
-	
+  object
+  Any PowerShell object
+
  .Outputs
   text/json
+  A JSON object corresponding to the input data
+  OR
   An array of JSON objects corresponding to the rows of the input data
 
   .Example
-  Data2JSON.ps1 -Delimiter ";"
- 
+  [PSCustomObject]@{foo="bar"} | Data2JSON.ps1
+
 #>
 [CmdLetBinding()]
 [OutputType([String])]
 param(
   [Parameter(Mandatory,ValueFromPipeline)]
-  [String]$InputObject,
-  [String]$Delimiter=",",
-  [String]$RecordSeparator
+  [object]$InputObject,
+  [switch]$Compress,
+  [switch]$AsArray
 )
-
-# The Magic Happens Here...
-$result = ""
-$r = 0
-$str = [string]$InputObject
-
-if ($RecordSeparator) {
-	$sep = $RecordSeparator
+if ($AsArray -And -not ($InputObject -is [array])) {
+    return ConvertTo-Json -Compress:$Compress -InputObject @($InputObject)
 } else {
-	if ($str.IndexOf("`r`n") -ge 0) {$sep = "`r`n"}
-	elseif ($str.IndexOf("`r") -ge 0) {$sep = "`r"}
-	else {$sep = "`n"}
+    return ConvertTo-Json -Compress:$Compress -InputObject $InputObject
 }
-
-$rows = $str -split $sep
-$rows | ForEach-Object {
-    $row = $_ -split $Delimiter, 0, "SimpleMatch"
-    if ($row.Length -gt 1) {
-        $result += '{"name":"' + $row[0] + '", "age":' + $row[1] + ', "gender":"' + $row[2] + '"}'
-        $r++
-    }
-}
-
-# Format as a JSON Array
-$result = $result.Replace("}{", "},{")
-$result = "[$result]"
-
-# Return JSON serialized
-$result
-
-# Should we return JSON Object?
-#  -> No, we want serialized data we can redirect into a text file!
-# $result | ConvertFrom-Json

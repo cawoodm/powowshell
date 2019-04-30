@@ -71,7 +71,7 @@ function main() {
             # Cache each cmdlet (for development/diagnosis)
             ConvertTo-Json -InputObject $cm -Depth 7 > "$CacheDir\cmdlets\$($cmdlet.name).json"
         }
-        if ($null -eq $Filter) {
+        if (-not $Filter) {
             # Update the cache of all cmdlets
             $JSON = ConvertTo-Json -Depth 10 -InputObject $Cmdlets
             $JSON | Set-Content $CachePath

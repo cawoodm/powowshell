@@ -51,8 +51,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch tmp.js",
-            "program": "W:\\PowerShell\\powowshell\\tests\\pow.tests.js"
-            //"program": "${workspaceFolder}\\bak\\tmp.js"
+            //"program": "W:\\PowerShell\\powowshell\\tests\\pow.tests.js"
+            "program": "${workspaceFolder}\\bak\\tmp.js"
         }
     ]
 }

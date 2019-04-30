@@ -111,8 +111,9 @@ const StepForm = Vue.extend({
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs11>
-                                <v-checkbox v-if="compParam.type==='switch'" v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')"></v-checkbox>
-                                <v-combobox v-if="compParam.values"  v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')" :items="compParam.values"></v-combobox>
+                                <v-checkbox v-if="compParam.type==='switch'"                               v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')"></v-checkbox>
+                                <v-combobox v-else-if="compParam.values && compParam.type.match(/\\[/)"    v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')" :items="compParam.values" multiple></v-combobox>
+                                <v-combobox v-else-if="compParam.values"                                   v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')" :items="compParam.values"></v-combobox>
                                 <v-text-field v-else :label="compParam.name + (compParam.required?'*':'')" :placeholder="compParam.default?compParam.default:''" :rules="compParam.rules" v-model="compParam.stepValue" clearable>
                                 </v-text-field>
                             </v-flex>

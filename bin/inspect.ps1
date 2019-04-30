@@ -98,6 +98,11 @@ function main() {
 					$paramValues = GetParamValues $cmd2.parameters[$parameter.name]
 				} else {
 					$paramValues = GetParamValues $parameter2 | Where-Object {$_ -ne $null}
+					# WEIRD: We have to convert a null object to a real null (or we get "{}" in JSON)
+					if ($null -eq $paramValues) {$paramValues=$null}
+				}
+				if ($parameter.name -like "Directory") {
+					Write-Host ($null -eq $paramValues)
 				}
 				$paramsOut += [PSCustomObject]@{
 					"name" = $parameter.name;

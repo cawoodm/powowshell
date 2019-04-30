@@ -1,6 +1,8 @@
 # TODO
 
-* Move workspace.txt to $env:USERPROFILE\powowshell\workspace.txt
+* Can we do away with pipeline.id - it's redundant!
+* * Let's switch to pipelineId.pipe so we can have a .exe run the file
+* We maybe need a convertto-json component for outputs of pipelines
 * We need to save a pipeline before running it in the IDE
 * We need a concept of "dirty" in the IDE so we know if a pipeline has been changed
 

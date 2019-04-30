@@ -1,5 +1,5 @@
 {
-  "id": "pipelinet2ytd9",
+  "id": "pipeline2",
   "name": null,
   "description": null,
   "parameters": [],
@@ -8,12 +8,12 @@
     {
       "id": "A1",
       "reference": "get-childitem",
-      "name": "Get-ChildItem",
+      "name": "List Windows DLLs",
       "description": null,
       "stream": null,
       "parameters": {
         "Path": "C:\\Windows\\System32",
-        "Filter": null,
+        "Filter": "*.dll",
         "Include": null,
         "Exclude": null,
         "Recurse": null,
@@ -23,13 +23,14 @@
         "UseTransaction": null,
         "Attributes": null,
         "Directory": null,
-        "File": null,
+        "File": true,
         "Hidden": null,
         "ReadOnly": null,
-        "System": null
+        "System": null,
+        "FollowSymlink": null,
+        "LiteralPath": null
       },
-      "input": null,
-      "output": null
+      "input": null
     }
   ],
   "input": {},
