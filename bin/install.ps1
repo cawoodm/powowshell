@@ -8,14 +8,10 @@
 	.Parameter Verify
 	Only check if PowowShell is installed
 
-	.Parameter Force
-	Overwrite PowowShell if is installed already
-
 #>
 [CmdletBinding()]
 param(
-    [switch]$Verify = $false,
-    [switch]$Force = $false
+    [switch]$Verify = $false
 )
 function main() {
     try {
@@ -27,49 +23,43 @@ function main() {
         $PowowShell = Get-Command "Invoke-PowowShell" -ErrorAction SilentlyContinue
         $PowExists = -not ($null -eq $PowowShell)
 
-        # We install if forced or if we are not just Verifying
-        if ($Force -or -not $Verify) {
+        # We install if we are not just Verifying
+        if (-not $Verify) {
             $Paths = $env:PSModulePath -split ";"
             $File = Get-Item .\powowshell.psm1
             $File2 = Get-Item .\powowshell.psd1
             $PathFinal = $null
-            # We install if forced or if pow does not exist
-            if ($Force -or -not $PowExists) {
-                ForEach ($Path in $Paths) {
-                    Write-Host "Installing PowowShell module to $Path ..."
-                    $DestPath = $Path + "\PowowShell"
-                    try {
-                        if (Test-Path $DestPath) { } else { New-Item -ItemType directory $DestPath 2>$null | Out-Null }
-                        #if (Test-Path "$DestPath\powowshell.psm1") {
-                        if ((Get-Module "PowowShell" -EA 0) -or (Get-Alias "pow" -EA 0)) {
-                            Write-Warning "PowowShell Module exists: You may need to restart PowerShell to see the changes!"
-                            Remove-Module -Name PowowShell
-                        }
-                        Write-Verbose "Copying $File to $DestPath\powowshell.psm1 ..."
-                        $null = $File.CopyTo($DestPath + "\powowshell.psm1", $true) 2> $null
-                        $PathFinal = $DestPath + "\powowshell.psm1"
-                        if (Test-Path $PathFinal) {
-                            # Success
-                            $null = $File2.CopyTo($DestPath + "\powowshell.psd1", $true) 2> $null
-                            Write-Verbose "Import-Module -Name PowowShell -Global -Alias pow"
-                            Import-Module -Name PowowShell -Global -Alias pow
-                            break
-                        }
+            ForEach ($Path in $Paths) {
+                Show-Message "Installing PowowShell module to $Path ..."
+                $DestPath = $Path + "\PowowShell"
+                try {
+                    if (-not (Test-Path $DestPath)) {$null = New-Item -ItemType Directory $DestPath}
+                    #if (Test-Path "$DestPath\powowshell.psm1") {
+                    if ((Get-Module "PowowShell" -EA 0) -or (Get-Alias "pow" -EA 0)) {
+                        Write-Warning "PowowShell Module exists: You may need to restart PowerShell to see the changes!"
+                        Remove-Module -Name PowowShell
                     }
-                    catch {
-                        Write-Host "Could not install module to $Path : $_"
+                    Write-Verbose "Copying $File to $DestPath\powowshell.psm1 ..."
+                    $null = $File.CopyTo($DestPath + "\powowshell.psm1", $true) 2> $null
+                    $PathFinal = $DestPath + "\powowshell.psm1"
+                    if (Test-Path $PathFinal) {
+                        # Success
+                        $null = $File2.CopyTo($DestPath + "\powowshell.psd1", $true) 2> $null
+                        Write-Verbose "Import-Module -Name PowowShell -Global -Alias pow"
+                        Import-Module -Name PowowShell -Global -Alias pow
+                        break
                     }
                 }
-                # Point the powowshell module back to this bin\ directory
-                $PSScriptRoot > "$DestPath\path.txt";
-                if ($null -eq $PathFinal) {
-                    Write-Host "Could not find an existing powershell modules directory to install to!" -ForegroundColor Red
+                catch {
+                    Show-Message "Could not install module to $Path : $_"
                 }
             }
-            else {
-                Write-Warning "The pow command already exists in PowerShell!"
-                Write-Host " Tip: Type install -force to re-install" -ForegroundColor Yellow
+            # Point the powowshell module back to this bin\ directory
+            $PSScriptRoot > "$DestPath\path.txt";
+            if ($null -eq $PathFinal) {
+                Show-Message "Could not find an existing powershell modules directory to install to!" Red
             }
+
             #if (Get-Command "pow" -errorAction SilentlyContinue) {$PowowShell=$true}
             write-verbose 'Get-Alias "pow"'
             $PowowShell = Get-Alias "pow"
@@ -78,13 +68,13 @@ function main() {
         }
 
         if ($PowExists) {
-            Write-Host "Yep, the 'Invoke-PowowShell' cmdLet is installed" -ForegroundColor Green
-            Write-Host "NOTE: You may need to run 'Import-Module -name PowowShell -Global' in PowerShell to use the 'pow' alias" -ForegroundColor Cyan
-            Write-Host " Type 'pow help' for a list of commands"
-            Write-Host " Type 'pow cmdlets generate' to generate a list of cmdlets for the IDE (may take several minutes)"
+            Show-Message "Yep, the 'Invoke-PowowShell' cmdLet is installed" Green
+            Show-Message "NOTE: You may need to run 'Import-Module -name PowowShell -Global' in PowerShell to use the 'pow' alias" Cyan
+            Show-Message " Type 'pow help' for a list of commands"
+            Show-Message " Type 'pow cmdlets generate' to generate a list of cmdlets for the IDE (may take several minutes)"
         }
         else {
-            Write-Host "Nope, the 'pow' CmdLet is not installed!" -ForegroundColor Red
+            Show-Message "Nope, the 'pow' CmdLet is not installed!" Red
         }
         return $null
     }
@@ -95,6 +85,8 @@ function main() {
         Pop-Location
     }
 }
+function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main
