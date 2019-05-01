@@ -2,7 +2,7 @@
  * PipelineManager
  * Manage the pipeline interfacing between the UI/user (dragging stuff around) and the pipeline.json output
  * The pipeline is represented in meory as a list of columns with steps
- * 
+ *
  * Functionality:
  *    reset(): Like an init() which can be called repeatedly to clear the pipeline
  *    import(): Read/de-serialize a pipeline JSON document into memory
@@ -37,14 +37,14 @@ let pipelineManager = (function() {
     const COLS = pipeCols.length;
     const ROWS = 9;
     let columns = [];
-    const pipelineDefNull = function() {return {id: null, name: null, description: null, parameters: [], globals: {}, steps: [], input: {}, output: {}}};
+    const pipelineDefNull = function() {return {id: null, name: null, description: null, parameters: {}, globals: {}, steps: [], input: {}, output: {}}};
     let pipelineDef: POWType.PipelineDef = pipelineDefNull();
 
     // Public members
     return {
         /**
          * Initialize a new, empty pipeline
-         */ 
+         */
         reset: function() {
             columns = [];
             pipelineDef = pipelineDefNull();
@@ -53,9 +53,9 @@ let pipelineManager = (function() {
                 for (let r=0; r<ROWS; r++) {
                     let step = emptyStep(pipeCols[c]+(r+1).toString());
                     column.push(step);
-                } 
+                }
                 columns.push(column);
-            } 
+            }
         },
         /**
          * Add a component to the grid resulting in a step
@@ -100,7 +100,7 @@ let pipelineManager = (function() {
         /**
          * Export pipeline definition as an object
          * @returns {Object}
-         */ 
+         */
         export: function() {
             let res = pipelineDefNull();
             // Export all properties in pipelineDef
@@ -121,7 +121,7 @@ let pipelineManager = (function() {
         /**
          * Return array of steps
          * @returns {Array}
-         */ 
+         */
         getSteps: function() {
             let res = [];
             for (let r=1; r<=ROWS; r++) {
@@ -148,13 +148,13 @@ let pipelineManager = (function() {
         /**
          * Return array of columns
          * @returns {Array}
-         */ 
+         */
         getColumns: function() {
             return columns;
         },
         /**
          * Set a step directly
-         * @param {Object} newStep 
+         * @param {Object} newStep
          */
         setStep: function(newStep) {
             let row = parseRow(newStep.id);
@@ -165,8 +165,8 @@ let pipelineManager = (function() {
         },
         /**
          * Move a step from one position to another
-         * @param {string} fromId 
-         * @param {string} toId 
+         * @param {string} fromId
+         * @param {string} toId
          */
         moveStep: function(fromId, toId) {
             if (getStep(toId).reference !== null) throw new Error("Step " + toId + " is not empty!");
@@ -201,7 +201,7 @@ let pipelineManager = (function() {
         /**
          * Return all inputs available to a step
          *  i.e. the outputs of all steps previous to it
-         * @param {string} id 
+         * @param {string} id
          * @returns {string[]} Step IDs of available outputs
          */
         getAvailableInputs: function(id) {
@@ -260,8 +260,8 @@ let pipelineManager = (function() {
     }
     /**
      * Takes "A22" and returns 1
-     * @param {string} col 
-     * @returns {number} 
+     * @param {string} col
+     * @returns {number}
      */
     function parseCol(col) {
         return !isNaN(parseInt(col))?col:pipeCols.indexOf(col.substring(0,1))+1;
@@ -275,7 +275,7 @@ let pipelineManager = (function() {
         } else throw("Invalid column number " + col + " in getColumn!");
     }
     function getStep(col, row?) {
-        // @ts-ignore We may be called as (1,1) or ("A", 1) or ("A1") 
+        // @ts-ignore We may be called as (1,1) or ("A", 1) or ("A1")
         if (!row) {row = parseRow(col); col = parseCol(col)}
         let column = getColumn(col);
         if (row>=1 && row<=ROWS && row <= column.length) {
@@ -294,8 +294,8 @@ let pipelineManager = (function() {
     }
     /**
      * Map a step definition in pipeline JSON to Step in UI
-     * @param {string} id 
-     * @param {Object} stepI 
+     * @param {string} id
+     * @param {Object} stepI
      * @returns {Object} The UI step
      */
     function pipelineStepToStep(id, stepI) {
@@ -311,8 +311,8 @@ let pipelineManager = (function() {
     }
     /**
      * Map a component Definition to a new Step in the UI
-     * @param {string} id 
-     * @param {Object} component 
+     * @param {string} id
+     * @param {Object} component
      * @returns {Object} The new UI Step based on the component
      */
     function component2Step(id, component) {
@@ -331,9 +331,9 @@ let pipelineManager = (function() {
     }
     /**
      * Map a Step in the UI to step definition in pipeline JSON
-     * @param {string} id 
-     * @param {Object} step 
-     * @returns {Object} step definition according to pipeline.json 
+     * @param {string} id
+     * @param {Object} step
+     * @returns {Object} step definition according to pipeline.json
      */
     function stepToPipelineStep(id, step) {
         return {
@@ -349,7 +349,7 @@ let pipelineManager = (function() {
     }
     /**
      * Return an empty UI Step
-     * @param {string} id 
+     * @param {string} id
      */
     function emptyStep(id) {
         return {id: id, reference: null, name : null}

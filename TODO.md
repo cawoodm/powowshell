@@ -1,5 +1,7 @@
 # TODO
 
+* Parameter[] - use "Pills" so Name, Age => {"Name", "Age"}
+* IDE produces new pipeline with parameters as an empty array: should be an object
 * Can we do away with pipeline.id - it's redundant!
 * * Let's switch to pipelineId.pipe so we can have a .exe run the file
 * We maybe need a convertto-json component for outputs of pipelines

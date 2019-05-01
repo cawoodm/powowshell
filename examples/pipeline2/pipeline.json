@@ -2,7 +2,7 @@
   "id": "pipeline2",
   "name": null,
   "description": null,
-  "parameters": [],
+  "parameters": {},
   "globals": {},
   "steps": [
     {
@@ -31,6 +31,44 @@
         "LiteralPath": null
       },
       "input": null
+    },
+    {
+      "id": "B1",
+      "reference": "select-object",
+      "name": "Select Name, Date and Size",
+      "description": null,
+      "stream": "process",
+      "parameters": {
+        "ExcludeProperty": null,
+        "ExpandProperty": null,
+        "First": null,
+        "Index": null,
+        "InputObject": null,
+        "Last": null,
+        "Property": "{\"Name\", \"Length\", \"LastWriteTime\"}",
+        "Skip": null,
+        "SkipIndex": null,
+        "SkipLast": null,
+        "Unique": null,
+        "Wait": null
+      },
+      "input": "A1"
+    },
+    {
+      "id": "C1",
+      "reference": "convertto-json",
+      "name": "ConvertTo-Json",
+      "description": null,
+      "stream": "end",
+      "parameters": {
+        "AsArray": null,
+        "Compress": null,
+        "Depth": null,
+        "EnumsAsStrings": null,
+        "EscapeHandling": null,
+        "InputObject": null
+      },
+      "input": "B1"
     }
   ],
   "input": {},
