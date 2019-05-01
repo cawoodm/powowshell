@@ -8,7 +8,7 @@ export type PipelineDef =  {
     id: string;
     name: string;
     description: string;
-    parameters: PipelineParamDef[]
+    parameters: any;
     globals: GlobalDef;
     steps: StepDef[]
     input: InputDef;

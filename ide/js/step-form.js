@@ -93,11 +93,14 @@ const StepForm = Vue.extend({
                         <v-flex xs12>
                             <v-text-field label="Description" placeholder="A description for this step" v-model="step.descriptions"></v-text-field>
                         </v-flex>
-                        <v-flex xs6>
+                        <v-flex xs4>
                             <v-select :items="inputs" :label="'Piped Input (' + component.input + ')'" v-model="step.input" v-if="component.input"></v-select>
                             <v-text-field label="Input" placeholder="No Piped Input" disabled v-if="!component.input"></v-text-field>
                         </v-flex>
-                        <v-flex xs6>
+                        <v-flex xs4>
+                            <v-select :items="['begin', 'process','end']" label="Stream Mode" v-model="step.stream"></v-select>
+                        </v-flex>
+                        <v-flex xs4>
                             <v-text-field :label="'Output (' + component.output + ')'" v-model="step.output" readonly>
                                 <!--<v-icon slot="append" color="blue lighten-2">keyboard_arrow_right</v-icon>-->
                             </v-text-field>

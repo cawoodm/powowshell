@@ -6,7 +6,7 @@ let pipelineManager = (function () {
     const COLS = pipeCols.length;
     const ROWS = 9;
     let columns = [];
-    const pipelineDefNull = function () { return { id: null, name: null, description: null, parameters: [], globals: {}, steps: [], input: {}, output: {} }; };
+    const pipelineDefNull = function () { return { id: null, name: null, description: null, parameters: {}, globals: {}, steps: [], input: {}, output: {} }; };
     let pipelineDef = pipelineDefNull();
     // Public members
     return {
@@ -253,7 +253,7 @@ let pipelineManager = (function () {
             throw ("Invalid column number " + col + " in getColumn!");
     }
     function getStep(col, row) {
-        // @ts-ignore We may be called as (1,1) or ("A", 1) or ("A1") 
+        // @ts-ignore We may be called as (1,1) or ("A", 1) or ("A1")
         if (!row) {
             row = parseRow(col);
             col = parseCol(col);
