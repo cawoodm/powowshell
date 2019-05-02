@@ -1,5 +1,6 @@
 # TODO
 
+* Delete component
 * Convert System.DateTime.MinValue to {[System.DateTime]::MinValue} in Parameter defaults
 ** Or just //Microsoft.ActiveDirectory.Management.AuthType.Negotiate since not all values can be resolved
 * New component "ScriptBlock" for arbitrary PS Code?
@@ -9,7 +10,7 @@
 ** Rethrink where components need to reside: probably in core/ globally
 * Can we do away with pipeline.id - it's redundant!
 * * Let's switch to pipelineId.pipe so we can have a .exe run the file
-* We maybe need a convertto-json component for outputs of pipelines
+* We maybe need a convertto-json component/option for outputs of pipelines
 * We need to save a pipeline before running it in the IDE
 * We need a concept of "dirty" in the IDE so we know if a pipeline has been changed
 

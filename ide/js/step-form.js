@@ -127,9 +127,9 @@ const StepForm = Vue.extend({
             <v-card-actions>
                 <v-btn color="yellow darken-1" flat @click="examples()">Examples</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="red darken-1" flat @click="cancel()">Cancel</v-btn>
-                <v-btn color="green darken-1" flat @click="preview()" :disabled="!!component.input">Preview</v-btn>
-                <v-btn color="blue darken-1" flat @click="save()">Save</v-btn>
+                <v-btn color="red darken-1" flat @click="cancel()"><v-icon>cancel</v-icon>Cancel</v-btn>
+                <v-btn color="green darken-1" flat @click="preview()" :disabled="!!component.input"><v-icon>find_in_page</v-icon>Preview</v-btn>
+                <v-btn color="blue darken-1" flat @click="save()"><v-icon>save</v-icon>Save</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

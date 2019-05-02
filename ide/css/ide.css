@@ -19,6 +19,10 @@ td.step {width: 200px;height: 200px; overflow: hidden; padding: 5px;}
     border-width: 2px;
     /*border-radius: 25px*/
 }
+.flexcard {
+    display: flex;
+    flex-direction: column;
+}
 .stepFilled {
 }
 .stepEmpty {

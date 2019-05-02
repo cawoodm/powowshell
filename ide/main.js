@@ -169,6 +169,7 @@ window.onload = function() {
                     }).catch(this.handlePOWError);
             });
             this.$root.$on("stepPreview", (step) => {
+                if (typeof step === "string") {step = pipelineManager.getStep(step);}
                 let component = app.getComponent(step.reference);
                 pow.preview(step, component).then((obj)=>{
                     if (obj.object)
@@ -176,6 +177,13 @@ window.onload = function() {
                     else
                         alert(obj.output)
                 }).catch(this.handlePOWError);
+            });
+            this.$root.$on("stepRemove", (step) => {
+                if (typeof step === "string") {step = pipelineManager.getStep(step);}
+                if (confirm("Are you sure you want to remove this step?")) {
+                    pipelineManager.removeStep(step.id);
+                    this.redraw();
+                }
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
@@ -185,7 +193,7 @@ window.onload = function() {
                         root.componentsLoad()
                         root.cmdletsLoad()
                     })
-                    //.then(()=>root.pipelineLoad("procmon1", {skipConfirm: true}))
+                    .then(()=>root.pipelineLoad("procmon1", {skipConfirm: true}))
                     .catch(this.handlePOWError);
             } else {
                 root.componentsLoad();

@@ -25,6 +25,12 @@ Vue.component('step-grid', {
         showDialog: function(id) {
             this.$root.showDialog(id)
         },
+        preview(id) {
+            this.$root.$emit("stepPreview", id);
+        },
+        remove(id) {
+            this.$root.$emit("stepRemove", id);
+        },
         doUpdate: function() {
             this.rows = pipelineManager.getRows();
         }
@@ -43,14 +49,21 @@ Vue.component('step-grid', {
             <tr v-for="row in rows">
                 <td v-for="step in row" :key="step.id" :id="step.id" :class="step.reference?'step drag':'step drag drop'">
                     <div :d-id="step.id" :class="'stepContainer'+(step.reference?' stepFilled':' stepEmpty')" @click="showDialog(step.id)">
-                        <v-card height="200px" v-if="step.reference">
+                        <v-flex>
+                        <v-card height="200px" v-if="step.reference" class="flexcard">
                             <v-card-title class="blue white--text stepName" :title="step.reference">
                                 {{ step.reference }}
                             </v-card-title>
-                            <v-card-text>
+                            <v-card-text class="grow">
                                 <div class="stepReference">{{step.name}}</div>
                             </v-card-text>
+                            <v-card-actions dark>
+                                <v-spacer></v-spacer>
+                                <v-btn icon @click.stop="preview(step.id)" v-if="!step.input"><v-icon title="Preview" small>find_in_page</v-icon></v-btn>
+                                <v-btn icon @click.stop="remove(step.id)"><v-icon title="Remove" small>delete</v-icon></v-btn>
+                            </v-card-actions>
                         </v-card>
+                        </v-flex>
                     </div>
                 </td>
             </tr>
