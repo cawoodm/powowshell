@@ -1,695 +1,801 @@
 [
-  {
-    "reference": "awk.ps1",
-    "name": "AWK",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\AWK.ps1",
-    "synopsis": "AWK processes large amounts of text with power and ease",
-    "description": "AWK is a powerful text processing tool which can stream process large volumes of data\nextracting and transforming it with ease",
-    "whatif": true,
-    "parameters": [
-      {
-        "name": "InputObject",
-        "type": "string",
-        "piped": true,
-        "pipedMode": "value",
-        "required": false,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "Begin",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The AWK code to be executed in the BEGIN{} block",
-        "values": {}
-      },
-      {
-        "name": "Process",
-        "type": "string[]",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The AWK code to be executed in the PROCESS{} block",
-        "values": {}
-      },
-      {
-        "name": "End",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The AWK code to be executed in the END{} block",
-        "values": {}
-      },
-      {
-        "name": "Delimiter",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The field separator (FS) variable in AWK specifies how data fields are separated\nThe default is a space but you can process CSV files with -Delimiter \",\" or \";\"",
-        "values": {}
-      },
-      {
-        "name": "Confirm",
-        "type": "switchparameter",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": null,
-        "values": {}
-      }
-    ],
-    "input": "string",
-    "inputFormat": "text/*",
-    "inputDescription": "",
-    "output": "string",
-    "outputFormat": "text/*",
-    "outputDescription": "",
-    "POWMessages": []
-  },
-  {
-    "reference": "csv2json.ps1",
-    "name": "CSV2JSON",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\CSV2JSON.ps1",
-    "synopsis": "Convert CSV data to JSON format",
-    "description": "Accepts tabular CSV data and return contents as a JSON Array",
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "InputObject",
-        "type": "string",
-        "piped": true,
-        "pipedMode": "value",
-        "required": true,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "Delimiter",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": ",",
-        "description": "Specifies the field separator. Default is a comma \",\")",
-        "values": {}
-      },
-      {
-        "name": "Header",
-        "type": "string[]",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": null,
-        "values": {}
-      }
-    ],
-    "input": "string",
-    "inputFormat": "text/csv",
-    "inputDescription": "A String in CSV format",
-    "output": "string",
-    "outputFormat": "text/json",
-    "outputDescription": "A JSON array object",
-    "POWMessages": []
-  },
-  {
-    "reference": "curl.ps1",
-    "name": "CURL",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\CURL.ps1",
-    "synopsis": "CURL is a wrapper for Invoke-WebRequest to GET data from the web via HTTP",
-    "description": "CURL offers only basic GET functionality with headers",
-    "whatif": true,
-    "parameters": [
-      {
-        "name": "Url",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": "The Url/Uri to be fetched",
-        "values": {}
-      },
-      {
-        "name": "Method",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "GET",
-        "description": "The HTTP method to be used (e.g. GET or POST)",
-        "values": [
-          "GET",
-          "POST"
-        ]
-      },
-      {
-        "name": "Confirm",
-        "type": "switchparameter",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": null,
-        "values": {}
-      }
-    ],
-    "input": "",
-    "inputFormat": null,
-    "inputDescription": null,
-    "output": "string",
-    "outputFormat": "text/*",
-    "outputDescription": "Text output is the HTTP Response Body",
-    "POWMessages": []
-  },
-  {
-    "reference": "data2json.ps1",
-    "name": "Data2Json",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\Data2Json.ps1",
-    "synopsis": "Convert input object to JSON format",
-    "description": "Accepts any object data about and return contents as JSON",
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "InputObject",
-        "type": "object",
-        "piped": true,
-        "pipedMode": "value",
-        "required": true,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "Compress",
-        "type": "switchparameter",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "False",
-        "description": "Compress JSON output",
-        "values": {}
-      },
-      {
-        "name": "AsArray",
-        "type": "switchparameter",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "False",
-        "description": "Always return a JSON array",
-        "values": {}
-      }
-    ],
-    "input": "object",
-    "inputFormat": "object",
-    "inputDescription": "Any PowerShell object",
-    "output": "string",
-    "outputFormat": "text/json",
-    "outputDescription": "A JSON object corresponding to the input data",
-    "POWMessages": []
-  },
-  {
-    "reference": "dateadder.ps1",
-    "name": "DateAdder",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\DateAdder.ps1",
-    "synopsis": "Add some days to today's date and return the date",
-    "description": "foo bar",
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "days",
-        "type": "int32",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "0",
-        "description": "The number of days (integer) to add (or subtract) to todays date",
-        "values": {}
-      }
-    ],
-    "input": "",
-    "inputFormat": null,
-    "inputDescription": null,
-    "output": "datetime",
-    "outputFormat": "date",
-    "outputDescription": "",
-    "POWMessages": []
-  },
-  {
-    "reference": "doscommand.ps1",
-    "name": "DOSCommand",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\DOSCommand.ps1",
-    "synopsis": "Run any command with DOS CMD",
-    "description": null,
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "Command",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The command string to be executed",
-        "values": {}
-      }
-    ],
-    "input": "",
-    "inputFormat": null,
-    "inputDescription": null,
-    "output": "",
-    "outputFormat": "text",
-    "outputDescription": "",
-    "POWMessages": []
-  },
-  {
-    "reference": "dosdir.ps1",
-    "name": "DOSDir",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\DOSDir.ps1",
-    "synopsis": "List files with DOS CMD",
-    "description": null,
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "Path",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The path to the directory to be listed",
-        "values": {}
-      }
-    ],
-    "input": "",
-    "inputFormat": null,
-    "inputDescription": null,
-    "output": "",
-    "outputFormat": "text",
-    "outputDescription": "",
-    "POWMessages": []
-  },
-  {
-    "reference": "executecmdlet.ps1",
-    "name": "ExecuteCmdlet",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\ExecuteCmdlet.ps1",
-    "synopsis": "Execute any PowerShell Cmdlet",
-    "description": "Generic component which allows you to map up to 10 parameters to any cmdlet you like",
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "ExecuteTemplate",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": "The command to be executed",
-        "values": {}
-      },
-      {
-        "name": "Depth",
-        "type": "int32",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "2",
-        "description": "The depth of the JSON output to be returned",
-        "values": {}
-      },
-      {
-        "name": "p0",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The first parameter passed in. Can be used in ExecuteTemplate as {0}",
-        "values": {}
-      },
-      {
-        "name": "p1",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The second parameter passed in. Can be used in ExecuteTemplate as {1}",
-        "values": {}
-      },
-      {
-        "name": "p2",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": null,
-        "values": {}
-      }
-    ],
-    "input": "",
-    "inputFormat": null,
-    "inputDescription": null,
-    "output": "string",
-    "outputFormat": "text/json",
-    "outputDescription": "",
-    "POWMessages": []
-  },
-  {
-    "reference": "fieldadd.ps1",
-    "name": "FieldAdd",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\FieldAdd.ps1",
-    "synopsis": "Add a field to each object in an array",
-    "description": null,
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "InputObject",
-        "type": "string",
-        "piped": true,
-        "pipedMode": "value",
-        "required": true,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "Name",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": "Name of the field to add",
-        "values": {}
-      },
-      {
-        "name": "Value",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": "Value of the field to add",
-        "values": {}
-      }
-    ],
-    "input": "string",
-    "inputFormat": null,
-    "inputDescription": "",
-    "output": "string",
-    "outputFormat": "system.string",
-    "outputDescription": "",
-    "POWMessages": [
-      {
-        "type": "WARNING",
-        "message": "Pipeline input not described properly in annotated comments (.Inputs) of FieldAdd!"
-      }
-    ]
-  },
-  {
-    "reference": "filelist.ps1",
-    "name": "FileList",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\FileList.ps1",
-    "synopsis": "Returns a list of files.",
-    "description": "Lists files with a specific filter (e.g. *.txt) or\nwithin a specified date range.",
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "Path",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "Specifies a path to one or more locations. Wildcards are permitted. The default location is the current directory (.).",
-        "values": {}
-      },
-      {
-        "name": "Filter",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "The wildcard for matching files (e.g. *.csv)",
-        "values": {}
-      },
-      {
-        "name": "Recurse",
-        "type": "switchparameter",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "False",
-        "description": "If $true, will search all sub-folders",
-        "values": {}
-      }
-    ],
-    "input": "",
-    "inputFormat": null,
-    "inputDescription": null,
-    "output": "string",
-    "outputFormat": "text/json",
-    "outputDescription": "{name,fullName,size(int)}",
-    "POWMessages": []
-  },
-  {
-    "reference": "jsonmapping.ps1",
-    "name": "JSONMapping",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\JSONMapping.ps1",
-    "synopsis": "Map one form of JSON to another",
-    "description": "Used for transforming JSON between two types.\nLimitation: Resulting object is only 1-level deep",
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "InputObject",
-        "type": "object",
-        "piped": true,
-        "pipedMode": "value",
-        "required": true,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "Mapping",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "POWAction",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": null,
-        "values": {}
-      }
-    ],
-    "input": "object",
-    "inputFormat": "text/json",
-    "inputDescription": "The JSON object to be transformed.",
-    "output": "string",
-    "outputFormat": "text/json",
-    "outputDescription": "The transformed output JSON object.",
-    "POWMessages": []
-  },
-  {
-    "reference": "objectaddfield.ps1",
-    "name": "ObjectAddField",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\ObjectAddField.ps1",
-    "synopsis": "Add a field to each object in an array",
-    "description": null,
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "InputObject",
-        "type": "string",
-        "piped": true,
-        "pipedMode": "value",
-        "required": true,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "Name",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": "Name of the field to add",
-        "values": {}
-      },
-      {
-        "name": "Value",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": "Value of the field to add",
-        "values": {}
-      }
-    ],
-    "input": "string",
-    "inputFormat": null,
-    "inputDescription": "",
-    "output": "object",
-    "outputFormat": "system.object",
-    "outputDescription": "",
-    "POWMessages": [
-      {
-        "type": "WARNING",
-        "message": "Pipeline input not described properly in annotated comments (.Inputs) of ObjectAddField!"
-      }
-    ]
-  },
-  {
-    "reference": "readfile.ps1",
-    "name": "ReadFile",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\ReadFile.ps1",
-    "synopsis": "Read text from a file",
-    "description": "Read a single text file and return contents as a string.",
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "Path",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": true,
-        "default": "",
-        "description": "Specifies full literal (no wildcards) path to the file to be read.",
-        "values": {}
-      }
-    ],
-    "input": "",
-    "inputFormat": null,
-    "inputDescription": null,
-    "output": "string",
-    "outputFormat": "text",
-    "outputDescription": "",
-    "POWMessages": []
-  },
-  {
-    "reference": "selectfields.ps1",
-    "name": "SelectFields",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\SelectFields.ps1",
-    "synopsis": "Selects only certain fields from the input",
-    "description": null,
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "InputObject",
-        "type": "object",
-        "piped": true,
-        "pipedMode": "value",
-        "required": false,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "Fields",
-        "type": "string[]",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": null,
-        "values": {}
-      }
-    ],
-    "input": "object",
-    "inputFormat": "text/json",
-    "inputDescription": "",
-    "output": "string",
-    "outputFormat": "text/json",
-    "outputDescription": "",
-    "POWMessages": []
-  },
-  {
-    "reference": "table2json.ps1",
-    "name": "Table2JSON",
-    "type": "component",
-    "executable": "W:\\PowerShell\\powowshell\\examples\\components\\Table2JSON.ps1",
-    "synopsis": "Convert tabular input data to JSON format",
-    "description": "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the record and field separator can be anything.",
-    "whatif": false,
-    "parameters": [
-      {
-        "name": "InputObject",
-        "type": "string",
-        "piped": true,
-        "pipedMode": "value",
-        "required": true,
-        "default": "",
-        "description": null,
-        "values": {}
-      },
-      {
-        "name": "Delimiter",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": ",",
-        "description": "Specifies the field separator. Default is a comma \",\")",
-        "values": {}
-      },
-      {
-        "name": "RecordSeparator",
-        "type": "string",
-        "piped": null,
-        "pipedMode": null,
-        "required": false,
-        "default": "",
-        "description": "Specifies the record separator. Default is a newline.",
-        "values": {}
-      }
-    ],
-    "input": "string",
-    "inputFormat": "text/xsv",
-    "inputDescription": "Any separated data (e.g. CSV) with newlines between records",
-    "output": "string",
-    "outputFormat": "text/json",
-    "outputDescription": "An array of JSON objects corresponding to the rows of the input data",
-    "POWMessages": []
-  }
+    {
+        "reference":  "awk.ps1",
+        "name":  "AWK",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\AWK.ps1",
+        "synopsis":  "AWK processes large amounts of text with power and ease",
+        "description":  "AWK is a powerful text processing tool which can stream process large volumes of data\nextracting and transforming it with ease",
+        "whatif":  true,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "string",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  false,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Begin",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The AWK code to be executed in the BEGIN{} block",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Process",
+                               "type":  "string[]",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The AWK code to be executed in the PROCESS{} block",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "End",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The AWK code to be executed in the END{} block",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Delimiter",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The field separator (FS) variable in AWK specifies how data fields are separated\nThe default is a space but you can process CSV files with -Delimiter \",\" or \";\"",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Confirm",
+                               "type":  "switchparameter",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "string",
+        "inputFormat":  "text/*",
+        "inputDescription":  "",
+        "output":  "string",
+        "outputFormat":  "text/*",
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "csv2json.ps1",
+        "name":  "CSV2JSON",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\CSV2JSON.ps1",
+        "synopsis":  "Convert CSV data to JSON format",
+        "description":  "Accepts tabular CSV data and return contents as a JSON Array",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "string",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Delimiter",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  ",",
+                               "description":  "Specifies the field separator. Default is a comma \",\")",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Header",
+                               "type":  "string[]",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "string",
+        "inputFormat":  "text/csv",
+        "inputDescription":  "A String in CSV format",
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "A JSON array object",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "curl.ps1",
+        "name":  "CURL",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\CURL.ps1",
+        "synopsis":  "CURL is a wrapper for Invoke-WebRequest to GET data from the web via HTTP",
+        "description":  "CURL offers only basic GET functionality with headers",
+        "whatif":  true,
+        "parameters":  [
+                           {
+                               "name":  "Url",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  "The Url/Uri to be fetched",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Method",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  "GET",
+                               "description":  "The HTTP method to be used (e.g. GET or POST)",
+                               "values":  [
+                                              "GET",
+                                              "POST"
+                                          ]
+                           },
+                           {
+                               "name":  "Confirm",
+                               "type":  "switchparameter",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "",
+        "inputFormat":  null,
+        "inputDescription":  null,
+        "output":  "string",
+        "outputFormat":  "text/*",
+        "outputDescription":  "Text output is the HTTP Response Body",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "data2json.ps1",
+        "name":  "Data2JSON",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\Data2JSON.ps1",
+        "synopsis":  "Convert input object to JSON format",
+        "description":  "Accepts any object data about and return contents as JSON",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "object",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Compress",
+                               "type":  "switchparameter",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "Compress JSON output",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "AsArray",
+                               "type":  "switchparameter",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "Always return a JSON array",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "object",
+        "inputFormat":  "object",
+        "inputDescription":  "Any PowerShell object",
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "A JSON object corresponding to the input data",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "dateadder.ps1",
+        "name":  "DateAdder",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\DateAdder.ps1",
+        "synopsis":  "Add some days to today\u0027s date and return the date",
+        "description":  "foo bar",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "days",
+                               "type":  "int32",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  "0",
+                               "description":  "The number of days (integer) to add (or subtract) to todays date",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "",
+        "inputFormat":  null,
+        "inputDescription":  null,
+        "output":  "datetime",
+        "outputFormat":  "date",
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "doscommand.ps1",
+        "name":  "DOSCommand",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\DOSCommand.ps1",
+        "synopsis":  "Run any command with DOS CMD",
+        "description":  null,
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "Command",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The command string to be executed",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "",
+        "inputFormat":  null,
+        "inputDescription":  null,
+        "output":  "",
+        "outputFormat":  "text",
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "dosdir.ps1",
+        "name":  "DOSDir",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\DOSDir.ps1",
+        "synopsis":  "List files with DOS CMD",
+        "description":  null,
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "Path",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The path to the directory to be listed",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "",
+        "inputFormat":  null,
+        "inputDescription":  null,
+        "output":  "",
+        "outputFormat":  "text",
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "executecmdlet.ps1",
+        "name":  "ExecuteCmdlet",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\ExecuteCmdlet.ps1",
+        "synopsis":  "Execute any PowerShell Cmdlet",
+        "description":  "Generic component which allows you to map up to 10 parameters to any cmdlet you like",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "ExecuteTemplate",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  "The command to be executed",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Depth",
+                               "type":  "int32",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  "2",
+                               "description":  "The depth of the JSON output to be returned",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "p0",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The first parameter passed in. Can be used in ExecuteTemplate as {0}",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "p1",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The second parameter passed in. Can be used in ExecuteTemplate as {1}",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "p2",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "",
+        "inputFormat":  null,
+        "inputDescription":  null,
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "fieldadd.ps1",
+        "name":  "FieldAdd",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\FieldAdd.ps1",
+        "synopsis":  "Add a field to each object in an array",
+        "description":  null,
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "string",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Name",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  "Name of the field to add",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Value",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  "Value of the field to add",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "string",
+        "inputFormat":  null,
+        "inputDescription":  "",
+        "output":  "string",
+        "outputFormat":  "system.string",
+        "outputDescription":  "",
+        "POWMessages":  [
+                            {
+                                "type":  "WARNING",
+                                "message":  "Pipeline input not described properly in annotated comments (.Inputs) of FieldAdd!"
+                            }
+                        ]
+    },
+    {
+        "reference":  "filelist.ps1",
+        "name":  "FileList",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\FileList.ps1",
+        "synopsis":  "Returns a list of files.",
+        "description":  "Lists files with a specific filter (e.g. *.txt) or\nwithin a specified date range.",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "Path",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "Specifies a path to one or more locations. Wildcards are permitted. The default location is the current directory (.).",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Filter",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "The wildcard for matching files (e.g. *.csv)",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Recurse",
+                               "type":  "switchparameter",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "If $true, will search all sub-folders",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "",
+        "inputFormat":  null,
+        "inputDescription":  null,
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "{name,fullName,size(int)}",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "jsonmapping.ps1",
+        "name":  "JSONMapping",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\JSONMapping.ps1",
+        "synopsis":  "Map one form of JSON to another",
+        "description":  "Used for transforming JSON between two types.\nLimitation: Resulting object is only 1-level deep",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "object",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Mapping",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "POWAction",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "object",
+        "inputFormat":  "text/json",
+        "inputDescription":  "The JSON object to be transformed.",
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "The transformed output JSON object.",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "objectaddfield.ps1",
+        "name":  "ObjectAddField",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\ObjectAddField.ps1",
+        "synopsis":  "Add a field to each object in an array",
+        "description":  null,
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "string",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Name",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  "Name of the field to add",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Value",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  "Value of the field to add",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "string",
+        "inputFormat":  null,
+        "inputDescription":  "",
+        "output":  "object",
+        "outputFormat":  "system.object",
+        "outputDescription":  "",
+        "POWMessages":  [
+                            {
+                                "type":  "WARNING",
+                                "message":  "Pipeline input not described properly in annotated comments (.Inputs) of ObjectAddField!"
+                            }
+                        ]
+    },
+    {
+        "reference":  "readfile.ps1",
+        "name":  "ReadFile",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\ReadFile.ps1",
+        "synopsis":  "Read text from a file",
+        "description":  "Read a single text file and return contents as a string.",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "Path",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  true,
+                               "default":  null,
+                               "description":  "Specifies full literal (no wildcards) path to the file to be read.",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "",
+        "inputFormat":  null,
+        "inputDescription":  null,
+        "output":  "string",
+        "outputFormat":  "text",
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "selectfields.ps1",
+        "name":  "SelectFields",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\SelectFields.ps1",
+        "synopsis":  "Selects only certain fields from the input",
+        "description":  null,
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "object",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  false,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Fields",
+                               "type":  "string[]",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "object",
+        "inputFormat":  "text/json",
+        "inputDescription":  "",
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "table2json.ps1",
+        "name":  "Table2JSON",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\Table2JSON.ps1",
+        "synopsis":  "Convert tabular input data to JSON format",
+        "description":  "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the record and field separator can be anything.",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "string",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "Delimiter",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  ",",
+                               "description":  "Specifies the field separator. Default is a comma \",\")",
+                               "values":  {
+
+                                          }
+                           },
+                           {
+                               "name":  "RecordSeparator",
+                               "type":  "string",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "Specifies the record separator. Default is a newline.",
+                               "values":  {
+
+                                          }
+                           }
+                       ],
+        "input":  "string",
+        "inputFormat":  "text/xsv",
+        "inputDescription":  "Any separated data (e.g. CSV) with newlines between records",
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "An array of JSON objects corresponding to the rows of the input data",
+        "POWMessages":  [
+
+                        ]
+    }
 ]

@@ -65,6 +65,8 @@ function main() {
             $PowExists = -Not ($null -eq $PowowShell)
         }
 
+        # TODO: Create cache\, cache\help and cache\cmdlets folders?
+
         if ($PowExists) {
             Show-Message "Yep, the 'Invoke-PowowShell' cmdLet is installed" Green
             Show-Message "NOTE: You may need to run 'Import-Module -name PowowShell -Global' in PowerShell to use the 'pow' alias" Cyan

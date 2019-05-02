@@ -25,7 +25,9 @@ function main() {
         # Check Cache
         Set-Location $PSScriptRoot
         # ASSUME: Cache is in .\cache of application
-        $CacheDir = "..\cache"
+        $CacheDir = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath("..\cache")
+		if (-not (Test-Path $CacheDir)) {$null = New-Item -Path $CacheDir -ItemType Directory}
+		if (-not (Test-Path "$CacheDir\cmdlets")) {$null = New-Item -Path "$CacheDir\cmdlets" -ItemType Directory}
         $CachePath = "$CacheDir\cmdlets.json"
         $CacheFile=$null;$JSON=$null
         if ($Action -notlike "generate" -and (Test-Path $CachePath)) {
@@ -61,12 +63,13 @@ function main() {
             $CmdletsAll = (Get-Command -Type CmdLet).Where({$_.Name -notlike "*:"})
         }
         Write-Verbose "$($CmdletsAll.count) Cmdlets found"
-        # Sort by Name
-        $CmdletsAll = $CmdletsAll | Sort-Object Name # | Select -First 10
+        # Sort and deduplicate (yes!) by name
+        $CmdletsAll = $CmdletsAll | Sort-Object Name -Unique # | Select -First 10
         # Parse each CmdLet using `pow inspect`
         $Cmdlets = [System.Collections.ArrayList]@()
         foreach($cmdlet in $CmdletsAll) {
             $cm = & "$PSScriptRoot\inspect.ps1" -Path $cmdlet.name
+            if ($null -eq $cm) {continue}
             $null = $Cmdlets.add($cm)
             # Cache each cmdlet (for development/diagnosis)
             ConvertTo-Json -InputObject $cm -Depth 7 > "$CacheDir\cmdlets\$($cmdlet.name).json"

@@ -48,6 +48,8 @@ function main() {
 			Write-Verbose "Inspecting installed CmdLet $Path ..."
 			$Name = $Path
 			# ASSUME: Cache path is from root
+			$CachePath = "$PSScriptRoot\..\cache\help"
+			if (-not (Test-Path $CachePath)) {$null = New-Item -Path $CachePath -ItemType Directory}
 			$CachePath = Resolve-Path "$PSScriptRoot\..\cache\help"
 			if (Test-Path "$CachePath\$Name.json") {
 				$cmd = Get-Content "$CachePath\$Name.json" | ConvertFrom-Json
@@ -104,13 +106,17 @@ function main() {
 				if ($parameter.name -like "Directory") {
 					Write-Host ($null -eq $paramValues)
 				}
+				$paramDefault=$null
+				if ($parameter.defaultValue -and $parameter.defaultValue -notlike "none" -and $parameter.defaultValue -notlike "false") {
+					$paramDefault = $parameter.defaultValue
+				}
 				$paramsOut += [PSCustomObject]@{
 					"name" = $parameter.name;
 					"type" = $paramType
 					"piped" = $paramPipe
 					"pipedMode" = $paramPipeMode
 					"required" =  $boolMap[$parameter.required];
-					"default" = (&{try{$parameter.defaultValue}catch{$null}})
+					"default" = $paramDefault
 					"description" = (&{try{$parameter.description[0].text}catch{$null}})
 					"values" = $paramValues;
 				};
@@ -188,7 +194,13 @@ function Get-ParamType($param) {
 	if ($param.parameterValue.value) {return [string]$param.parameterValue.value.toLower()}
 	elseif ($param.type.name) {return [string]$param.type.name.toLower()}
 }
-function Get-OPReturn($cmd) {try{([string](Get-OP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
+function Get-OPReturn($cmd) {
+	$result = Get-OP($cmd)
+	$result = $result[0].ToLower() -replace "[\r\n]", ""
+	# If we have multiple object types, just output object
+	if ($result -like "* *") {$result="object"}
+	return [string]$result;
+}
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
 function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{$null}}

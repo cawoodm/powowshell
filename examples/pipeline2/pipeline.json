@@ -56,6 +56,28 @@
     },
     {
       "id": "C1",
+      "reference": "select-object",
+      "name": "Select 25",
+      "description": null,
+      "stream": "end",
+      "parameters": {
+        "ExcludeProperty": null,
+        "ExpandProperty": null,
+        "First": "3",
+        "Index": null,
+        "InputObject": null,
+        "Last": null,
+        "Property": null,
+        "Skip": null,
+        "SkipLast": null,
+        "Unique": null,
+        "Wait": null
+      },
+      "input": "B1",
+      "output": null
+    },
+    {
+      "id": "D1",
       "reference": "convertto-json",
       "name": "ConvertTo-Json",
       "description": null,
@@ -68,7 +90,7 @@
         "EscapeHandling": null,
         "InputObject": null
       },
-      "input": "B1"
+      "input": "C1"
     }
   ],
   "input": {},
