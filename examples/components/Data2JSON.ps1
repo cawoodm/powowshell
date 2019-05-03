@@ -30,11 +30,8 @@
 param(
   [Parameter(Mandatory,ValueFromPipeline)]
   [object]$InputObject,
-  [switch]$Compress,
-  [switch]$AsArray
+  [switch]$Compress
 )
-if ($AsArray -And -not ($InputObject -is [array])) {
-    return ConvertTo-Json -Compress:$Compress -InputObject @($InputObject)
-} else {
-    return ConvertTo-Json -Compress:$Compress -InputObject $InputObject
+process {
+  return $InputObject | ConvertTo-Json -Compress:$Compress
 }

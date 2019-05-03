@@ -210,16 +210,6 @@
                                "default":  null,
                                "description":  "Compress JSON output",
                                "values":  null
-                           },
-                           {
-                               "name":  "AsArray",
-                               "type":  "switch",
-                               "piped":  null,
-                               "pipedMode":  null,
-                               "required":  false,
-                               "default":  null,
-                               "description":  "Always return a JSON array",
-                               "values":  null
                            }
                        ],
         "input":  "object",
@@ -228,6 +218,46 @@
         "output":  "string",
         "outputFormat":  "text/json",
         "outputDescription":  "A JSON object corresponding to the input data",
+        "POWMessages":  [
+
+                        ]
+    },
+    {
+        "reference":  "data2jsonarray.ps1",
+        "name":  "Data2JSONArray",
+        "type":  "component",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\Data2JSONArray.ps1",
+        "synopsis":  "Convert stream of objects to JSON array format",
+        "description":  "Accepts any object or stream of objects and return a JSON string [{object1}, {object2}, ...]",
+        "whatif":  false,
+        "parameters":  [
+                           {
+                               "name":  "InputObject",
+                               "type":  "object",
+                               "piped":  true,
+                               "pipedMode":  "value",
+                               "required":  true,
+                               "default":  null,
+                               "description":  null,
+                               "values":  null
+                           },
+                           {
+                               "name":  "Compress",
+                               "type":  "switch",
+                               "piped":  null,
+                               "pipedMode":  null,
+                               "required":  false,
+                               "default":  null,
+                               "description":  "Compress JSON output",
+                               "values":  null
+                           }
+                       ],
+        "input":  "object",
+        "inputFormat":  "object",
+        "inputDescription":  "Any PowerShell object or stream of objects",
+        "output":  "string",
+        "outputFormat":  "text/json",
+        "outputDescription":  "An JSON array of objects corresponding to the rows of the input data",
         "POWMessages":  [
 
                         ]

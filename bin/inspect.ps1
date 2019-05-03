@@ -132,7 +132,7 @@ function main() {
 				if ($pipelineInputParam -and -not $inputFormat) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="Pipeline input not described properly in annotated comments (.Inputs) of $NiceName!"}}
 				if (-not $pipelineInputParam -and $inputFormat) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="Pipeline input not declared properly in parameters (ValueFromPipeline=`$true) of $NiceName!"}}
 			}
-			if ($PipedParamCount -gt 1) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="We don't support multiple piped parameters in '$NiceName'!"}}
+			#if ($PipedParamCount -gt 1) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="We don't support multiple piped parameters in '$NiceName'!"}}
 		} else {
 			$POWMessages+=[PSCustomObject]@{type="ERROR";message="Invalid CmdLet in component '$Name'!"}
 		}
