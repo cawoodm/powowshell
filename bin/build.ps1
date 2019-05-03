@@ -180,7 +180,7 @@ function CreateSteps($pipelineDef, $COMPONENTS, $ADAPTORS) {
         }
 
         # Build Step code
-        $stepHeader, $stepOutputType, $PipelineParams, $stepHeader2, $params0, $StepComment, $cmd1, $stepFooter -join "`n" > "$OutputPath\step_$id.ps1"
+        $stepHeader, $stepOutputType, $PipelineParams, $stepHeader2, $params0, $StepComment, $cmd1, $stepFooter -join "`n" | Set-Content -Encoding UTF8 -Path "$OutputPath\step_$id.ps1"
 
         $Count++
 
@@ -247,7 +247,7 @@ function CreatingPipeline_prod($pipelineDef, $COMPONENTS) {
     $cmd += "`tPop-Location`n"
     $cmd += "}`n"
 
-    $cmd > "$OutputPath\run_prod.ps1"
+    $cmd | Set-Content -Encoding UTF8 -Path "$OutputPath\run_prod.ps1"
 
 }
 
@@ -298,7 +298,7 @@ function CreatingPipeline_trace($pipelineDef) {
     $cmd += "`n"
     $cmd += "Pop-Location"
 
-    $cmd > "$OutputPath\run_trace.ps1"
+    $cmd | Set-Content -Encoding UTF8 -Path "$OutputPath\run_trace.ps1"
 
 }
 function ReSerializeObject($obj) {

@@ -1,5 +1,6 @@
 .col {width: 200px; border:1px solid silver; padding:5px; float: left;}
 td.step {width: 200px;height: 200px; overflow: hidden; padding: 5px;}
+div.step {width: 100%;height: 100%;}
 #scroll {width: 100%;max-width: 100%;height: 100%; overflow:scroll;}
 #container {width: 100vw; max-width: 100vw !important; flex: none;}
 #maintable {
@@ -9,6 +10,11 @@ td.step {width: 200px;height: 200px; overflow: hidden; padding: 5px;}
 }
 .stepName {
     font-size: medium;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.nowrap1 {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

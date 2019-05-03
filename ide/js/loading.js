@@ -24,7 +24,7 @@ Vue.component("loading", {
         <v-card-title>Loading...</v-card-title>
         <v-card-text>
           {{message}}
-          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+          <v-progress-linear indeterminate color="secondary" class="mb-0"></v-progress-linear>
         </v-card-text>
         <v-card-actions>
             <v-spacer></v-spacer>

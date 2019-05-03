@@ -55,12 +55,12 @@ function main() {
                 return $Cmdlets
             } catch {throw "Cmdlet cache is corrupted: $_"}
         }
-        # Get all installed Cmdlets
+        # Get all installed Cmdlets and Functions
         #  - excluding drives ("*:")
         if ($Filter) {
-            $CmdletsAll = (Get-Command -Type CmdLet -Name $Filter).Where({$_.Name -notlike "*:"})
+            $CmdletsAll = (Get-Command -Type CmdLet,Function -Name $Filter).Where({$_.Name -notlike "*:"})
         } else {
-            $CmdletsAll = (Get-Command -Type CmdLet).Where({$_.Name -notlike "*:"})
+            $CmdletsAll = (Get-Command -Type CmdLet,Function).Where({$_.Name -notlike "*:"})
         }
         Write-Verbose "$($CmdletsAll.count) Cmdlets found"
         # Sort and deduplicate (yes!) by name
@@ -72,7 +72,8 @@ function main() {
             if ($null -eq $cm) {continue}
             $null = $Cmdlets.add($cm)
             # Cache each cmdlet (for development/diagnosis)
-            ConvertTo-Json -InputObject $cm -Depth 7 > "$CacheDir\cmdlets\$($cmdlet.name).json"
+            #  For BOM-less with PWSH6 we could use -Encoding UTF8NoBOM
+            ConvertTo-Json -InputObject $cm -Depth 7 | Set-Content -Encoding UTF8 -Path "$CacheDir\cmdlets\$($cmdlet.name).json"
         }
         if (-not $Filter) {
             # Update the cache of all cmdlets

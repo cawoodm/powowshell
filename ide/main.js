@@ -40,7 +40,7 @@ window.onload = function() {
                         return target.className.indexOf("drop")>=0;
                     }
                 };
-                app.dragula = dragula([].slice.call(document.querySelectorAll(".drag")),dragOpts).on("drop", function (el, space) {
+                app.dragula = dragula([].slice.call(document.querySelectorAll(".drag,.drop")),dragOpts).on("drop", function (el, space) {
                     let id = el.getAttribute("d-id");
                     let ref = el.getAttribute("d-ref");
                     if (ref) {
@@ -101,7 +101,7 @@ window.onload = function() {
                 pow.cmdlets()
                     .then((obj)=>{
                         app.cmdlets = obj.object;
-                        this.$refs.cmdletList2.setCmdlets(app.cmdlets);
+                        this.$refs.cmdletList.setCmdlets(app.cmdlets);
                     }).catch(this.handlePOWError);
             },
             pipelineLoad: function(id, opts) {
@@ -187,7 +187,7 @@ window.onload = function() {
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
-                pow.execOptions.debug=true;
+                //pow.execOptions.debug=true;
                 pow.init("!examples")
                     .then(()=>{
                         root.componentsLoad()

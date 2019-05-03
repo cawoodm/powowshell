@@ -60,7 +60,7 @@ function main() {
             # Cache JSON
             Write-Verbose "Writing adaptors cache"
             $JSON = ($Adaptors) | ConvertTo-JSON -Depth 4
-            $JSON > .\adaptors.json
+            $JSON | Set-Content -Encoding UTF8 -Path .\adaptors.json
         }
         Write-Verbose "$($Adaptors.length) adaptors found"
         if ($Action -like "export") {

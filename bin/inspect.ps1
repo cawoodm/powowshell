@@ -37,6 +37,7 @@ function main() {
 			$Executable = $Executable.Path
 			$Name = (Split-Path -Path $Executable -Leaf)
 			$NiceName = ($Name -replace ".ps1", "")
+			Write-Verbose "Inspecting component $Name ..."
 			$cmd = Get-Help -Full -Name $Executable -ErrorAction SilentlyContinue
 			$cmd2 = Get-Command -Name $Executable -ErrorAction SilentlyContinue
 			if ($null -eq $cmd) {throw "Invalid POW Component '$Executable'!"}
@@ -58,7 +59,8 @@ function main() {
 				if ($cmd.details.name -notlike $Name) {
 					throw "'$Name' is an alias, please inspect the full name $($cmd.details.name)!"
 				}
-				$cmd | convertto-json -depth 7 > "$CachePath\$($cmd.details.name).json"
+				# Cache help because Get-Help can be slow
+				$cmd | ConvertTo-Json -Depth 7 | Set-Content -Encoding UTF8 -Path "$CachePath\$($cmd.details.name).json"
 			}
 			if ($null -eq $cmd) {throw "Invalid CmdLet '$Executable'!"}
 			$NiceName = $cmd.details.name
@@ -100,9 +102,9 @@ function main() {
 					$paramValues = GetParamValues $cmd2.parameters[$parameter.name]
 				} else {
 					$paramValues = GetParamValues $parameter2 | Where-Object {$_ -ne $null}
-					# WEIRD: We have to convert a null object to a real null (or we get "{}" in JSON)
-					if ($null -eq $paramValues) {$paramValues=$null}
 				}
+				# WEIRD: We have to convert a null object to a real null (or we get "{}" in JSON)
+				if ($null -eq $paramValues) {$paramValues=$null}
 				if ($parameter.name -like "Directory") {
 					Write-Host ($null -eq $paramValues)
 				}
@@ -168,7 +170,7 @@ function main() {
 		}
 		if ($Action -like "export") {
 			if ($ExportPath) {
-				return $result | ConvertTo-Json > $ExportPath
+				return $result | ConvertTo-Json | Set-Content -Path $ExportPath -Encoding UTF8
 			} else {
 				return $result | ConvertTo-Json
 			}
@@ -191,15 +193,22 @@ function GetParamValues($param) {
 	# With strictmode on we don't get the ValidValues!
 }
 function Get-ParamType($param) {
-	if ($param.parameterValue.value) {return [string]$param.parameterValue.value.toLower()}
-	elseif ($param.type.name) {return [string]$param.type.name.toLower()}
+	$result=$null
+	if ($param.parameterValue.value) {$result = [string]$param.parameterValue.value.toLower()}
+	elseif ($param.type.name) {$result = [string]$param.type.name.toLower()}
+	if ($result -like "switchparameter") {$result = "switch"}
+	return $result;
 }
 function Get-OPReturn($cmd) {
 	$result = Get-OP($cmd)
-	$result = $result[0].ToLower() -replace "[\r\n]", ""
-	# If we have multiple object types, just output object
-	if ($result -like "* *") {$result="object"}
-	return [string]$result;
+	if ($result -is [array]) {
+		$result = $result[0].ToLower() -replace "[\r\n]", ""
+		# If we have multiple object types, just output object
+		if ($result -like "* *") {$result="object"}
+		return [string]$result;
+	} else {
+		Write-Warning "No output!"
+	}
 }
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}

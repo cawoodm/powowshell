@@ -33,14 +33,14 @@
     <v-navigation-drawer app clipped permanent width="250">
         <v-expansion-panel expand v-model="panels">
             <v-expansion-panel-content>
-                <div slot="header">Pipelines</div>
+                <div slot="header" class="body-2">Pipelines</div>
                 <v-list>
                     <v-list-tile @click="pipelineLoad('pipeline1')">Example 1</v-list-tile>        
                     <v-list-tile @click="pipelineLoad('procmon1')">Streamed Data</v-list-tile>        
                 </v-list>
             </v-expansion-panel-content>
+            <cmdlet-list ref="cmdletList"></cmdlet-list>
             <component-list ref="componentList"></component-list>
-            <cmdlet-list ref="cmdletList2"></cmdlet-list>
         </v-expansion-panel>
     </v-navigation-drawer>
 

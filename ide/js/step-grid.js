@@ -47,7 +47,8 @@ Vue.component('step-grid', {
                 </th>
             </tr>
             <tr v-for="row in rows">
-                <td v-for="step in row" :key="step.id" :id="step.id" :class="step.reference?'step drag':'step drag drop'">
+                <td v-for="step in row" :key="step.id" class="step">
+                    <div :id="step.id" :class="step.reference===null?'step drop':'step drag drop'">
                     <div :d-id="step.id" :class="'stepContainer'+(step.reference?' stepFilled':' stepEmpty')" @click="showDialog(step.id)">
                         <v-flex>
                         <v-card height="200px" v-if="step.reference" class="flexcard">
@@ -64,6 +65,7 @@ Vue.component('step-grid', {
                             </v-card-actions>
                         </v-card>
                         </v-flex>
+                    </div>
                     </div>
                 </td>
             </tr>

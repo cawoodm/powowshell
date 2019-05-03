@@ -3,7 +3,7 @@
         "reference":  "awk.ps1",
         "name":  "AWK",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\AWK.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\AWK.ps1",
         "synopsis":  "AWK processes large amounts of text with power and ease",
         "description":  "AWK is a powerful text processing tool which can stream process large volumes of data\nextracting and transforming it with ease",
         "whatif":  true,
@@ -16,9 +16,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Begin",
@@ -28,9 +26,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The AWK code to be executed in the BEGIN{} block",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Process",
@@ -40,9 +36,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The AWK code to be executed in the PROCESS{} block",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "End",
@@ -52,9 +46,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The AWK code to be executed in the END{} block",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Delimiter",
@@ -64,21 +56,17 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The field separator (FS) variable in AWK specifies how data fields are separated\nThe default is a space but you can process CSV files with -Delimiter \",\" or \";\"",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Confirm",
-                               "type":  "switchparameter",
+                               "type":  "switch",
                                "piped":  null,
                                "pipedMode":  null,
                                "required":  false,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "string",
@@ -95,7 +83,7 @@
         "reference":  "csv2json.ps1",
         "name":  "CSV2JSON",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\CSV2JSON.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\CSV2JSON.ps1",
         "synopsis":  "Convert CSV data to JSON format",
         "description":  "Accepts tabular CSV data and return contents as a JSON Array",
         "whatif":  false,
@@ -108,9 +96,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Delimiter",
@@ -120,9 +106,7 @@
                                "required":  false,
                                "default":  ",",
                                "description":  "Specifies the field separator. Default is a comma \",\")",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Header",
@@ -132,9 +116,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "string",
@@ -151,7 +133,7 @@
         "reference":  "curl.ps1",
         "name":  "CURL",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\CURL.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\CURL.ps1",
         "synopsis":  "CURL is a wrapper for Invoke-WebRequest to GET data from the web via HTTP",
         "description":  "CURL offers only basic GET functionality with headers",
         "whatif":  true,
@@ -164,9 +146,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  "The Url/Uri to be fetched",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Method",
@@ -183,15 +163,13 @@
                            },
                            {
                                "name":  "Confirm",
-                               "type":  "switchparameter",
+                               "type":  "switch",
                                "piped":  null,
                                "pipedMode":  null,
                                "required":  false,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "",
@@ -206,9 +184,9 @@
     },
     {
         "reference":  "data2json.ps1",
-        "name":  "Data2Json",
+        "name":  "Data2JSON",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\Data2Json.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\Data2JSON.ps1",
         "synopsis":  "Convert input object to JSON format",
         "description":  "Accepts any object data about and return contents as JSON",
         "whatif":  false,
@@ -221,33 +199,27 @@
                                "required":  true,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Compress",
-                               "type":  "switchparameter",
+                               "type":  "switch",
                                "piped":  null,
                                "pipedMode":  null,
                                "required":  false,
                                "default":  null,
                                "description":  "Compress JSON output",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "AsArray",
-                               "type":  "switchparameter",
+                               "type":  "switch",
                                "piped":  null,
                                "pipedMode":  null,
                                "required":  false,
                                "default":  null,
                                "description":  "Always return a JSON array",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "object",
@@ -264,7 +236,7 @@
         "reference":  "dateadder.ps1",
         "name":  "DateAdder",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\DateAdder.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\DateAdder.ps1",
         "synopsis":  "Add some days to today\u0027s date and return the date",
         "description":  "foo bar",
         "whatif":  false,
@@ -277,9 +249,7 @@
                                "required":  false,
                                "default":  "0",
                                "description":  "The number of days (integer) to add (or subtract) to todays date",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "",
@@ -296,7 +266,7 @@
         "reference":  "doscommand.ps1",
         "name":  "DOSCommand",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\DOSCommand.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\DOSCommand.ps1",
         "synopsis":  "Run any command with DOS CMD",
         "description":  null,
         "whatif":  false,
@@ -309,9 +279,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The command string to be executed",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "",
@@ -328,7 +296,7 @@
         "reference":  "dosdir.ps1",
         "name":  "DOSDir",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\DOSDir.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\DOSDir.ps1",
         "synopsis":  "List files with DOS CMD",
         "description":  null,
         "whatif":  false,
@@ -341,9 +309,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The path to the directory to be listed",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "",
@@ -360,7 +326,7 @@
         "reference":  "executecmdlet.ps1",
         "name":  "ExecuteCmdlet",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\ExecuteCmdlet.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\ExecuteCmdlet.ps1",
         "synopsis":  "Execute any PowerShell Cmdlet",
         "description":  "Generic component which allows you to map up to 10 parameters to any cmdlet you like",
         "whatif":  false,
@@ -373,9 +339,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  "The command to be executed",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Depth",
@@ -385,9 +349,7 @@
                                "required":  false,
                                "default":  "2",
                                "description":  "The depth of the JSON output to be returned",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "p0",
@@ -397,9 +359,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The first parameter passed in. Can be used in ExecuteTemplate as {0}",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "p1",
@@ -409,9 +369,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The second parameter passed in. Can be used in ExecuteTemplate as {1}",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "p2",
@@ -421,9 +379,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "",
@@ -440,7 +396,7 @@
         "reference":  "fieldadd.ps1",
         "name":  "FieldAdd",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\FieldAdd.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\FieldAdd.ps1",
         "synopsis":  "Add a field to each object in an array",
         "description":  null,
         "whatif":  false,
@@ -453,9 +409,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Name",
@@ -465,9 +419,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  "Name of the field to add",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Value",
@@ -477,9 +429,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  "Value of the field to add",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "string",
@@ -499,7 +449,7 @@
         "reference":  "filelist.ps1",
         "name":  "FileList",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\FileList.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\FileList.ps1",
         "synopsis":  "Returns a list of files.",
         "description":  "Lists files with a specific filter (e.g. *.txt) or\nwithin a specified date range.",
         "whatif":  false,
@@ -512,9 +462,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "Specifies a path to one or more locations. Wildcards are permitted. The default location is the current directory (.).",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Filter",
@@ -524,21 +472,17 @@
                                "required":  false,
                                "default":  null,
                                "description":  "The wildcard for matching files (e.g. *.csv)",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Recurse",
-                               "type":  "switchparameter",
+                               "type":  "switch",
                                "piped":  null,
                                "pipedMode":  null,
                                "required":  false,
                                "default":  null,
                                "description":  "If $true, will search all sub-folders",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "",
@@ -555,7 +499,7 @@
         "reference":  "jsonmapping.ps1",
         "name":  "JSONMapping",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\JSONMapping.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\JSONMapping.ps1",
         "synopsis":  "Map one form of JSON to another",
         "description":  "Used for transforming JSON between two types.\nLimitation: Resulting object is only 1-level deep",
         "whatif":  false,
@@ -568,9 +512,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Mapping",
@@ -580,9 +522,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "POWAction",
@@ -592,9 +532,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "object",
@@ -611,7 +549,7 @@
         "reference":  "objectaddfield.ps1",
         "name":  "ObjectAddField",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\ObjectAddField.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\ObjectAddField.ps1",
         "synopsis":  "Add a field to each object in an array",
         "description":  null,
         "whatif":  false,
@@ -624,9 +562,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Name",
@@ -636,9 +572,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  "Name of the field to add",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Value",
@@ -648,9 +582,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  "Value of the field to add",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "string",
@@ -670,7 +602,7 @@
         "reference":  "readfile.ps1",
         "name":  "ReadFile",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\ReadFile.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\ReadFile.ps1",
         "synopsis":  "Read text from a file",
         "description":  "Read a single text file and return contents as a string.",
         "whatif":  false,
@@ -683,9 +615,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  "Specifies full literal (no wildcards) path to the file to be read.",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "",
@@ -702,7 +632,7 @@
         "reference":  "selectfields.ps1",
         "name":  "SelectFields",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\SelectFields.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\SelectFields.ps1",
         "synopsis":  "Selects only certain fields from the input",
         "description":  null,
         "whatif":  false,
@@ -715,9 +645,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Fields",
@@ -727,9 +655,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "object",
@@ -746,7 +672,7 @@
         "reference":  "table2json.ps1",
         "name":  "Table2JSON",
         "type":  "component",
-        "executable":  "W:\\PowerShell\\powowshell\\examples\\components\\Table2JSON.ps1",
+        "executable":  "C:\\Marc\\Work\\powershell\\powowshell\\examples\\components\\Table2JSON.ps1",
         "synopsis":  "Convert tabular input data to JSON format",
         "description":  "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the record and field separator can be anything.",
         "whatif":  false,
@@ -759,9 +685,7 @@
                                "required":  true,
                                "default":  null,
                                "description":  null,
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "Delimiter",
@@ -771,9 +695,7 @@
                                "required":  false,
                                "default":  ",",
                                "description":  "Specifies the field separator. Default is a comma \",\")",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            },
                            {
                                "name":  "RecordSeparator",
@@ -783,9 +705,7 @@
                                "required":  false,
                                "default":  null,
                                "description":  "Specifies the record separator. Default is a newline.",
-                               "values":  {
-
-                                          }
+                               "values":  null
                            }
                        ],
         "input":  "string",

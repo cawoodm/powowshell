@@ -1,6 +1,8 @@
 # TODO
 
-* Delete component
+* How to switch between POWERSHELL (v5) and PWSH (v6)
+* What to do about parameter sets with multiple ByValue pipeline parameters? (e.g. Unprotect-CmsMessage)
+* Delete step from grid
 * Convert System.DateTime.MinValue to {[System.DateTime]::MinValue} in Parameter defaults
 ** Or just //Microsoft.ActiveDirectory.Management.AuthType.Negotiate since not all values can be resolved
 * New component "ScriptBlock" for arbitrary PS Code?

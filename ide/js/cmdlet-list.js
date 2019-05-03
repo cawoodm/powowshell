@@ -4,9 +4,8 @@ Vue.component("cmdlet-list", {
     data: function() {
         return {
             filter: this.filter,
-            selectedCmdlet: null,
-            loading: this.loading,
-            cmdlets: this.cmdlets
+            cmdlets: this.cmdlets,
+            loading: this.loading
         };
     },
     computed: {
@@ -22,29 +21,25 @@ Vue.component("cmdlet-list", {
         }
     },
     methods: {
-        //showDialog: function(id) {},
         setCmdlets: function(cmdlets) {
-            this.loading = false;
             this.cmdlets = cmdlets;
-        },
-        addCmdlet: function() {
-            alert(this.selectedCmdlet)
+            this.loading = false;
         }
     },
     mounted: function() {
-        console.log("mounted cmdlet-list")
         this.filter = "";
         this.loading = true;
     },
     template: `
     <v-expansion-panel-content @hook:updated="$root.componentsUpdated">
         <div slot="header" class="body-2">CmdLets</div>
-        <v-list dense style="height:80px; overflow: hidden">
+        <v-progress-linear v-if="loading" indeterminate color="secondary"></v-progress-linear>
+        <v-list dense v-if="!loading" style="max-height: 400px; overflow-x: hidden; overflow-y: scroll;">
             <v-list-tile class="search-tile">
-                <v-autocomplete v-model="filter" :items="filteredCmdlets" item-text="name" label="CmdLets" clearable chips :loading="loading"></v-autocomplete>
+                <v-text-field v-model="filter" prepend-inner-icon="search" class="pa-0"></v-text-field>
             </v-list-tile>
-            <v-list-tile v-if="filter" v-for="cmdlet in filteredCmdlets" class="drag cmdlet nowrap1" :d-ref="cmdlet.reference" :key="cmdlet.reference">
-            <v-icon>file_copy</v-icon>{{cmdlet.name}}
+            <v-list-tile v-for="cmdlet in filteredCmdlets" class="drag cmdlet nowrap1" :d-ref="cmdlet.reference" :key="cmdlet.reference">
+                <v-icon>file_copy</v-icon>{{cmdlet.name}}
             </v-list-tile>
         </v-list>
     </v-expansion-panel-content>    

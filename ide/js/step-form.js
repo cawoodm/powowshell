@@ -65,6 +65,9 @@ const StepForm = Vue.extend({
             }
         }
     },
+    mounted: function() {
+        window.setTimeout(this.$refs.focusMe.focus,200);
+    },
     computed: {
         title: function() {
             return `${this.id}: ${this.component.name}`;
@@ -81,14 +84,8 @@ const StepForm = Vue.extend({
             <v-card-text>
                 <v-container grid-list-xs>
                     <v-layout row wrap>
-                        <v-flex xs12 v-if="component.synopsis">
-                            <div class="subheading">{{component.synopsis}}</div>
-                        </v-flex>
-                        <v-flex xs12 v-if="step.description">
-                            <div>{{step.description}}</div>
-                        </v-flex>
                         <v-flex xs12>
-                            <v-text-field label="Name" placeholder="A label for this step" v-model="step.name"></v-text-field>
+                            <v-text-field label="Name" placeholder="A label for this step" v-model="step.name" ref="focusMe" autofocus></v-text-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-text-field label="Description" placeholder="A description for this step" v-model="step.descriptions"></v-text-field>
@@ -125,11 +122,11 @@ const StepForm = Vue.extend({
                 </v-container>
             </v-card-text>
             <v-card-actions>
-                <v-btn color="yellow darken-1" flat @click="examples()">Examples</v-btn>
+                <v-btn color="yellow darken-1" @click="examples()">Examples</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="red darken-1" flat @click="cancel()"><v-icon>cancel</v-icon>Cancel</v-btn>
-                <v-btn color="green darken-1" flat @click="preview()" :disabled="!!component.input"><v-icon>find_in_page</v-icon>Preview</v-btn>
-                <v-btn color="blue darken-1" flat @click="save()"><v-icon>save</v-icon>Save</v-btn>
+                <v-btn color="red"            dark @click="cancel()"><v-icon dark>cancel</v-icon>Cancel</v-btn>
+                <v-btn color="green darken-1" dark @click="preview()" :disabled="!!component.input"><v-icon dark>find_in_page</v-icon>Preview</v-btn>
+                <v-btn color="blue darken-1"  dark @click="save()"><v-icon dark>done</v-icon>OK</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
