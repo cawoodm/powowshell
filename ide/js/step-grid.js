@@ -60,7 +60,6 @@ Vue.component('step-grid', {
                             </v-card-text>
                             <v-card-actions dark>
                                 <v-spacer></v-spacer>
-                                <v-btn icon @click.stop="preview(step.id)" v-if="!step.input"><v-icon title="Preview" small>find_in_page</v-icon></v-btn>
                                 <v-btn icon @click.stop="remove(step.id)"><v-icon title="Remove" small>delete</v-icon></v-btn>
                             </v-card-actions>
                         </v-card>

@@ -1,4 +1,4 @@
-/* global Vue dragula formBuilder console pipelineManager */
+/* global Vue dragula formBuilder dataTableBuilder console pipelineManager */
 let app = {};
 if (typeof process !== "undefined") {
     var pow = require("./js/pow").pow;
@@ -59,33 +59,45 @@ window.onload = function() {
                     app.dragula.cancel(true)
                 });
             },
-            showLoading: function(show, msg) {
-                this.$refs.loading.showLoading(show, msg);
+            showLoading: function(show, msg, title) {
+                this.$refs.loading.showLoading(show, msg, title);
             },
             run: function() {
                 let root = this;
                 if (pipelineManager.isDirty() && confirm("Do you want to save before running?")) {
                     return root.pipelineSave().then(root.run);
                 }
-                pow.build("!"+this.pipeline.id)
+                this.showLoading(true, "Building "+this.pipeline.id, "Build and Run")
+                return pow.build("!"+this.pipeline.id)
                     .then(()=>{
+                        this.showLoading(true, "Verifying "+this.pipeline.id, "Build and Run")
                         return pow.verify("!"+this.pipeline.id);
                     })
                     .then(()=>{
+                        this.showLoading(true, "Running "+this.pipeline.id, "Build and Run")
                         return pow.run("!"+this.pipeline.id)
                     })
                     .then((obj)=>{
-                        alert(JSON.stringify(obj.object, null, 2))
-                    }).catch(this.handlePOWError);
+                        if (Array.isArray(obj.object))
+                            dataTableBuilder.showTable(this.$root, {title: "Result", items: obj.object});
+                        else {
+                            let data = JSON.stringify(obj.object, null, 2);
+                            alert(data)
+                        }
+                        this.showLoading(false);
+                    }).catch((err)=>{
+                        this.showLoading(false);
+                        this.handlePOWError(err)
+                    });
             },
             handlePOWError: function(err) {
                 let message = "";
                 if (err.constructor.name === "POWError") message += "POWError:\n";
-                if (message) message += err.message+"\n";
+                if (err.message) message += err.message+"\n";
                 if (err.messages && Array.isArray(err.messages))
                     err.messages.forEach((msg)=>message += "\n" + msg.type + ": " + msg.message);
-                console.log(message);
-                alert(message);
+                console.log(err);
+                this.showMessage(message, "error");
             },
             showDialog: function(id) {
                 try {
@@ -98,14 +110,14 @@ window.onload = function() {
                 }
             },
             componentsLoad: function() {
-                pow.components()
+                return pow.components()
                     .then((obj)=>{
                         app.components = obj.object;
                         this.$refs.componentList.setComponents(app.components);
                     }).catch(this.handlePOWError);
             },
             cmdletsLoad: function() {
-                pow.cmdlets()
+                return pow.cmdlets()
                     .then((obj)=>{
                         app.cmdlets = obj.object;
                         this.$refs.cmdletList.setCmdlets(app.cmdlets);
@@ -116,7 +128,7 @@ window.onload = function() {
                 opts = opts || {};
                 if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and load a new pipeline?")) return;
                 this.showLoading(true, `Loading pipeline (${id})...`);
-                pow.pipeline(`${id}`)
+                return pow.pipeline(`${id}`)
                     .then((res)=>{
                         pipelineManager.import(res.object);
                         if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
@@ -216,7 +228,8 @@ window.onload = function() {
                         root.componentsLoad()
                         root.cmdletsLoad()
                     })
-                    .then(()=>root.pipelineLoad("procmon1"))
+                    .then(()=>root.pipelineLoad("pipeline2"))
+                    .then(()=>root.run())
                     .catch(this.handlePOWError);
             } else {
                 root.componentsLoad();
