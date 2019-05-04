@@ -19,8 +19,8 @@ app.getComponent = (reference) => {
     }
     return res.length>0?res[0]:null;
 }
-app.DEVMODE = true;
-Vue.config.devtools = true;
+app.DEVMODE = false;
+Vue.config.devtools = app.DEVMODE;
 Vue.config.productionTip = false;
 
 window.onload = function() {

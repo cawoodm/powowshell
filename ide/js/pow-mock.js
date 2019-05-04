@@ -7,7 +7,10 @@ window.pow = (function(){
         });
     }
     function componentsMock() {
-        return new Promise((resolve)=>{fetch("../examples/components/components.json").then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
+        return new Promise((resolve)=>{fetch("../examples/components.json").then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
+    }
+    function cmdletsMock() {
+        return new Promise((resolve)=>{fetch("../cache/cmdlets.json").then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
     }
     function pipelineMock(id) {
         return new Promise((resolve)=>{fetch(`../examples/${id}/pipeline.json`).then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
@@ -18,10 +21,13 @@ window.pow = (function(){
         version: async ()=>fakePromise(""),
         build: async ()=>fakePromise(""),
         verify: async ()=>fakePromise(""),
-        run: async (id)=>fakePromise(`pow run !${id}`, [], [{name:"foo"}]),
+        run: async (id)=>fakePromise(`pow run !${id}`, [], [{name:"John Doe", age:22}, {name:"Jane Doe", age:33}]),
         inspect: async ()=>fakePromise(""),
+        preview: async ()=>fakePromise("", [], {"result":"This would run the step and show the output"}),
+        examples: async ()=>fakePromise("", [], [{code:"somepowershell -code",description:"This is how you do this..."}]),
         pipeline: pipelineMock,
         components: componentsMock,
+        cmdlets: cmdletsMock,
         exec: async (command)=>fakePromise(command),
         execStrict: async (command)=>fakePromise(command),
         getWorkspace: ()=>async ()=>fakePromise("")
@@ -42,7 +48,7 @@ const POWResult = function(success, output, messages, object) {
     this.messages = messages || [];
 }
 /**
- * 
+ *
  * @param {string} type The type of message ERROR|WARN|INFO|DEBUG
  * @param {string} message The message text
  */
