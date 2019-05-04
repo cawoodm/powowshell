@@ -5,12 +5,14 @@ Vue.component("loading", {
     data: function() {
         return {
             show: this.show,
+            title: this.title,
             message: this.message
         };
     },
     methods: {
-        showLoading: function(show, message) {
+        showLoading: function(show, message, title) {
             this.show = show;
+            this.title = title||"Loading";
             this.message = message||"Loading...";
         },
         cancel: function() {
@@ -21,7 +23,7 @@ Vue.component("loading", {
 <div class="text-xs-center">
     <v-dialog v-model="show" persistent width="300">
       <v-card>
-        <v-card-title>Loading...</v-card-title>
+        <v-card-title>{{title}}...</v-card-title>
         <v-card-text>
           {{message}}
           <v-progress-linear indeterminate color="secondary" class="mb-0"></v-progress-linear>
