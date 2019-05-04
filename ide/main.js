@@ -27,7 +27,11 @@ window.onload = function() {
     app.root = new Vue({
         el: "#root",
         data: {
-            panels: [false, true, false],
+            panels: [false, false, false],
+            message: {
+                show: false,
+                message: ""
+            },
             pipeline: {}
         },
         methods: {
@@ -59,7 +63,10 @@ window.onload = function() {
                 this.$refs.loading.showLoading(show, msg);
             },
             run: function() {
-                // TODO: We should to save the pipeline first!
+                let root = this;
+                if (pipelineManager.isDirty() && confirm("Do you want to save before running?")) {
+                    return root.pipelineSave().then(root.run);
+                }
                 pow.build("!"+this.pipeline.id)
                     .then(()=>{
                         return pow.verify("!"+this.pipeline.id);
@@ -107,19 +114,19 @@ window.onload = function() {
             pipelineLoad: function(id, opts) {
                 // Load pipeline definition
                 opts = opts || {};
-                opts.skipConfirm=opts.skipConfirm||false;
-                if (!opts.skipConfirm && !confirm("Are you sure you want to clear the grid and load a new pipeline?")) return;
+                if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and load a new pipeline?")) return;
                 this.showLoading(true, `Loading pipeline (${id})...`);
                 pow.pipeline(`${id}`)
                     .then((res)=>{
                         pipelineManager.import(res.object);
                         if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
                         this.pipeline = res.object;
+                        this.showMessage(`Pipeline (${id}) loaded`);
                         this.showLoading(false);
                     }).catch(this.handlePOWError);
             },
             pipelineNew: function() {
-                if (!confirm("Are you sure you want to clear the grid and start a new pipeline?")) return;
+                if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and start a new pipeline?")) return;
                 pipelineManager.reset();
                 this.redraw();
             },
@@ -137,16 +144,32 @@ window.onload = function() {
                 }).catch(this.handlePOWError);
             },
             pipelineSave: function() {
+                let root = this;
                 let pipeline = pipelineManager.export();
                 // TODO: Use existing pipeline id or generate a new one
                 let pipelineId = pipeline.id || ("pipeline"+Math.random().toString(36).substring(7));
-                pow.save(pipeline, pipelineId)
-                    .then(()=>alert(`Saved ${pipelineId}`))
+                return pow.save(pipeline, pipelineId)
+                    .then(()=>{
+                        pipelineManager.setClean();
+                        root.showMessage(`Saved ${pipelineId}`);
+                    })
                     .catch(this.handlePOWError);
             },
             redraw: function() {
                 // Must synch entire grid OR Vue.set(exactObject, newObject)
                 this.$refs.stepGrid.doUpdate();
+            },
+            showMessage: function(text, color) {
+                color = color || "info";
+                if (this.message.show) {
+                    // Already visible, add to the message
+                    this.message.show = false;
+                    this.showMessage(this.message.text + " " + text, color);
+                    return;
+                }
+                this.message.text = text;
+                this.message.color = color;
+                this.message.show = true;
             }
         },
         mounted: function() {
@@ -193,7 +216,7 @@ window.onload = function() {
                         root.componentsLoad()
                         root.cmdletsLoad()
                     })
-                    .then(()=>root.pipelineLoad("procmon1", {skipConfirm: true}))
+                    .then(()=>root.pipelineLoad("procmon1"))
                     .catch(this.handlePOWError);
             } else {
                 root.componentsLoad();

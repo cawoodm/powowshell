@@ -6,6 +6,7 @@ let pipelineManager = (function () {
     const COLS = pipeCols.length;
     const ROWS = 9;
     let columns = [];
+    let dirty = false;
     const pipelineDefNull = function () { return { id: null, name: null, description: null, parameters: {}, globals: {}, steps: [], input: {}, output: {} }; };
     let pipelineDef = pipelineDefNull();
     // Public members
@@ -14,6 +15,7 @@ let pipelineManager = (function () {
          * Initialize a new, empty pipeline
          */
         reset: function () {
+            dirty = false;
             columns = [];
             pipelineDef = pipelineDefNull();
             for (let c = 0; c < pipeCols.length; c++) {
@@ -45,6 +47,7 @@ let pipelineManager = (function () {
             if (step.reference != null)
                 throw new Error("Step " + col + row + " is not empty!");
             step = component2Step(step.id, component);
+            dirty = true;
             columns[parseInt(col) - 1][row - 1] = step;
             return step;
         },
@@ -127,6 +130,7 @@ let pipelineManager = (function () {
          * @param {Object} newStep
          */
         setStep: function (newStep) {
+            dirty = true;
             let row = parseRow(newStep.id);
             let col = parseCol(newStep.id);
             columns[parseInt(col) - 1][row - 1] = newStep;
@@ -139,6 +143,7 @@ let pipelineManager = (function () {
          * @param {string} toId
          */
         moveStep: function (fromId, toId) {
+            dirty = true;
             if (getStep(toId).reference !== null)
                 throw new Error("Step " + toId + " is not empty!");
             let step = getStep(fromId);
@@ -155,6 +160,7 @@ let pipelineManager = (function () {
         removeStep: function (id) {
             let row = parseRow(id);
             let col = parseCol(id);
+            dirty = true;
             columns[col - 1][row - 1] = emptyStep(id);
         },
         /**
@@ -207,6 +213,18 @@ let pipelineManager = (function () {
          */
         rowCount: function () {
             return columns[0].length;
+        },
+        /**
+         * @returns {boolean} True if pipeline was modified
+         */
+        isDirty: function () {
+            return dirty;
+        },
+        /**
+         * Clears the dirty flag (after e.g. a save)
+         */
+        setClean: function () {
+            dirty = false;
         },
         /**
          * Return a column indexed from 1 to 10 (A-K)
@@ -301,7 +319,9 @@ let pipelineManager = (function () {
      */
     function component2Step(id, component) {
         let stepParams = {};
-        component.parameters.forEach((p) => stepParams[p.name] = p.default || null);
+        // We should not initialize cmdlet steps to their default because
+        //  their default may be a .NET type/enum which we can't use
+        component.parameters.forEach((p) => stepParams[p.name] = null);
         return {
             id: id,
             reference: component.reference,

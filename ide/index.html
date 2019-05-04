@@ -11,7 +11,7 @@
 <v-app id="root">
 
     <v-toolbar color="blue darken-3" app dark clipped-left>
-        <v-toolbar-title data-app>PowowShell Designer</v-toolbar-title>
+        <v-toolbar-title data-app>{{pipeline.name}} ({{pipeline.id}})</v-toolbar-title>
         <v-menu offset-y>
             <v-btn slot="activator" color="primary">Pipeline</v-btn>
             <v-list>
@@ -35,8 +35,8 @@
             <v-expansion-panel-content>
                 <div slot="header" class="body-2">Pipelines</div>
                 <v-list>
-                    <v-list-tile @click="pipelineLoad('pipeline1')">Example 1</v-list-tile>        
-                    <v-list-tile @click="pipelineLoad('procmon1')">Streamed Data</v-list-tile>        
+                    <v-list-tile @click="pipelineLoad('pipeline1')">Example 1</v-list-tile>
+                    <v-list-tile @click="pipelineLoad('procmon1')">Streamed Data</v-list-tile>
                 </v-list>
             </v-expansion-panel-content>
             <cmdlet-list ref="cmdletList"></cmdlet-list>
@@ -48,7 +48,7 @@
         <step-grid ref="stepGrid"></step-grid>
         <loading ref="loading"></loading>
     </v-content>
-
+    <v-snackbar v-model="message.show" timeout="3000" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
 </v-app>
 <script src="./js/vue.min.js"></script>
 <script src="./js/vuetify.js"></script>

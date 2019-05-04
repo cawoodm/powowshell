@@ -15,8 +15,7 @@ const pow = (function () {
         return new Promise(function (resolve, reject) {
             _POWPromise(`pow workspace ${workspacePath} | ConvertTo-Json`, true, true).then((result) => {
                 if (result.success) {
-                    workspace = result.object; //workspacePath
-                    console.log("workspace set to", workspace);
+                    workspace = result.object;
                     resolve(result);
                 }
                 else

@@ -1,20 +1,17 @@
 # TODO
 
+* components.json should not have absolute paths
+** Need to decide how to cache this per workspace OR
+** Rethink where components need to reside: probably in core/ globally
 * How to switch between POWERSHELL (v5) and PWSH (v6)
 * What to do about parameter sets with multiple ByValue pipeline parameters? (e.g. Unprotect-CmsMessage)
-* Delete step from grid
 * Convert System.DateTime.MinValue to {[System.DateTime]::MinValue} in Parameter defaults
 ** Or just //Microsoft.ActiveDirectory.Management.AuthType.Negotiate since not all values can be resolved
 * New component "ScriptBlock" for arbitrary PS Code?
 * Parameter[] - use "Pills" so Name, Age => {"Name", "Age"}
-* components.json should not have absolute paths
-** Need to decide how to cache this per workspace OR
-** Rethrink where components need to reside: probably in core/ globally
 * Can we do away with pipeline.id - it's redundant!
 * * Let's switch to pipelineId.pipe so we can have a .exe run the file
 * We maybe need a convertto-json component/option for outputs of pipelines
-* We need to save a pipeline before running it in the IDE
-* We need a concept of "dirty" in the IDE so we know if a pipeline has been changed
 
 # Adaptors
 We want to support any Cmdlet's output so...

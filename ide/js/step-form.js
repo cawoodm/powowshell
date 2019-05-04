@@ -1,4 +1,4 @@
-/* global pipelineManager */
+/* global Vue pipelineManager */
 const formBuilder = (function() {
     let dialog;
     return {
@@ -6,11 +6,11 @@ const formBuilder = (function() {
             let frm = document.createElement("div");
             frm.setAttribute("id", "myForm");
             document.body.appendChild(frm);
-            //let str = JSON.stringify(step) + "\n" + JSON.stringify(component);console.log(str)
             for(let p = 0; p<component.parameters.length; p++) {
                 let compParam = component.parameters[p];
-                compParam.stepValue = step.parameters[compParam.name]||compParam.default||null;
+                compParam.stepValue = step.parameters[compParam.name]||null;
                 compParam.rules=compParam.required?[value => !!value || "Required parameter!"]:[];
+                compParam.label = compParam.name + (compParam.required?"*":"");
             }
             // Have to clone step or we can't cancel out of the form
             let stepClone = Object.assign({}, step);
@@ -85,7 +85,7 @@ const StepForm = Vue.extend({
                 <v-container grid-list-xs>
                     <v-layout row wrap>
                         <v-flex xs12>
-                            <v-text-field label="Name" placeholder="A label for this step" v-model="step.name" ref="focusMe" autofocus></v-text-field>
+                            <v-text-field label="Name" placeholder="A label for this step" v-model="step.name" :rules="[value => !!value || 'Required parameter!']" ref="focusMe" autofocus></v-text-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-text-field label="Description" placeholder="A description for this step" v-model="step.descriptions"></v-text-field>
@@ -111,10 +111,10 @@ const StepForm = Vue.extend({
                                 </v-tooltip>
                             </v-flex>
                             <v-flex xs11>
-                                <v-checkbox v-if="compParam.type==='switch'"                               v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')"></v-checkbox>
-                                <v-combobox v-else-if="compParam.values && compParam.type.match(/\\[/)"    v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')" :items="compParam.values" multiple></v-combobox>
-                                <v-combobox v-else-if="compParam.values"                                   v-model="compParam.stepValue" :label="compParam.name + (compParam.required?'*':'')" :items="compParam.values"></v-combobox>
-                                <v-text-field v-else :label="compParam.name + (compParam.required?'*':'')" :placeholder="compParam.default?compParam.default:''" :rules="compParam.rules" v-model="compParam.stepValue" clearable>
+                                <v-checkbox v-if="compParam.type==='switch'"                               v-model="compParam.stepValue" :label="compParam.label"></v-checkbox>
+                                <v-combobox v-else-if="compParam.values && compParam.type.match(/\\[/)"    v-model="compParam.stepValue" :label="compParam.label" :placeholder="compParam.default" :items="compParam.values" multiple></v-combobox>
+                                <v-combobox v-else-if="compParam.values"                                   v-model="compParam.stepValue" :label="compParam.label" :placeholder="compParam.default" :items="compParam.values"></v-combobox>
+                                <v-text-field v-else                                                       v-model="compParam.stepValue" :label="compParam.label" :placeholder="compParam.default" :rules="compParam.rules" clearable>
                                 </v-text-field>
                             </v-flex>
                         </template>
