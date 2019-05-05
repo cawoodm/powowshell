@@ -19,7 +19,7 @@ app.getComponent = (reference) => {
     }
     return res.length>0?res[0]:null;
 }
-app.DEVMODE = false;
+app.DEVMODE = true;
 Vue.config.devtools = app.DEVMODE;
 Vue.config.productionTip = false;
 
@@ -133,9 +133,15 @@ window.onload = function() {
                         pipelineManager.import(res.object);
                         if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
                         this.pipeline = res.object;
-                        this.showMessage(`Pipeline (${id}) loaded`);
+                        //this.showMessage(`Pipeline (${id}) loaded`);
                         this.showLoading(false);
                     }).catch(this.handlePOWError);
+            },
+            pipelineEdit: function() {
+                this.$refs.pipelineForm.showForm(pipelineManager.getDefinition());
+            },
+            pipelineFormOK: function(def) {
+                Object.assign(this.pipeline, def);
             },
             pipelineNew: function() {
                 if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and start a new pipeline?")) return;
@@ -191,6 +197,7 @@ window.onload = function() {
                 pipelineManager.setStep(newStep);
                 this.redraw();
             });
+            this.$root.$on("pipelineFormOK", this.pipelineFormOK);
             this.$root.$on("componentExamples", (reference, type) => {
                 let ref = type==="cmdlet"?reference:"!"+reference;
                 pow.examples(ref)
@@ -222,14 +229,14 @@ window.onload = function() {
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
-                //pow.execOptions.debug=true;
+                pow.execOptions.debug=true;
                 pow.init("!examples")
                     .then(()=>{
                         root.componentsLoad()
                         root.cmdletsLoad()
                     })
                     .then(()=>root.pipelineLoad("pipeline2"))
-                    .then(()=>root.run())
+                    //.then(()=>root.run())
                     .catch(this.handlePOWError);
             } else {
                 root.componentsLoad();

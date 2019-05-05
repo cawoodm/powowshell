@@ -1,5 +1,10 @@
 CHANGELOG
 
+v0.1.8 05.05.2019
+* Data grid vizualisation of pipeline output
+* Edit pipeline details form
+* pow run export can now automatically convert non-string output to JSON
+
 v0.1.7 16.04.2019
 * Streamed pipelines
 * CmdLet support as components

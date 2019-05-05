@@ -105,22 +105,10 @@
         "Wait": null
       },
       "input": "E1"
-    },
-    {
-      "id": "G1",
-      "reference": "ConvertTo-JSON",
-      "name": "JSON Output",
-      "stream": "end",
-      "parameters": {
-        "Depth": 3,
-        "InputObject": null,
-        "Compress": null
-      },
-      "input": "F1"
     }
   ],
   "input": {},
   "output": {
-    "type": "string"
+    "type": "object"
   }
 }

@@ -13,6 +13,7 @@
 
  .Parameter Option
  trace: will trace each step's input and output to the trace\ folder of the pipeline for debugging
+ export: will export the output as JSON
 
  .Example
  pow run ./examples/pipeline1 @{DataSource="./data/names.txt"}
@@ -23,7 +24,8 @@
 param(
     [Parameter(Mandatory)][String]$Path,
 		$Parameters=@{},
-		[string]$Option
+		[ValidateSet("trace", "export")]
+		[string[]]$Options
 )
 function main() {
 
@@ -49,11 +51,17 @@ function main() {
 	$Path = (Resolve-Path -Path $Path).Path
 	Push-Location $Path
 	try {
-		if ($option -like "trace") {
-			& .\run_trace.ps1 @Parameters
+		$exec = ".\run_prod.ps1"
+		if ($Options -contains "trace") {$exec=".\run_trace.ps1"}
+		if ($Parameters) {
+			$result = & $exec @parameters
 		} else {
-			& .\run_prod.ps1 @Parameters
+			$result = & $exec
 		}
+		if ($Options -contains "export" -and $result -isnot [string]) {
+			return ConvertTo-Json $result -Compress
+		}
+		return $result
 	} catch {
 		Show-Message "ERROR: !!! PIPELINE RUN FAILED !!!" Red
 		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")

@@ -1,5 +1,7 @@
 # TODO
 
+* Trace should be serializing step output to JSON as required
+* We maybe need a convertto-json component/option for outputs of pipelines
 * components.json should not have absolute paths
 ** Need to decide how to cache this per workspace OR
 ** Rethink where components need to reside: probably in core/ globally
@@ -10,8 +12,8 @@
 * New component "ScriptBlock" for arbitrary PS Code?
 * Parameter[] - use "Pills" so Name, Age => {"Name", "Age"}
 * Can we do away with pipeline.id - it's redundant!
-* * Let's switch to pipelineId.pipe so we can have a .exe run the file
-* We maybe need a convertto-json component/option for outputs of pipelines
+ * * But do we want the id to change when we move folders?
+*Let's switch to pipelineId.pipe so we can have a .exe run the file
 
 # Adaptors
 We want to support any Cmdlet's output so...
@@ -33,9 +35,9 @@ At some point we need to know if the JSON is an object or an array
 * How to capture -Verbose output
 
 ## Examples
-* We need more realistic, complex pipelines
 * We need more components (API, HTTP, NodeJs, AWK, Python...)
- * Components should declare their dependencies
+* * Components should declare their dependencies
+* * Maybe the -WhatIf parameter should check dependencies (on steps and pipelines)
 
 ## IDE
 * We need some arrows showing pipeline flow of data

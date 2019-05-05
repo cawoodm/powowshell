@@ -65,11 +65,12 @@ const pow = (function () {
         return _POWPromise(command, true, true);
     }
     /**
-     * Return a built pipeline definition (pipeline.json)
+     * Return a built pipeline definition
      * @param {string} path Path to the pipeline ("!pipeline1" for default workspace)
      * @returns {Promise} Promise with a POWResult
      */
     async function pipeline(path) {
+        // If we don't have a !* or a */* path, add the ! prefix
         if (!path.match(/^!/) && !path.match(/[\\/]/))
             path = "!" + path;
         return execStrictJSON(`pow pipeline "${path}" export`);
@@ -136,7 +137,7 @@ const pow = (function () {
      * @returns {Promise} Promise with a POWResult containing an object (pipeline result)
      */
     async function run(path) {
-        return execStrictJSON(`pow run "${path}"`);
+        return execStrictJSON(`pow run "${path}" $null export`);
     }
     /**
      * Preview a step

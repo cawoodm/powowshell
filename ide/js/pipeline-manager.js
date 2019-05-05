@@ -196,11 +196,18 @@ let pipelineManager = (function () {
             return res;
         },
         /**
-         * Return the definition for unit testing
+         * Return the definition for editing form/unit testing
          * @returns {Object} The in-memory pipeline which was loaded
          */
         getDefinition: function () {
             return pipelineDef;
+        },
+        /**
+         * Set the definition from editing form
+         * @def {POWType.PipelineDef} The in-memory pipeline to be set
+         */
+        setDefinition: function (def) {
+            pipelineDef = def;
         },
         /**
          * @returns {number} The number of columns

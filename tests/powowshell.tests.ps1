@@ -26,8 +26,12 @@ function main() {
         & pow verify ../examples/pipeline1 "@{DataSource='.\data\names.txt'}" | Out-Null
         Write-Host "SUCCESS: pow verify" -ForegroundColor Green
 
-        & pow run !pipeline1 -WhatIf @{DataSource='.\data\names.txt'} | Out-Null
+        & pow run !pipeline1 @{DataSource='.\data\names.txt'} | Out-Null
         Write-Host "SUCCESS: pow run" -ForegroundColor Green
+
+        # TODO: Test pipeline run export
+        #$res = & pow run !pipeline2 $null export
+        #Write-Host "SUCCESS: pow run !pipeline2 export" -ForegroundColor Green
 
         & pow components ! export | Out-Null
         Write-Host "SUCCESS: pow components" -ForegroundColor Green
