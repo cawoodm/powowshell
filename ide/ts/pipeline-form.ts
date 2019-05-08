@@ -1,7 +1,8 @@
-let pipelineForm = function (Vue) {
+let pipelineForm = function(Vue) {
+    
     const PipelineForm = Vue.extend({
         props: ["def"],
-        data: function () {
+        data: function() {
             return {
                 show: true,
                 def: this.def
@@ -16,12 +17,12 @@ let pipelineForm = function (Vue) {
                 this.show = false;
             }
         },
-        mounted: function () {
-            window.setTimeout(this.$refs.focusMe.focus, 200);
+        mounted: function() {
+            window.setTimeout(this.$refs.focusMe.focus,200);
         },
         computed: {
-            title: function () {
-                return this.def.name ? `${this.def.name} (${this.def.id})` : this.def.id;
+            title: function() {
+                return this.def.name?`${this.def.name} (${this.def.id})`:this.def.id;
             }
         },
         template: `
@@ -55,9 +56,10 @@ let pipelineForm = function (Vue) {
         </v-dialog>
     `
     });
-    let dialog;
+
+    let dialog; 
     return {
-        showForm: function ($root, def) {
+        showForm: function($root, def) {
             let frm = document.createElement("div");
             frm.setAttribute("id", "myPipelineForm");
             document.body.appendChild(frm);
@@ -70,9 +72,8 @@ let pipelineForm = function (Vue) {
                 }
             }).$mount("#myPipelineForm");
         }
-    };
-};
+    }
+    
+}
 // @ts-ignore
-if (typeof module !== "undefined")
-    module.exports = pipelineForm;
-//# sourceMappingURL=pipeline-form.js.map
+if (typeof module !== "undefined") module.exports = pipelineForm;

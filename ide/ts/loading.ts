@@ -3,7 +3,7 @@
  */
 let modLoading = function (Vue) {
     Vue.component("loading", {
-        data: function () {
+        data: function() {
             return {
                 show: this.show,
                 title: this.title,
@@ -11,33 +11,32 @@ let modLoading = function (Vue) {
             };
         },
         methods: {
-            showLoading: function (show, message, title) {
-                if (show === false) {
+            showLoading: function(show, message, title) {
+                if (show===false) {
                     this.messages--;
                     if (this.messages <= 0) {
                         this.show = false;
                         this.title = "";
                         this.message = "";
                     }
-                }
-                else {
+                } else {
                     this.show = true;
-                    this.title = title || "Loading";
+                    this.title = title||"Loading";
                     this.messages++;
-                    this.message += (message || "Loading...") + "<br>";
+                    this.message += (message||"Loading...")+"<br>";
                 }
             },
-            close: function () {
-                this.messages = 0;
+            close: function() {
+                this.messages=0;
                 this.show = false;
                 this.title = "";
                 this.message = "";
             }
         },
-        mounted: function () {
-            this.title = "";
-            this.message = "";
-            this.messages = 0;
+        mounted: function() {
+            this.title="";
+            this.message="";
+            this.messages=0;
         },
         template: `
     <div class="text-xs-center">
@@ -56,8 +55,6 @@ let modLoading = function (Vue) {
     </div>
     `
     });
-};
+}
 // @ts-ignore
-if (typeof module !== "undefined")
-    module.exports = modLoading;
-//# sourceMappingURL=loading.js.map
+if (typeof module !== "undefined") module.exports = modLoading;

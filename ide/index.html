@@ -50,7 +50,6 @@
         <step-grid ref="stepGrid"></step-grid>
         <loading ref="loading"></loading>
     </v-content>
-    <pipeline-form ref="pipelineForm"></pipeline-form>
     <v-snackbar v-model="message.show" timeout="3000" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
 </v-app>
 <script src="./js/vue.min.js"></script>
@@ -60,17 +59,17 @@
 if (typeof process === "undefined") {
     var exports = {} // Fix TypeScript reference to exports not known in browser
     // Write JS Modules as <script> tags for Browser Demo (non-electron)
+    document.write('<script src="./js/component-list.js"><'+'/script>');
+    document.write('<script src="./js/pipeline-form.js"><'+'/script>');
     document.write('<script src="./js/pipeline-manager.js"><'+'/script>');
     document.write('<script src="./js/pow-mock.js"><'+'/script>');
+    document.write('<script src="./js/loading.js"><'+'/script>');
 }
 </script>
-<script src="./js/component-list.js"></script>
 <script src="./js/cmdlet-list.js"></script>
-<script src="./js/pipeline-form.js"></script>
 <script src="./js/step-grid.js"></script>
 <script src="./js/step-form.js"></script>
 <script src="./js/data-table.js"></script>
-<script src="./js/loading.js"></script>
 <script src="./ide.js"></script>
 </body>
 </html>

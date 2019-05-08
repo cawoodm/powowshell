@@ -1,7 +1,7 @@
 {
   "id": "pipeline2",
-  "name": "25 Windows DLLs",
-  "description": "List the 25 largest .dll files in the windows\\system32 folder.",
+  "name": null,
+  "description": null,
   "parameters": {},
   "globals": {},
   "steps": [

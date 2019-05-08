@@ -1,5 +1,5 @@
 /**
- * A loading/progress bar/spinner...
+ * A loading/progress spinner....
  */
 let modLoading = function (Vue) {
     Vue.component("loading", {

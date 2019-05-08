@@ -23,7 +23,7 @@ Vue.component('step-grid', {
             }
         },
         showDialog: function(id) {
-            this.$root.showDialog(id)
+            this.$root.showStepDialog(id)
         },
         preview(id) {
             this.$root.$emit("stepPreview", id);
