@@ -74,7 +74,9 @@ window.onload = function() {
                 });
             },
             showLoading: function(msg, title) {
-                if (msg === false)
+                if (msg === 0)
+                    this.$refs.loading.close();
+                else if (msg === false)
                     this.$refs.loading.showLoading(false);
                 else
                     this.$refs.loading.showLoading(true, msg, title);
@@ -87,10 +89,12 @@ window.onload = function() {
                 this.showLoading("Building "+this.pipeline.id, "Build and Run")
                 return pow.build("!"+this.pipeline.id)
                     .then(()=>{
+                        this.showLoading(false);
                         this.showLoading("Verifying "+this.pipeline.id, "Build and Run")
                         return pow.verify("!"+this.pipeline.id);
                     })
                     .then(()=>{
+                        this.showLoading(false);
                         this.showLoading("Running "+this.pipeline.id, "Build and Run")
                         return pow.run("!"+this.pipeline.id)
                     })
@@ -101,9 +105,9 @@ window.onload = function() {
                             let data = JSON.stringify(obj.object, null, 2);
                             alert(data)
                         }
-                        this.showLoading(false);
+                        this.showLoading(0);
                     }).catch((err)=>{
-                        this.showLoading(false);
+                        this.showLoading(0);
                         this.handlePOWError(err)
                     });
             },
