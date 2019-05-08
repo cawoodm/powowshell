@@ -1,5 +1,8 @@
 # TODO
 
+* git config user.email "498834+cawoodm@users.noreply.github.com"
+* git config user.name "Marc Cawood"
+
 * Trace should be serializing step output to JSON as required
 * We maybe need a convertto-json component/option for outputs of pipelines
 * components.json should not have absolute paths
