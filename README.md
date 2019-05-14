@@ -10,14 +10,12 @@ Imagine dragging a CSV File component into your pipeline, connecting it to a Dat
 The software is pre-alpha, proof of concept, cutting (bleeding) edge technology but for the brave:
 
 1. Clone this repository with git: `git clone https://cawoodm/powowshell.git`
-2. Install electron: `npm install -g electron`
-3. Run the IDE with `npm start` or `electron `.`
-4. You can also run `install.cmd` and then play with the `pow` commands in powershell to build and run example pipelines
+2. Run `install` and then play with the `pow` commands in powershell to build and run the example pipelines
+3. To use the IDE, install electron: `npm install -g electron`
+4. Run the IDE with `npm start` or `electron `.`
 
 ## Examples
 This repo includes an 2 example pipelines in `./examples/` as well as a bunch of components.
-
-Install the `pow` cmdlet with install.cmd and then fire up `powershell` to begin.
 
 If you type `pow version` you should see version information and `pow help` will get you started with commands.
 
@@ -72,7 +70,7 @@ This demo is basically just look and feel. There is no loading, running and savi
 
 ### Pipelines
 
-Pipelines are where the magic happens. Here you connect your components together in a sequence. The pipeline is run in columns: Column A is run, then B etc. In each column the components are executed from top to bottom so you'd have: A1 -> B1 -> B2 -> C1 -> C2 -> C3 -> D1
+Pipelines are where the magic happens. Here you connect your components together in a sequence. The pipeline is run as we read code: left to right, top to bottom: A1 -> B1 -> C1 -> D1 -> A2 -> B2
 
  ![pipeline](docs/pipeline.png)
  ![pipeline2](docs/pipeline2.png)
@@ -83,7 +81,7 @@ Pipelines are where the magic happens. Here you connect your components together
 
 ### Components
 
-The diagram above shows the 4 types of components (source, transform, destination and script) and how data can flow between them. It also shows how script components just run, needing no input and producing no output. Indeed you can use a pipeline to just run some commands in sequence.
+Components are .ps1 scripts which can wrap powershell, batch, python, perl or any language you like: any CLI can be wrapped, described and documented as a component and used in a pipeline. In addition, all installed PowerShell Cmdlets and Functions are automatically available.
 
 ## Installation
 
@@ -98,6 +96,14 @@ It also creates a `pow.cmd` wrapper which you can copy to your PATH so you can r
 Let's check if we're up and running by displaying the version:
 ```
 pow version
+```
+Next let's generate a cache of all components in the examples pack:
+```
+pow components .\examples\components generate
+```
+...and finally all  cmdlets installed on our system (may take a few minutes):
+```
+pow cmdlets generate
 ```
 Now we'll build and run the example pipeline:
 ```
@@ -154,7 +160,7 @@ Make sure that you run
 PowerShell is a cross platform, open source shell designed by Microsoft which
 runs on Windows, Mac and Linux. It's powerful and fun to use and becoming much
 more than a utility merely for IT departments. It's designed around discreet
-functionality called "CmdLets" which generally accept and provide input and 
+functionality called "CmdLets" which generally accept and provide input and
 output on the pipeline.
 
 ## What does PowowShell do?
