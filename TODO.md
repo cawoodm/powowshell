@@ -1,10 +1,19 @@
 # TODO
 
+## Build
+* Build Modes:
+* Pipeline Mode
+** As today - basically a folder
+* Script Mode
+** As a teaching aid/kickstart for real powershell programming
+** A single .ps1 file: basis for further hacking
+** Don't wrap Cmdlets in a separate step file
+
 * Move components to core
 * Build should copy components to pipeline folder and reference them
 
 * Trace should be serializing step output to JSON as required
-* We maybe need a convertto-json component/option for outputs of pipelines
+
 * components.json should not have absolute paths
 ** Need to decide how to cache this per workspace OR
 ** Rethink where components need to reside: probably in core/ globally
@@ -16,7 +25,7 @@
 * Parameter[] - use "Pills" so Name, Age => {"Name", "Age"}
 * Can we do away with pipeline.id - it's redundant!
  * * But do we want the id to change when we move folders?
-*Let's switch to pipelineId.pipe so we can have a .exe run the file
+* Let's switch to pipelineId.pipe so we can have a .exe run the file
 
 # Adaptors
 We want to support any Cmdlet's output so...

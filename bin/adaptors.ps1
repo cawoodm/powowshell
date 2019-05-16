@@ -20,6 +20,7 @@ param(
     [ValidateSet("generate", "export")][string[]]$Action=$null
 )
 function main() {
+
     if ($Path) {
         Write-Verbose "Path=$Path"
         $FullPath = (Resolve-Path -Path $Path).Path

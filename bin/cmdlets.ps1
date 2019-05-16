@@ -17,10 +17,11 @@ param(
     [string]$Filter
 )
 function main() {
-    try {
 
-        # Save path we are started from
-        $StartPath = (Get-Location).Path
+    # Save path we are started from
+    $StartPath = (Get-Location).Path
+
+    try {
 
         # Check Cache
         Set-Location $PSScriptRoot
@@ -57,17 +58,24 @@ function main() {
         }
         # Get all installed Cmdlets and Functions
         #  - excluding drives ("*:")
+        #  - excluding CD\ ("*\")
+        #  - include only *-*: gives good results
+        $WhereFilter = {$_.Name -like "*-*"}
         if ($Filter) {
-            $CmdletsAll = (Get-Command -Type CmdLet,Function -Name $Filter).Where({$_.Name -notlike "*:"})
+            $CmdletsAll = (Get-Command -Type CmdLet,Function -Name $Filter).Where($WhereFilter)
         } else {
-            $CmdletsAll = (Get-Command -Type CmdLet,Function).Where({$_.Name -notlike "*:"})
+            $CmdletsAll = (Get-Command -Type CmdLet,Function).Where($WhereFilter)
         }
         Write-Verbose "$($CmdletsAll.count) Cmdlets found"
         # Sort and deduplicate (yes!) by name
         $CmdletsAll = $CmdletsAll | Sort-Object Name -Unique # | Select -First 10
         # Parse each CmdLet using `pow inspect`
         $Cmdlets = [System.Collections.ArrayList]@()
+        $done=0;$tot=$CmdletsAll.count
         foreach($cmdlet in $CmdletsAll) {
+            $done++
+            Write-Progress -PercentComplete ([int]([Math]::Round(100*$done/$tot))) -Activity "Inspecting $($cmdlet.name)..."
+            if ($cmdlet.name -notlike "*-*") {Write-Verbose "Excluding $($cmdlet.name) as a possible alias function.";continue;}
             $cm = & "$PSScriptRoot\inspect.ps1" -Path $cmdlet.name
             if ($null -eq $cm) {continue}
             $null = $Cmdlets.add($cm)
@@ -84,7 +92,7 @@ function main() {
         }
         if ($Action -like "export") {
             return $JSON
-        } else {
+        } elseif ($Action -notlike "generate") {
             return $Cmdlets
         }
     } catch {
@@ -95,7 +103,8 @@ function main() {
     }
 }
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

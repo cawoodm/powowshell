@@ -105,9 +105,6 @@ function main() {
 				}
 				# WEIRD: We have to convert a null object to a real null (or we get "{}" in JSON)
 				if ($null -eq $paramValues) {$paramValues=$null}
-				if ($parameter.name -like "Directory") {
-					Write-Host ($null -eq $paramValues)
-				}
 				$paramDefault=$null
 				if ($parameter.defaultValue -and $parameter.defaultValue -notlike "none" -and $parameter.defaultValue -notlike "false") {
 					$paramDefault = $parameter.defaultValue
@@ -207,14 +204,15 @@ function Get-OPReturn($cmd) {
 		if ($result -like "* *") {$result="object"}
 		return [string]$result;
 	} else {
-		Write-Warning "No output!"
+		Write-Warning "No output on $($cmd.details.name)!"
 	}
 }
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
 function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{$null}}
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 #Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

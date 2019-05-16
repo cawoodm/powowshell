@@ -14,6 +14,10 @@ param(
     [Parameter(Mandatory)][String]$Path
 )
 function main() {
+
+	# Include common settings/functions
+	. "$PSScriptRoot\common.ps1"
+
   $Path = (Resolve-Path -Path $Path).Path
 	Push-Location $Path
 	Remove-Item -Force step_*.ps1

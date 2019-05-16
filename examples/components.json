@@ -463,16 +463,13 @@
                            }
                        ],
         "input":  "string",
-        "inputFormat":  null,
+        "inputFormat":  "text/json",
         "inputDescription":  "",
         "output":  "string",
         "outputFormat":  "system.string",
         "outputDescription":  "",
         "POWMessages":  [
-                            {
-                                "type":  "WARNING",
-                                "message":  "Pipeline input not described properly in annotated comments (.Inputs) of FieldAdd!"
-                            }
+
                         ]
     },
     {
@@ -616,16 +613,13 @@
                            }
                        ],
         "input":  "string",
-        "inputFormat":  null,
+        "inputFormat":  "text/json",
         "inputDescription":  "",
         "output":  "object",
         "outputFormat":  "system.object",
         "outputDescription":  "",
         "POWMessages":  [
-                            {
-                                "type":  "WARNING",
-                                "message":  "Pipeline input not described properly in annotated comments (.Inputs) of ObjectAddField!"
-                            }
+
                         ]
     },
     {

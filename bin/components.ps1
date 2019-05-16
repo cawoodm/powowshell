@@ -22,6 +22,7 @@ param(
     [ValidateSet("generate", "export", "list")][string]$Action=$null
 )
 function main() {
+
     $Path = $Path.replace('.ps1', '')
 	$FullPath = (Resolve-Path -Path $Path).Path
     Write-Verbose "Components Path=$Path; FullPath=$FullPath"
@@ -95,7 +96,8 @@ function LoadComponents($Path) {
 
 }
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

@@ -14,6 +14,7 @@ param(
     [switch]$Verify = $false
 )
 function main() {
+
     try {
         Push-Location $PSScriptRoot
 
@@ -85,7 +86,6 @@ function main() {
         Pop-Location
     }
 }
-function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

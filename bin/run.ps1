@@ -29,6 +29,9 @@ param(
 )
 function main() {
 
+	# Include common settings/functions
+	. "$PSScriptRoot\common.ps1"
+
 	# Save path we are started from
 	$StartPath = (Get-Location).Path
 
@@ -70,9 +73,9 @@ function main() {
 		Set-Location $StartPath
 	}
 }
-function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

@@ -88,11 +88,11 @@ window.onload = function() {
                 }
                 this.showLoading("Building "+this.pipeline.id, "Build and Run")
                 return pow.build("!"+this.pipeline.id)
-                    .then(()=>{
-                        this.showLoading(false);
-                        this.showLoading("Verifying "+this.pipeline.id, "Build and Run")
-                        return pow.verify("!"+this.pipeline.id);
-                    })
+                    // .then(()=>{
+                    //     this.showLoading(false);
+                    //     this.showLoading("Verifying "+this.pipeline.id, "Build and Run")
+                    //     return pow.verify("!"+this.pipeline.id);
+                    // })
                     .then(()=>{
                         this.showLoading(false);
                         this.showLoading("Running "+this.pipeline.id, "Build and Run")
@@ -260,7 +260,7 @@ window.onload = function() {
                         root.componentsLoad()
                         root.cmdletsLoad()
                     })
-                    .then(()=>root.pipelineLoad("pipeline2"))
+                    .then(()=>root.pipelineLoad("pipeline3"))
                     //.then(()=>root.run())
                     .catch(this.handlePOWError);
             } else {

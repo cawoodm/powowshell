@@ -53,7 +53,7 @@ function BuildingPipeline() {
     & pow adaptors | ForEach-Object {$ADAPTORS.add($_.type, $_)}
 
     # Read pipeline.json definition
-    $pipelineDef = ReadingPipelineDefinition("pipeline.json")
+    $pipelineDef = ReadPipelineDefinition("pipeline.json")
 
     # Validate definition
     CheckSteps $pipelineDef.steps $COMPONENTS
@@ -62,10 +62,10 @@ function BuildingPipeline() {
     CreateSteps -pipelineDef $pipelineDef -COMPONENTS $COMPONENTS -ADAPTORS $ADAPTORS
 
     # Transform definition of pipeline into run_trace.ps1
-    CreatingPipeline_trace $pipelineDef
+    CreatePipeline_trace $pipelineDef
 
     # Transform definition of pipeline into run_prod.ps1
-    CreatingPipeline_prod $pipelineDef $COMPONENTS
+    CreatePipeline_prod $pipelineDef $COMPONENTS
 
     Show-Message "SUCCESS: BUILD completed" Green
 
@@ -82,8 +82,7 @@ function BuildingPipeline() {
         ForEach-Object {" $_"};
 
 }
-function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
-function ReadingPipelineDefinition($Path) {
+function ReadPipelineDefinition($Path) {
     try {
         Get-Content -Raw ./pipeline.json | ConvertFrom-Json
     } catch {
@@ -91,6 +90,10 @@ function ReadingPipelineDefinition($Path) {
     }
 }
 
+<#
+ .Synopsis
+ Basic checks of components/cmdlets referenced in the pipeline
+#>
 function CheckSteps($steps, $COMPONENTS) {
 
     # Make sure we have at least one step
@@ -99,10 +102,10 @@ function CheckSteps($steps, $COMPONENTS) {
 
     # Check each step
     foreach($step in $steps) {
-        Write-Verbose "1 $($step.reference)"
+        Write-Verbose "Checking $($step.id): $($step.reference)"
         $component = $COMPONENTS[$step.reference]
+        # If not cached, inspect the component
         if ($null -eq $component) {$component = & "$PSScriptRoot\inspect.ps1" $step.reference}
-        Write-Verbose "2 $component"
         $COMPONENTS[$component.reference]=$component
         Write-Verbose "$($component.reference) is a $($component.type)"
         # Check same number of parameters
@@ -192,13 +195,13 @@ function CreateSteps($pipelineDef, $COMPONENTS, $ADAPTORS) {
 function Get-Step($id) {$pipelineDef.steps | Where-Object id -eq $id}
 
 <#
-	CreatingPipeline_prod
+	CreatePipeline_prod
 	Create pipeline for production
 	 * No trace files are used
 	 * Performance is better
 #>
-function CreatingPipeline_prod($pipelineDef, $COMPONENTS) {
-    Write-Verbose "BUILDER CreatingPipeline_prod"
+function CreatePipeline_prod($pipelineDef, $COMPONENTS) {
+    Write-Verbose "BUILDER CreatePipeline_prod"
 
     # Can be run from anywhere, change to pipeline path
     $cmd = ReSerializeParams $pipelineDef.parameters;
@@ -252,14 +255,14 @@ function CreatingPipeline_prod($pipelineDef, $COMPONENTS) {
 }
 
 <#
-	CreatingPipeline_trace
+	CreatePipeline_trace
 	Create pipeline for tracing
 	 * Trace files are generated
 	 * Better for debugging
 #>
-function CreatingPipeline_trace($pipelineDef) {
+function CreatePipeline_trace($pipelineDef) {
 
-    Write-Verbose "BUILDER CreatingPipeline_prod"
+    Write-Verbose "BUILDER CreatePipeline_prod"
 
     # Can be run from anywhere, change to pipeline path
     $cmd = ReSerializeParams $pipelineDef.parameters;
@@ -375,7 +378,8 @@ function ReSerializePipelineParams($obj) {
     return $res
 }
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

@@ -39,6 +39,7 @@ param(
 )
 
 function main() {
+
 	# Save path we are started from
 	$StartPath = (Get-Location).Path
 
@@ -88,7 +89,8 @@ function main() {
 
 }
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

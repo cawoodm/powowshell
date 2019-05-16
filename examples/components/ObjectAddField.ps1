@@ -1,12 +1,15 @@
 ﻿<#
-    .Synopsis
-    Add a field to each object in an array
+ .Synopsis
+ Add a field to each object in an array
 
-    .Parameter Name
-    Name of the field to add
-		
-		.Parameter Value
-		Value of the field to add
+ .Parameter Name
+ Name of the field to add
+
+ .Parameter Value
+ Value of the field to add
+
+ .Inputs
+ text/json
 
 #>
 [OutputType([Object])]

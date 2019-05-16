@@ -4,7 +4,7 @@
 
  .Description
  Defining a workspace allows you to use ! in pow commands to save typing the full path
- This setting is saved in $env:USERPROFILE\powowshell\workspace.txt
+ This setting is saved in $HOME\powowshell\workspace.txt
 
  .Parameter Path
  The path to the folder containing components and pipelines
@@ -24,7 +24,7 @@ function main() {
     $StartPath = (Get-Location).Path
 
     # Location of our workspace setting
-    $WSPath = "$env:USERPROFILE\powowshell\workspace.txt"
+    $WSPath = "$($_POW.HOME)\workspace.txt"
 
 	try {
         $WPath=$null
@@ -52,7 +52,8 @@ function main() {
 	}
 }
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

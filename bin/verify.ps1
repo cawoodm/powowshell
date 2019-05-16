@@ -5,9 +5,19 @@
  .Description
  Dry run a pipeline, suppressing real output to check for errors
  Run with -Verbose to see detailed steps
+ INPUT:
+  - A path to a valid, built pipeline
+ PROCESS:
+  - Runs the pipeline with -WhatIf enabled
+ OUTPUT:
+  - Messages in color on the terminal about success/fail (BOO)
 
  .Parameter Path
  The path to the pipeline folder
+
+ .Parameter Parameters
+ An optional hashmap of parameters to pass
+ Can also be a string in the form "param1=x;param2=y"
 
  .Example
  pow verify ./pipeline1
@@ -95,7 +105,8 @@ function main() {
 }
 function  Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

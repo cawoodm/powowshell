@@ -27,7 +27,7 @@ function Invoke-PowowShell {
     [Alias('pow')]
 	param(
         [Parameter(Mandatory=$true)][String[]]
-        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "cmdlets", "pipeline", "preview", "examples", "adaptors")]
+        [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "cmdlets", "pipeline", "preview", "examples", "adaptors", "script")]
         $Command,
         $p1,$p2,$p3
     )
@@ -47,18 +47,25 @@ function Invoke-PowowShell {
         if (Test-Path "$BinPath\path.txt") {$BinPath = Get-Content "$BinPath\path.txt"}
         Push-Location $BinPath
 
+        # Include common settings/functions
+        . ".\common.ps1"
+
         # Ensure we have the USER and TEMP folders we need
-        if (-not (Test-Path "$env:USERPROFILE\powowshell")) {$null = New-Item -Path "$env:USERPROFILE\powowshell" -ItemType Directory}
-        if (-not (Test-Path "$([IO.Path]::GetTempPath())\powowshell")) {$null = New-Item -Path "$([IO.Path]::GetTempPath())\powowshell" -ItemType Directory}
+        if (-not (Test-Path $_POW.HOME)) {$null = New-Item -Path $_POW.HOME -ItemType Directory}
+        if (-not (Test-Path $_POW.Temp)) {$null = New-Item -Path $_POW.Temp -ItemType Directory}
 
         # Resolve ! paths with the workspace
         #  Doing this: (Resolve-Path .\examples).path > .\workspace.txt
         #  Lets you do this: pow inspect mycomponent
         #  instead of: pow inspect .\examples\components\mycomponent.ps1
-        if (Test-Path "$env:USERPROFILE\powowshell\workspace.txt") {$Workspace = Get-Content "$env:USERPROFILE\powowshell\workspace.txt"} else {$Workspace = (Resolve-Path "..\").Path}
+        if (Test-Path $_POW.WORKSPACE) {$Workspace = Get-Content "$($_POW.HOME)\workspace.txt"; Write-Verbose "WORKSPACE: $Workspace"} else {$Workspace = (Resolve-Path "..\").Path}
         if ($p1 -is [string] -and $p1 -like "!*") {
-            if ($Command -in "inspect", "components", "preview", "examples", "adaptors") {
-                $p1 = $p1.replace("!", "$Workspace\components\");
+            if ($Command -in "inspect", "components", "preview", "examples") {
+                $p1 = $p1.replace("!", "$Workspace\components\"); $p1+=".ps1"
+            } elseif ($command -eq "adaptors") {
+                # Adaptors are in /core/adaptors
+                $p1 = $p1.replace("!", "..\core\adaptors");
+                $p1 = Resolve-Path $p1
             } elseif ($command -eq "workspace") {
                 # e.g. "!examples" should be relative to the root of the app
                 $p1 = $p1.replace("!", "..\");

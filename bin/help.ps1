@@ -19,6 +19,7 @@ param(
     $Command
 )
 function main() {
+
     if ($Command) {
         Push-Location $PSScriptRoot
         if (Test-Path ".\$Command.ps1") {
@@ -59,8 +60,9 @@ Command examples:
 "@
     }
 }
-function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+. "$PSScriptRoot\common.ps1"
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

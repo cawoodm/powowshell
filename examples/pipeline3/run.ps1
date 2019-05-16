@@ -17,22 +17,22 @@ function main() {
 
 
         Get-Date | Out-Null # .\step_A2.ps1 with output suppressed
-        
+
         Get-Date # .\step_B2.ps1 with output outputted
 
-        
-        
-        
-        
-        
+
+
+
+
+
         Import-Csv -Path ".\data\test2.log" -Delimiter "," -Header "char", "int", "date", "double", "string" |          # .\step_A3.ps1 |
             ForEach-Object {[PSCustomObject]@{letter=$_.char; number=[int]$_.int; datetime=[datetime]$_.date}} |        # .\step_B3.ps1 |
             Split-Pipeline {$_.letter -ge "c"} |                                                                        # .\step_C3.ps1 |
             Set-Variable -Name OP3
-        
-        
+
+
         $OP3[0] # Letter >= c
-        
+
         $OP3[1] # Letter < c
 
     } catch {

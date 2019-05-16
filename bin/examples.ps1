@@ -66,8 +66,8 @@ function main() {
 	}
 }
 
-$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-#[Console]::OuputEncoding = 'utf8'
+. "$PSScriptRoot\common.ps1"
+$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main
