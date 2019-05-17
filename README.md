@@ -7,10 +7,12 @@ Ever dreamed of drawing a visual data flow and pressing "Play" to see it run? I 
 Imagine dragging a CSV File component into your pipeline, connecting it to a Database component and pressing "Play" to load data into your database. What about getting an email out if some records don't load? Drag in an Email component and connect it to the Errors output of your Database component. Call a web service? Sure, just use a Transform component to map your data to the format required.
 
 ## Getting Started
-The software is pre-alpha, proof of concept, cutting (bleeding) edge technology but for the brave:
+Note, the software is pre-alpha, proof of concept so be ready for some work to get things sailing smoothly.
+The IDE require certain features (spawn powershell) in NodeJS v11 or higher so get Electron 5 or higher.
 
 1. Clone this repository with git: `git clone https://cawoodm/powowshell.git`
-2. Run `install` and then play with the `pow` commands in powershell to build and run the example pipelines
+2. Run `install` from DOS/CMD to install the `pow` command for powershell
+3. Start `powershell` and then run `pow cmdlets generate` so that the IDE knows all your installed cmdlets and functions
 3. To use the IDE, install electron: `npm install -g electron`
 4. Run the IDE with `npm start` or `electron `.`
 
