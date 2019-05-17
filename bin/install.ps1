@@ -23,7 +23,7 @@ function main() {
 
         # We install if we are not just Verifying
         if (-not $Verify) {
-            $Paths = $env:PSModulePath -split ";"
+            $Paths = $env:PSModulePath -split "[;:]"
             $File = Get-Item .\powowshell.psm1
             $File2 = Get-Item .\powowshell.psd1
             $PathFinal = $null
