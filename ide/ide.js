@@ -254,7 +254,8 @@ window.onload = function() {
             });
             if (app.DEVMODE) {
                 console.clear(); // Vue/electron junk warnings
-                //pow.execOptions.debug=true;
+                pow.execOptions.PSCore="pwsh"; // Testing PowerShell Core (v6)
+                pow.execOptions.debug=true;
                 pow.init("!examples")
                     .then(()=>{
                         root.componentsLoad()
