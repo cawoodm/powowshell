@@ -1,5 +1,6 @@
 {
 	"id": "pipeline3",
+	"runtime": "ps6",
 	"name": "Log System Issues to a Database",
 	"description": "Read log files from a folder, extract certain records, reprocess and save to a database.",
 	"parameters": {
@@ -14,31 +15,34 @@
 		{
 			"id": "A1",
 			"name": "Read Log Files",
-			"reference": "FileList",
+			"reference": "FileList.ps1",
 			"input": "",
 			"parameters": {
 				"Path": ".\\data\\test.log"
-			}
+			},
+			"stream": ""
 		},
 		{
 			"id": "B1",
 			"name": "Parse Names File",
-			"reference": "CSV2JSON",
+			"reference": "CSV2JSON.ps1",
 			"input": "A1",
 			"parameters": {
 				"Delimiter": "|",
 				"Header": "{\"name\", \"age\", \"email\", \"source\"}"
-			}
+			},
+			"stream": ""
 		},
 		{
 			"id": "C1",
 			"name": "Select Name and Email",
-			"reference": "SelectFields",
+			"reference": "SelectFields.ps1",
 			"input": "B1",
 			"parameters": {
 				"Fields": "{\"name\", \"age\", \"email\"}"
-			}
+			},
+			"stream": ""
 		}
 	]
-	
+
 }

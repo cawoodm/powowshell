@@ -25,11 +25,9 @@ function main() {
 
         # Check Cache
         Set-Location $PSScriptRoot
-        # ASSUME: Cache is in .\cache of application
-        $CacheDir = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath("..\cache")
-		if (-not (Test-Path $CacheDir)) {$null = New-Item -Path $CacheDir -ItemType Directory}
-		if (-not (Test-Path "$CacheDir\cmdlets")) {$null = New-Item -Path "$CacheDir\cmdlets" -ItemType Directory}
-        $CachePath = "$CacheDir\cmdlets.json"
+        $CacheDir = $_POW.CACHER
+		if (-not (Test-Path "$CacheDir/cmdlets")) {$null = New-Item -Path "$CacheDir/cmdlets" -ItemType Directory}
+        $CachePath = "$CacheDir/cmdlets.json"
         $CacheFile=$null;$JSON=$null
         if ($Action -notlike "generate" -and (Test-Path $CachePath)) {
             $CacheFile = Get-Item $CachePath;
@@ -57,8 +55,6 @@ function main() {
             } catch {throw "Cmdlet cache is corrupted: $_"}
         }
         # Get all installed Cmdlets and Functions
-        #  - excluding drives ("*:")
-        #  - excluding CD\ ("*\")
         #  - include only *-*: gives good results
         $WhereFilter = {$_.Name -like "*-*"}
         if ($Filter) {
@@ -76,12 +72,12 @@ function main() {
             $done++
             Write-Progress -PercentComplete ([int]([Math]::Round(100*$done/$tot))) -Activity "Inspecting $($cmdlet.name)..."
             if ($cmdlet.name -notlike "*-*") {Write-Verbose "Excluding $($cmdlet.name) as a possible alias function.";continue;}
-            $cm = & "$PSScriptRoot\inspect.ps1" -Path $cmdlet.name
+            $cm = & "$PSScriptRoot/inspect.ps1" -Path $cmdlet.name
             if ($null -eq $cm) {continue}
             $null = $Cmdlets.add($cm)
             # Cache each cmdlet (for development/diagnosis)
             #  For BOM-less with PWSH6 we could use -Encoding UTF8NoBOM
-            ConvertTo-Json -InputObject $cm -Depth 7 | Set-Content -Encoding UTF8 -Path "$CacheDir\cmdlets\$($cmdlet.name).json"
+            ConvertTo-Json -InputObject $cm -Depth 7 | Set-Content -Encoding UTF8 -Path "$CacheDir/cmdlets/$($cmdlet.name).json"
         }
         if (-not $Filter) {
             # Update the cache of all cmdlets
@@ -103,7 +99,7 @@ function main() {
     }
 }
 
-. "$PSScriptRoot\common.ps1"
+. "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

@@ -24,7 +24,7 @@ function main() {
 
         # We install if we are not just Verifying
         if (-not $Verify) {
-            $Paths = $env:PSModulePath -split "[;:]"
+            $Paths = $env:PSModulePath -split [IO.Path]::PathSeparator
             $File = Get-Item .\powowshell.psm1
             $File2 = Get-Item .\powowshell.psd1
             $PathFinal = $null
@@ -53,6 +53,13 @@ function main() {
                     Show-Message "Could not install module to $Path : $_"
                 }
             }
+
+            # Ensure we have the USER and TEMP folders we need
+            if (-not (Test-Path $_POW.HOME)) {$null = New-Item -Path $_POW.HOME -ItemType Directory}
+            if (-not (Test-Path $_POW.Temp)) {$null = New-Item -Path $_POW.TEMP -ItemType Directory}
+            if (-not (Test-Path $_POW.CACHE)) {$null = New-Item -Path $_POW.CACHE -ItemType Directory}
+            if (-not (Test-Path $_POW.CACHER)) {$null = New-Item -Path $_POW.CACHER -ItemType Directory}
+
             # Point the powowshell module back to this bin\ directory
             $PSScriptRoot > "$DestPath\path.txt";
             if ($null -eq $PathFinal) {
@@ -89,4 +96,5 @@ function main() {
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+. "$PSScriptRoot/common.ps1"
 main

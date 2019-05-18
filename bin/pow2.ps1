@@ -54,7 +54,7 @@ function Invoke-PowowShell {
         Push-Location $BinPath
 
         # Include common settings/functions
-        . ".\common.ps1"
+        . "./common.ps1"
 
         # Ensure we have the USER and TEMP folders we need
         if (-not (Test-Path $_POW.HOME)) {$null = New-Item -Path $_POW.HOME -ItemType Directory}
@@ -102,7 +102,7 @@ function Invoke-PowowShell {
     }
 
 }
-. "$PSScriptRoot\common.ps1"
+. "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

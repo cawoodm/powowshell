@@ -18,7 +18,7 @@ param(
     [Parameter(Mandatory)][String]$Path,
     [String]$Output
 )
-$OutputPath=".\"
+$OutputPath="./"
 function main() {
 
 	# Save path we are started from
@@ -44,7 +44,7 @@ function BuildingPipeline() {
     # Get all known components as a HashTable
     $COMPONENTS = @{}
     # ASSUME: components a sibling of pipeline
-    & "$PSScriptRoot\components.ps1" "..\components\" | ForEach-Object {
+    & "$PSScriptRoot/components.ps1" "../components/" | ForEach-Object {
         $COMPONENTS.add($_.reference, $_)
     }
 
@@ -72,10 +72,10 @@ function BuildingPipeline() {
     $p=$Path; if ($Output) {$p=$Output}
     "Usage:`n  POW run $p"
     "OR`n  POW run $p -Trace"
-    "OR`n  $p\run_prod.ps1"
+    "OR`n  $p/run_prod.ps1"
 
     # Show params
-    $cmd = Get-Command .\run_prod.ps1
+    $cmd = Get-Command ./run_prod.ps1
     "`nParameters:"
     $cmd.Parameters.Keys |
         Where-Object {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} |
@@ -105,7 +105,7 @@ function CheckSteps($steps, $COMPONENTS) {
         Write-Verbose "Checking $($step.id): $($step.reference)"
         $component = $COMPONENTS[$step.reference]
         # If not cached, inspect the component
-        if ($null -eq $component) {$component = & "$PSScriptRoot\inspect.ps1" $step.reference}
+        if ($null -eq $component) {$component = & "$PSScriptRoot/inspect.ps1" $step.reference}
         $COMPONENTS[$component.reference]=$component
         Write-Verbose "$($component.reference) is a $($component.type)"
         # Check same number of parameters
@@ -183,7 +183,7 @@ function CreateSteps($pipelineDef, $COMPONENTS, $ADAPTORS) {
         }
 
         # Build Step code
-        $stepHeader, $stepOutputType, $PipelineParams, $stepHeader2, $params0, $StepComment, $cmd1, $stepFooter -join "`n" | Set-Content -Encoding UTF8 -Path "$OutputPath\step_$id.ps1"
+        $stepHeader, $stepOutputType, $PipelineParams, $stepHeader2, $params0, $StepComment, $cmd1, $stepFooter -join "`n" | Set-Content -Encoding UTF8 -Path "$OutputPath/step_$id.ps1"
 
         $Count++
 
@@ -234,7 +234,7 @@ function CreatePipeline_prod($pipelineDef, $COMPONENTS) {
         if ($step.input) {$cmd += "`$OP_$($step.input) | "}
 
         # Run step LOGIC (passing all PipelineParams)
-        $cmd += ".\step_$($id).ps1 -PipelineParams `$PipelineParams`n`n"
+        $cmd += "./step_$($id).ps1 -PipelineParams `$PipelineParams`n`n"
 
     }
 
@@ -250,7 +250,7 @@ function CreatePipeline_prod($pipelineDef, $COMPONENTS) {
     $cmd += "`tPop-Location`n"
     $cmd += "}`n"
 
-    $cmd | Set-Content -Encoding UTF8 -Path "$OutputPath\run_prod.ps1"
+    $cmd | Set-Content -Encoding UTF8 -Path "$OutputPath/run_prod.ps1"
 
 }
 
@@ -272,7 +272,7 @@ function CreatePipeline_trace($pipelineDef) {
     $cmd += "Push-Location `$PSScriptRoot`n"
     #$cmd += "`$VerbosePreference='Continue'`n"
     $cmd += "#Create folder for trace files`n"
-    $cmd += "New-Item -Path .\trace -ItemType Directory -ErrorAction SilentlyContinue | Out-Null`n"
+    $cmd += "New-Item -Path ./trace -ItemType Directory -ErrorAction SilentlyContinue | Out-Null`n"
     $cmd += "`n"
 
     $pipelineDef.steps | ForEach-Object {$step = $_;
@@ -284,28 +284,28 @@ function CreatePipeline_trace($pipelineDef) {
 
         if ($step.input) {
             # Pass INPUT to step
-            $cmd += "Get-Content -Raw .\trace\tmp_$($step.input)_output.txt | "
+            $cmd += "Get-Content -Raw ./trace/tmp_$($step.input)_output.txt | "
         }
 
         # Run step LOGIC and capture OUTPUT
-        $cmd += ".\step_$($id).ps1 -PipelineParams `$PipelineParams > .\trace\tmp_$($id)_output.txt 2> .\trace\tmp_$($id)_errors.txt 5>>.\trace\tmp_debug.txt`n`n"
+        $cmd += "./step_$($id).ps1 -PipelineParams `$PipelineParams > ./trace/tmp_$($id)_output.txt 2> ./trace/tmp_$($id)_errors.txt 5>>./trace/tmp_debug.txt`n`n"
 
     }
 
     # Return OUTPUT
     $cmd += "# Return Output`n"
-    #$cmd += "Get-Content -Raw .\trace\tmp_$($id)_output.txt`n"
-    $cmd += "Write-Host `"Trace output is in the trace\ folder of your pipeline`""
+    #$cmd += "Get-Content -Raw ./trace/tmp_$($id)_output.txt`n"
+    $cmd += "Write-Host `"Trace output is in the trace/ folder of your pipeline`""
 
     # Clean up
     $cmd += "`n"
     $cmd += "Pop-Location"
 
-    $cmd | Set-Content -Encoding UTF8 -Path "$OutputPath\run_trace.ps1"
+    $cmd | Set-Content -Encoding UTF8 -Path "$OutputPath/run_trace.ps1"
 
 }
 function ReSerializeObject($obj) {
-    Write-Verbose "BUILDER ReSerialieObject"
+    Write-Verbose "BUILDER ReSerializeObject"
     $res = "@{`n"
     foreach($prop in $obj.PSObject.Properties) {
         $pVal = $prop.Value; $pName = $prop.Name
@@ -378,7 +378,7 @@ function ReSerializePipelineParams($obj) {
     return $res
 }
 
-. "$PSScriptRoot\common.ps1"
+. "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

@@ -4,7 +4,7 @@
  *  This also allows us to swap out the library later
  */
 export function PShell() {
-    const PowerShell = require("powershell");   
+    const PowerShell = require("powershell");
     return {
         exec: async function(command, options) {
             return new Promise(function(resolve, reject) {

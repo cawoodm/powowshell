@@ -1,5 +1,6 @@
 {
   "id": "pipeline1",
+  "runtime": "ps*",
   "name": "Send mail to young voters",
   "description": "Read voters.txt, get all voters under 21yrs of age and send them an email",
   "parameters": {

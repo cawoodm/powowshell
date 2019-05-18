@@ -23,11 +23,13 @@ function main() {
 	try {
 		$Path = (Resolve-Path -Path $Path).Path
 		Write-Verbose "Loading Pipeline from $Path\pipeline.json ..."
-		$result = Get-Content "$Path\pipeline.json" -Raw
+		$json = Get-Content "$Path\pipeline.json" -Raw
+		$definition = $json | ConvertFrom-Json
+		if ($_POW.RUNTIME -notlike $definition.runtime) {throw "INCOMPATIBLE: This pipeline only works in the $($definition.runtime) runtime!"}
 		if ($Action -like "export") {
-			return $result
+			return $json
 		} else {
-            return $result | ConvertFrom-Json
+            return $definition
 		}
 	} catch {
 		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
@@ -35,7 +37,7 @@ function main() {
 	}
 }
 
-. "$PSScriptRoot\common.ps1"
+. "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

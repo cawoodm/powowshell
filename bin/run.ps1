@@ -30,7 +30,7 @@ param(
 function main() {
 
 	# Include common settings/functions
-	. "$PSScriptRoot\common.ps1"
+	. "$PSScriptRoot/common.ps1"
 
 	# Save path we are started from
 	$StartPath = (Get-Location).Path
@@ -74,7 +74,7 @@ function main() {
 	}
 }
 
-. "$PSScriptRoot\common.ps1"
+. "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

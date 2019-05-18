@@ -1,5 +1,6 @@
 {
   "id": "procmon1",
+  "runtime": "ps*",
   "name": "Analyse a process monitoring result",
   "description": "Read csv export from procmon and find stuff.",
   "parameters": {

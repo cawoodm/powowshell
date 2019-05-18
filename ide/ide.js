@@ -203,6 +203,7 @@ window.onload = function() {
                 this.$refs.stepGrid.doUpdate();
             },
             showMessage: function(text, color) {
+                console.log("showMessage", text)
                 color = color || "info";
                 if (this.message.show) {
                     // Already visible, add to the message

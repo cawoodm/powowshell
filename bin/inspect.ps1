@@ -30,7 +30,7 @@ function main() {
 		Set-StrictMode -Off
 		if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
 		# Add .ps1 to components with a path so `pow inspect !csv2json` works
-		if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
+		if ($Path.indexOf([IO.Path]::DirectorySeparatorChar) -ge 0 -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
 		$Executable = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 		if ($Executable) {
 			$CompType = "component"
@@ -43,24 +43,24 @@ function main() {
 			if ($null -eq $cmd) {throw "Invalid POW Component '$Executable'!"}
 			$outputType = Get-OPType($cmd2)
 			$outputFormat = Get-OPReturn($cmd)
+			if (-not $outputFormat) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="No output on '$NiceName'!"}}
 		} else {
 			$CompType = "cmdlet"
 			$Executable = $Path
 			Write-Verbose "Inspecting installed CmdLet $Path ..."
 			$Name = $Path
 			# ASSUME: Cache path is from root
-			$CachePath = "$PSScriptRoot\..\cache\help"
+			$CachePath = "$($_POW.CACHER)/help"
 			if (-not (Test-Path $CachePath)) {$null = New-Item -Path $CachePath -ItemType Directory}
-			$CachePath = Resolve-Path "$PSScriptRoot\..\cache\help"
-			if (Test-Path "$CachePath\$Name.json") {
-				$cmd = Get-Content "$CachePath\$Name.json" | ConvertFrom-Json
+			if (Test-Path "$CachePath/$Name.json") {
+				$cmd = Get-Content "$CachePath/$Name.json" | ConvertFrom-Json
 			} else {
 				$cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
 				if ($cmd.details.name -notlike $Name) {
 					throw "'$Name' is an alias, please inspect the full name $($cmd.details.name)!"
 				}
 				# Cache help because Get-Help can be slow
-				$cmd | ConvertTo-Json -Depth 7 | Set-Content -Encoding UTF8 -Path "$CachePath\$($cmd.details.name).json"
+				$cmd | ConvertTo-Json -Depth 7 | Set-Content -Encoding UTF8 -Path "$CachePath/$($cmd.details.name).json"
 			}
 			if ($null -eq $cmd) {throw "Invalid CmdLet '$Executable'!"}
 			$NiceName = $cmd.details.name
@@ -203,15 +203,13 @@ function Get-OPReturn($cmd) {
 		# If we have multiple object types, just output object
 		if ($result -like "* *") {$result="object"}
 		return [string]$result;
-	} else {
-		Write-Warning "No output on $($cmd.details.name)!"
 	}
 }
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
 function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{$null}}
 
-. "$PSScriptRoot\common.ps1"
+. "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 #Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

@@ -30,7 +30,7 @@ function main() {
     try {
         # Check Cache
         # ASSUME: Cache is in same folder as components
-        $CachePath = "..\components.json"
+        $CachePath = "$($_POW.CACHER)/components.json"
         $CacheFile=$null;$JSON=$null
         if ($Action -notlike "generate" -and (Test-Path $CachePath)) {
             $CacheFile = Get-Item $CachePath;
@@ -40,7 +40,7 @@ function main() {
         # Action = export : Return cached JSON
         if ($Action -like "export" -and $CacheFile) {return $JSON}
         # When did a component last change
-        $LastWriteTime = (Get-ChildItem .\ -File -Filter *.ps1 | Where-Object name -notlike *.tests.ps1* | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
+        $LastWriteTime = (Get-ChildItem ./ -File -Filter *.ps1 | Where-Object name -notlike *.tests.ps1* | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
         if ($Action -like "generate" -or $null -eq $CacheFile -or $LastWriteTime -gt $CacheFile.LastWriteTime) {
             if ($Action -notlike "generate") {Write-Verbose "Component cache is stale"}
             $JSON=$null
@@ -67,7 +67,7 @@ function main() {
 function ListComponents() {
 
     # Get list of subfolders (1 level)
-    $folders = Get-ChildItem -Path .\ -Directory
+    $folders = Get-ChildItem -Path ./ -Directory
 
     # Process each folder
     ForEach($folder in $folders) {
@@ -75,7 +75,7 @@ function ListComponents() {
     }
 
     # Process current folder
-    LoadComponents(".\")
+    LoadComponents("./")
 }
 
 function LoadComponents($Path) {
@@ -87,7 +87,7 @@ function LoadComponents($Path) {
     # Process each folder
     foreach($script in $scripts) {
         try {
-            & "$PSScriptRoot\inspect.ps1" $script.Fullname
+            & "$PSScriptRoot/inspect.ps1" $script.Fullname
         } catch {
             # Error message on each component but continue
             $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
@@ -96,8 +96,5 @@ function LoadComponents($Path) {
 
 }
 
-. "$PSScriptRoot\common.ps1"
-$PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+. "$PSScriptRoot/common.ps1"
 main

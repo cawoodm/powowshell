@@ -29,7 +29,7 @@ function main() {
         & pow run !pipeline1 @{DataSource='.\data\names.txt'} | Out-Null
         Show-Message "SUCCESS: pow run" -ForegroundColor Green
 
-        & pow script !pipeline3 | Out-Null
+        & pow script !pipeline2 | Out-Null
         Show-Message "SUCCESS: pow script" -ForegroundColor Green
 
         # TODO: Test pipeline run export
