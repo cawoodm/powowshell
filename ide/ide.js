@@ -257,6 +257,7 @@ window.onload = function() {
                 console.clear(); // Vue/electron junk warnings
                 pow.execOptions.PSCore="pwsh"; // Testing PowerShell Core (v6)
                 pow.execOptions.debug=true;
+                //root.componentsLoad();root.cmdletsLoad();return;
                 pow.init("!examples")
                     .then(()=>{
                         root.componentsLoad()

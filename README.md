@@ -14,14 +14,14 @@ The IDE require certain features (spawn powershell) in NodeJS v11 or higher so g
 2. Run `install` from DOS/CMD to install the `pow` command for powershell
 3. Start `powershell` and then run `pow cmdlets generate` so that the IDE knows all your installed cmdlets and functions
 3. To use the IDE, install electron: `npm install -g electron`
-4. Run the IDE with `npm start` or `electron `.`
+4. Run the IDE with `npm start` or `electron .`
 
 ## Examples
 This repo includes an 2 example pipelines in `./examples/` as well as a bunch of components.
 
 If you type `pow version` you should see version information and `pow help` will get you started with commands.
 
-Type `pow workspace .\examples` to switch to the examples workspace and save you typing the full path to pipelines.
+Type `pow workspace ./examples` to switch to the examples workspace and save you typing the full path to pipelines.
 
 The first example can be built with `pow build !pipeline1` and then run with `pow run !pipeline1`. The `!` references the current workspace.
 
@@ -85,47 +85,6 @@ Pipelines are where the magic happens. Here you connect your components together
 
 Components are .ps1 scripts which can wrap powershell, batch, python, perl or any language you like: any CLI can be wrapped, described and documented as a component and used in a pipeline. In addition, all installed PowerShell Cmdlets and Functions are automatically available.
 
-## Installation
-
-Download the repository and build and run the sample pipeline as follows:
-```
-git clone git@github.com:cawoodm/powowshell.git
-cd powowshell
-install
-```
-This will create the `pow` CmdLet which you can run from PowerShell.
-It also creates a `pow.cmd` wrapper which you can copy to your PATH so you can run it from a normal "DOS" command prompt.
-Let's check if we're up and running by displaying the version:
-```
-pow version
-```
-Next let's generate a cache of all components in the examples pack:
-```
-pow components .\examples\components generate
-```
-...and finally all  cmdlets installed on our system (may take a few minutes):
-```
-pow cmdlets generate
-```
-Now we'll build and run the example pipeline:
-```
-pow build examples\pipeline1
-pow run examples\pipeline1
-```
-
-This builds and runs a pipeline based on it's definition in `pipeline.json`.
-The result of `build` is a powershell script `run_prod.ps1`. Running this runs the pipeline.
-The pipeline does the following:
-* Step A: Read a list of voters from the file in `data\voters.txt` as text
-* Step B: Convert the text to JSON
-* Step C: Select only the name. age and email fields
-
-The result is a JSON string representing a list of voters.
-
-We'll be developing this pipeline by adding new steps like:
-
-* Filtering only young voters (age < 30)
-* Sending each voter an email
 
 ## POW commands
 * `pow version`: Print version information
@@ -135,26 +94,24 @@ We'll be developing this pipeline by adding new steps like:
 * `pow run <pipeline>`: Run a pipeline
 * `pow run <pipeline> -Trace -Verbose`: Run a pipeline with verbose output and each step's output logged to trace directory
 * `pow run <pipeline> @params`: Run a pipeline passing in parameters (using splatting)
-* `pow clean <pipeline>`: Delete a built pipeline (i.e. all .ps1 files and the trace\ subdirectory)
+* `pow clean <pipeline>`: Delete a built pipeline (i.e. all .ps1 files and the trace/ subdirectory)
 * `pow inspect <path to component .ps1>`: Inspects a component (TODO: validate, check and test component)
 * `pow components <path to components directory>`: List components in a folder
 
 ## POW Command Examples
 
 Run a pipeline, passing in parameters
-`pow run .\examples\pipeline1 "@{DataSource='.\data\names.txt'}"`
+`pow run ./examples/pipeline1 "@{DataSource='./data/names.txt'}"`
 
 ## Workspaces
 You may have several projects which you can organize into folders called "workspaces".
-Each workspace should contain one components\ subdirectory and a subdirectory for each of your pipelines.
-PowowShell comes with an examples\ folder - let's define that as our current workspace:
-`pow workspace examples`
+Each workspace should contain one components/ subdirectory and a subdirectory for each of your pipelines.
+PowowShell comes with an examples/ folder - let's define that as our current workspace:
+`pow workspace ./examples`
 If we do this, we'll save some typing because we can now type:
 `pow inspect !mycomponent`
 instead of
-`pow inspect .\examples\components\mycomponent.ps1`
-Make sure that you run
-
+`pow inspect ./examples/components/mycomponent.ps1`
 
 
 ## PowerShell
@@ -189,9 +146,9 @@ A component is just a script with some basic requirements
 As you can see, PowowShell expects components to behave in a certain way. This may be a pain but it makes things easier later. One of the weaknesses of PowerShell is that very few CmdLets can interact because most have their own special object types. You can't pass the output of one object type to another easily. PowowShell ensures each component can only write a String. This may sound limiting but since you can put JSON (or whatever) into that string, you retain all of the flexibility of objects. Of course if one component outputs JSON, the next component downstream needs to accept JSON or you need to put a Transform component in between.
 
 To see if your component is valid for PowowShell we have the `inspect` command which parses the component.
-`pow inspect .\examples\components\CSV2JSON.ps1`
+`pow inspect ./examples/components/CSV2JSON.ps1`
 This will return an object representing the component. You could easily generate a JSON of this:
-`pow inspect .\examples\components\CSV2JSON.ps1 | ConvertTo-Json > .\examples\components\CSV2JSON.json`
+`pow inspect ./examples/components/CSV2JSON.ps1 | ConvertTo-Json > ./examples/components/CSV2JSON.json`
 
 Let's look at some [component examples](docs/Component-Examples.md).
 
