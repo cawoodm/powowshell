@@ -80,6 +80,8 @@ function main() {
         if ($PowExists) {
             Show-Message "Yep, the 'Invoke-PowowShell' cmdLet is installed" Green
             Show-Message "NOTE: You may need to run 'Import-Module -name PowowShell -Global' in PowerShell to use the 'pow' alias" Cyan
+            Show-Message "Checking cmdlets installed..."
+            pow cmdlets check
             Show-Message " Type 'pow help' for a list of commands"
             Show-Message " Type 'pow cmdlets generate' to generate a list of cmdlets for the IDE (may take several minutes)"
         }

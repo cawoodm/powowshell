@@ -9,11 +9,12 @@
  Action generate: Generate cmdlet definitions as collection
  Action list: List (cached) cmdlet definitions
  Action export: Return (cached) cmdlet definitions as JSON
+ Action check: Ensure we have a cache, generate if necessary don't return anything
 
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet("generate", "export", "list")][string]$Action=$null,
+    [ValidateSet("generate", "export", "list", "check")][string]$Action=$null,
     [string]$Filter
 )
 function main() {
@@ -70,7 +71,7 @@ function main() {
         $done=0;$tot=$CmdletsAll.count
         foreach($cmdlet in $CmdletsAll) {
             $done++
-            Write-Progress -PercentComplete ([int]([Math]::Round(100*$done/$tot))) -Activity "Inspecting $($cmdlet.name)..."
+            Write-Progress -PercentComplete ([int]([Math]::Round(100*$done/$tot))) -CurrentOperation "Reading $($cmdlet.name)..." -Activity "Inspecting installed cmdlets"
             if ($cmdlet.name -notlike "*-*") {Write-Verbose "Excluding $($cmdlet.name) as a possible alias function.";continue;}
             $cm = & "$PSScriptRoot/inspect.ps1" -Path $cmdlet.name
             if ($null -eq $cm) {continue}
@@ -88,7 +89,7 @@ function main() {
         }
         if ($Action -like "export") {
             return $JSON
-        } elseif ($Action -notlike "generate") {
+        } elseif ($Action -notlike "generate" -and $Action -notlike "check") {
             return $Cmdlets
         }
     } catch {
