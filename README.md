@@ -10,7 +10,7 @@ Imagine dragging a CSV File component into your pipeline, connecting it to a Dat
 Note, the software is pre-alpha, proof of concept so be ready for some work to get things sailing smoothly.
 The IDE require certain features (spawn powershell) in NodeJS v11 or higher so get Electron 5 or higher.
 
-1. Clone this repository with git: `git clone https://cawoodm/powowshell.git`
+1. Clone this repository with git: `git clone git@github.com:cawoodm/powowshell.git`
 2. Run `install` from DOS/CMD to install the `pow` command for powershell
 3. Start `powershell` and then run `pow cmdlets generate` so that the IDE knows all your installed cmdlets and functions
 3. To use the IDE, install electron: `npm install -g electron`
