@@ -1,7 +1,7 @@
 /* global Vue */
 Vue.component("cmdlet-list", {
     props: [],
-    data: function () {
+    data: function() {
         return {
             filter: this.filter,
             cmdlets: this.cmdlets,
@@ -12,23 +12,21 @@ Vue.component("cmdlet-list", {
         filteredCmdlets() {
             if (this.cmdlets && this.filter) {
                 let filt = this.filter.toLowerCase();
-                return this.cmdlets.filter((comp) => comp.reference.indexOf(filt) >= 0);
-            }
-            else if (this.cmdlets) {
+                return this.cmdlets.filter((comp)=>comp.reference.indexOf(filt)>=0);
+            } else if (this.cmdlets) {
                 return this.cmdlets;
-            }
-            else {
+            } else {
                 return [];
             }
         }
     },
     methods: {
-        setCmdlets: function (cmdlets) {
+        setCmdlets: function(cmdlets) {
             this.cmdlets = cmdlets;
             this.loading = false;
         }
     },
-    mounted: function () {
+    mounted: function() {
         this.filter = "";
         this.loading = true;
     },
@@ -48,4 +46,3 @@ Vue.component("cmdlet-list", {
     </v-expansion-panel-content>
 `
 });
-//# sourceMappingURL=cmdlet-list.js.map

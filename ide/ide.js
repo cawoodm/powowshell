@@ -44,7 +44,14 @@ window.onload = function() {
             panels: [false, false, false],
             message: {
                 show: false,
-                message: ""
+                message: "",
+                color: "primary",
+                timeout: 3000
+            },
+            longMessage: {
+                show: false,
+                message: "",
+                color: "error"
             },
             pipeline: {}
         },
@@ -118,7 +125,32 @@ window.onload = function() {
                 if (err.messages && Array.isArray(err.messages))
                     err.messages.forEach((msg)=>message += "\n" + msg.type + ": " + msg.message);
                 console.log(err);
-                this.showMessage(message, "error");
+                this.showLongMessage(message, "error");
+            },
+            showLongMessage: function(text, color) {
+                color = color || "info";
+                if (this.longMessage.show) {
+                    // Already visible, add to the message
+                    this.longMessage.show = false;
+                    this.showLongMessage(this.longMessage.text + " " + text, color);
+                    return;
+                }
+                this.longMessage.text = text;
+                this.longMessage.color = color;
+                this.longMessage.show = true;
+            },
+            showMessage: function(text, color) {
+                console.log("showMessage", text)
+                color = color || "info";
+                if (this.message.show) {
+                    // Already visible, add to the message
+                    this.message.show = false;
+                    this.showMessage(this.message.text + " " + text, color);
+                    return;
+                }
+                this.message.text = text;
+                this.message.color = color;
+                this.message.show = true;
             },
             showStepDialog: function(id) {
                 try {
@@ -137,7 +169,9 @@ window.onload = function() {
                         this.showLoading(false);
                         app.components = obj.object;
                         this.$refs.componentList.setComponents(app.components);
-                    }).catch(this.handlePOWError);
+                    })
+                    .catch(this.handlePOWError)
+                    .finally(()=>this.showLoading(false));
             },
             cmdletsLoad: function() {
                 this.showLoading("Loading PowerShell Cmdlets")
@@ -146,7 +180,9 @@ window.onload = function() {
                         this.showLoading(false);
                         app.cmdlets = obj.object;
                         this.$refs.cmdletList.setCmdlets(app.cmdlets);
-                    }).catch(this.handlePOWError);
+                    })
+                    .catch(this.handlePOWError)
+                    .finally(()=>this.showLoading(false));
             },
             pipelineLoad: function(id, opts) {
                 // Load pipeline definition
@@ -156,10 +192,13 @@ window.onload = function() {
                 return pow.pipeline(`${id}`)
                     .then((res)=>{
                         pipelineManager.import(res.object);
+                        pow.execOptions.PSCore=res.object.runtime=="ps5"?"powershell":"pwsh";
                         if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
                         this.pipeline = res.object;
                         this.showLoading(false);
-                    }).catch(this.handlePOWError);
+                    })
+                    .catch(this.handlePOWError)
+                    .finally(()=>this.showLoading(false));
             },
             pipelineEdit: function() {
                 //this.$refs.pipelineForm.showForm(pipelineManager.getDefinition());
@@ -171,6 +210,8 @@ window.onload = function() {
             pipelineNew: function() {
                 if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and start a new pipeline?")) return;
                 pipelineManager.reset();
+                this.pipeline = pipelineManager.getDefinition()
+                pipelineForm.showForm(this.$root, pipelineManager.getDefinition());
                 this.redraw();
             },
             pipelineOpen: function() {
@@ -183,7 +224,7 @@ window.onload = function() {
                 pow.load(file[0]).then((res)=>{
                     pipelineManager.import(res.object);
                     if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
-                    this.pipeline = res.object;
+                    this.pipeline = pipelineManager.getDefinition();
                 }).catch(this.handlePOWError);
             },
             pipelineSave: function() {
@@ -201,19 +242,6 @@ window.onload = function() {
             redraw: function() {
                 // Must synch entire grid OR Vue.set(exactObject, newObject)
                 this.$refs.stepGrid.doUpdate();
-            },
-            showMessage: function(text, color) {
-                console.log("showMessage", text)
-                color = color || "info";
-                if (this.message.show) {
-                    // Already visible, add to the message
-                    this.message.show = false;
-                    this.showMessage(this.message.text + " " + text, color);
-                    return;
-                }
-                this.message.text = text;
-                this.message.color = color;
-                this.message.show = true;
             }
         },
         mounted: function() {
@@ -262,7 +290,7 @@ window.onload = function() {
                         root.componentsLoad()
                         root.cmdletsLoad()
                     })
-                    .then(()=>root.pipelineLoad("pipeline3"))
+                    .then(()=>root.pipelineLoad("pipeline2"))
                     //.then(()=>root.run())
                     .catch(this.handlePOWError);
             } else {

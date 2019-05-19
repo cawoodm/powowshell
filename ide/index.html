@@ -20,7 +20,7 @@
                 <v-list-tile @click="pipelineSave"><v-list-tile-title>Save</v-list-tile-title></v-list-tile>
             </v-list>
         </v-menu>
-        <div v-if="pipeline.id">{{pipeline.name}} ({{pipeline.id}}) <v-icon @click="pipelineEdit" small>edit</v-icon></div>
+        <div v-if="pipeline.id">{{pipeline.name}} ({{pipeline.id}} for {{pipeline.runtime}}) <v-icon @click="pipelineEdit" small>edit</v-icon></div>
         <v-spacer></v-spacer>
         <v-btn color="red" @click="run">Run</v-btn>
         <v-menu offset-y>
@@ -51,7 +51,8 @@
         <step-grid ref="stepGrid"></step-grid>
         <loading ref="loading"></loading>
     </v-content>
-    <v-snackbar v-model="message.show" timeout="3000" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
+    <v-snackbar v-model="message.show" timeout="message.timeout" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
+    <v-snackbar v-model="longMessage.show" :timeout="0" multi-line top :color="longMessage.color">{{ longMessage.text }} <v-btn color="longMessage.color" flat @click="longMessage.show = false">Close</v-btn></v-snackbar>
 </v-app>
 <script src="./js/vue.min.js"></script>
 <script src="./js/vuetify.js"></script>

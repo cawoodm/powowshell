@@ -2,7 +2,7 @@
 let modComponentList = function (Vue) {
     Vue.component("component-list", {
         props: ["store"],
-        data: function () {
+        data: function() {
             return {
                 filter: this.filter,
                 loading: this.loading,
@@ -12,23 +12,21 @@ let modComponentList = function (Vue) {
         computed: {
             filteredComponents() {
                 if (this.components && this.filter) {
-                    return this.components.filter((comp) => comp.reference.indexOf(this.filter) >= 0);
-                }
-                else if (this.components) {
+                    return this.components.filter((comp)=>comp.reference.indexOf(this.filter)>=0);
+                } else if (this.components) {
                     return this.components;
-                }
-                else {
+                } else {
                     return [];
                 }
             }
         },
         methods: {
-            setComponents: function (components) {
+            setComponents: function(components) {
                 this.components = components;
                 this.loading = false;
             }
         },
-        mounted: function () {
+        mounted: function() {
             this.filter = "";
             this.loading = true;
         },
@@ -46,8 +44,6 @@ let modComponentList = function (Vue) {
         </v-expansion-panel-content>
     `
     });
-};
+}
 // @ts-ignore
-if (typeof module !== "undefined")
-    module.exports = modComponentList;
-//# sourceMappingURL=component-list.js.map
+if (typeof module !== "undefined") module.exports = modComponentList;

@@ -1,5 +1,8 @@
 # TODO
 
+## IDE
+* Better display of error messages if JSON is not returned
+
 ## Build
 * Build Modes:
 * Pipeline Mode

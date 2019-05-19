@@ -10,7 +10,7 @@ window.pow = (function(){
         return new Promise((resolve)=>{fetch("../examples/components.json").then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
     }
     function cmdletsMock() {
-        return new Promise((resolve)=>{fetch("../cache/cmdlets.json").then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
+        return new Promise((resolve)=>{fetch("../cache/ps5/cmdlets.json").then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
     }
     function pipelineMock(id) {
         return new Promise((resolve)=>{fetch(`../examples/${id}/pipeline.json`).then((res)=>res.json().then((obj)=>resolve({success:true, object:obj})));});
