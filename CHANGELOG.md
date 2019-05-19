@@ -2,7 +2,7 @@ CHANGELOG
 
 v0.1.9 xx.05.2019
 * Support for different PS versions (runtime=ps5, ps6 or ps*)
-* Linux compatibility
+* Linux compatibility...
 
 v0.1.8 05.05.2019
 * Data grid vizualisation of pipeline output
