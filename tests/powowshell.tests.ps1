@@ -51,6 +51,9 @@ function main() {
         & pow cmdlets list | Out-Null
         Show-Message "SUCCESS: pow cmdlets" -ForegroundColor Green
 
+        & pow adaptors list | Out-Null
+        Show-Message "SUCCESS: pow adaptors" -ForegroundColor Green
+
         & pow preview !DateAdder 2 | Out-Null
         Show-Message "SUCCESS: pow preview" -ForegroundColor Green
 

@@ -12,30 +12,24 @@
  .Parameter Action
  Action generate: Bypass adaptor cache and read adaptors
  Action export: Export as JSON
+ Action list: List adaptors (via cache)
 
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter()][String]$Path,
-    [ValidateSet("generate", "export")][string[]]$Action=$null
+    [ValidateSet("generate", "export", "list")][string[]]$Action=$null
 )
 function main() {
 
-    if ($Path) {
-        Write-Verbose "Path=$Path"
-        $FullPath = (Resolve-Path -Path $Path).Path
-    } else {
-        Push-Location $PSScriptRoot
-        $FullPath = (Resolve-Path -Path "../core/adaptors").Path
-    }
+    Push-Location $PSScriptRoot
+    $FullPath = (Resolve-Path -Path "../core/adaptors").Path
     Write-Verbose $FullPath
     Push-Location $FullPath
     try {
         # Check Cache
-        # ASSUME: Cache is off root of application
         $CacheFile=$null;$JSON=$null
-        if (Test-Path "$PSScriptRoot/../cache/adaptors.json") {
-            $CachePath = Resolve-Path "$PSScriptRoot/../cache/adaptors.json"
+        $CachePath = "$($_POW.CACHE)/adaptors.json"
+        if (Test-Path $CachePath) {
             $CacheFile = Get-Item $CachePath;
             $JSON = Get-Content $CachePath -Raw
             if ($JSON -match "^\["){Write-Verbose "Adaptors cache found: $CachePath"} else {$JSON=$null; $CacheFile=$null} # Cache is gone
@@ -49,7 +43,6 @@ function main() {
             } catch {throw "Adaptor cache is corrupted (invalid JSON)!"}
         }
         if ($Action -like "generate" -or $null -eq $Adaptors) {
-            #TODO: Check cache freshness
             # Process all .in files (ASSUME: .out.ps1 exists also)
             $files = Get-ChildItem -Path ./ -File -Filter *.in.ps1
             $Adaptors = @()
@@ -61,7 +54,7 @@ function main() {
             # Cache JSON
             Write-Verbose "Writing adaptors cache"
             $JSON = ($Adaptors) | ConvertTo-JSON -Depth 4
-            $JSON | Set-Content -Encoding UTF8 -Path ./adaptors.json
+            $JSON | Set-Content -Encoding UTF8 -Path $CachePath
         }
         Write-Verbose "$($Adaptors.length) adaptors found"
         if ($Action -like "export") {
