@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "BIN",
+			"path": "./bin/"
+		},
+		{
+			"name": "IDE",
+			"path": "./ide/"
+		},
+		{
+			"name": "TESTS",
+			"path": "./tests/"
+		},
+		{
+			"name": "cache",
+			"path": "C:\\Users\\Marc\\.powowshell\\cache"
+		}
+	],
+	"settings": {}
+}
