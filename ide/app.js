@@ -3,10 +3,11 @@ const electron = require("electron");
 const appConfig = require("electron-settings");
 const path = require("path");const fs = require("fs");
 const app = electron.app;
+const pathtoElectron = process.platform.match(/win/)?path.resolve(process.env.APPDATA, "npm/electron.cmd"):null;
 
 if (process.env.NODE_ENV!=="prod") {
 	require("electron-reload")(__dirname, {
-		electron: path.resolve(process.env.APPDATA, "npm/electron.cmd"),
+		electron: pathtoElectron,
 		hardResetMethod: "exit"
 	});
 	require("electron-debug")();
