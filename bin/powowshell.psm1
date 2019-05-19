@@ -46,7 +46,7 @@ function Invoke-PowowShell {
         # If we are installed as a module, our bin/ path is stored in path.txt
         if (Test-Path "$BinPath/path.txt") {$BinPath = Get-Content "$BinPath/path.txt"}
         Push-Location $BinPath
-
+        
         # Include common settings/functions
         . "./common.ps1"
 

@@ -30,7 +30,7 @@ $_POW = @{
 $_POW.WORKSPACE = "$($_POW.HOME)/workspace.txt"
 
 # Encoding of all files we read/write and output we generate
-$_POW.CACHE = (Resolve-Path "$PSScriptRoot/../cache")
+$_POW.CACHE = "$($_POW.HOME)/cache"
 
 # Cache per runtime version (PS5, PS6 etc)
 $_POW.CACHER = "$($_POW.CACHE)/$($_POW.RUNTIME)"

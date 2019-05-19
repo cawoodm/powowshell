@@ -23,7 +23,7 @@ function main() {
 
 	# Save path we are started from
     $StartPath = (Get-Location).Path
-
+    
     $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
 	if ($null -eq $FullPath) {throw "Path to pipeline $Path not found!"}
     if ($Output) {$OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue}
