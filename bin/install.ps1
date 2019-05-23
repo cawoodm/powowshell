@@ -83,7 +83,6 @@ function main() {
             Show-Message "Checking cmdlets installed..."
             pow cmdlets check
             Show-Message " Type 'pow help' for a list of commands"
-            Show-Message " Type 'pow cmdlets generate' to generate a list of cmdlets for the IDE (may take several minutes)"
         }
         else {
             Show-Message "Nope, the 'pow' CmdLet is not installed!" Red

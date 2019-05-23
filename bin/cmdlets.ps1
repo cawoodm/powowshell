@@ -52,7 +52,11 @@ function main() {
                     if ($NoFilter) {return $JSON}
                     return $CmdLets | ConvertTo-Json -Depth 10
                 }
-                return $Cmdlets
+                if ($Action -notlike "generate" -and $Action -notlike "check") {
+                    return $Cmdlets
+                } else {
+                   return "OK"
+                }
             } catch {throw "Cmdlet cache is corrupted: $_"}
         }
         # Get all installed Cmdlets and Functions
