@@ -16,10 +16,10 @@ const pow = (function(){
 
     const fs = require("fs");
     const path = require("path");
-    const pshell = require("./pshell").PShell();
+    const PShell = require("./pshell").PShell;
 
     let workspace = ".";
-    let execOptions : {debug: boolean} = {debug: false};
+    let execOptions : {debug: boolean; PSCore: string, userProfile: boolean} = {debug: false, PSCore: "pwsh", userProfile: true};
 
     /**
      * Initialize a workspace
@@ -216,11 +216,17 @@ const pow = (function(){
      */
     function _POWPromise(command, strict=false, json=false) {
         return new Promise(function(resolve, reject) {
-            if (execOptions.debug) console.log("EXEC", command);
-            pshell.exec(command, execOptions)
+            const pshell = PShell();
+            let pid = pshell.init({
+                pwsh: execOptions.PSCore==="pwsh"?true:false,
+                verbose: execOptions.debug,
+                noProfile: !execOptions.userProfile
+            });
+            if (execOptions.debug) console.log("EXEC", pid, command);
+            pshell.exec(command, [])
                 .then((out)=>{
                     try {
-                        if (execOptions.debug) console.log("STDOUT", out.stdout.substring(0,200));
+                        if (execOptions.debug) console.log("STDOUT", pid, out.stdout.substring(0,200));
                         let result = _processResult(out, json);
                         if (strict && !result.success)
                             reject(new POWError(`Failure of '${command}'!`, result.messages))

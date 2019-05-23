@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pow = (function () {
     const fs = require("fs");
     const path = require("path");
-    const pshell = require("./pshell").PShell();
+    const PShell = require("./pshell").PShell;
     let workspace = ".";
-    let execOptions = { debug: false };
+    let execOptions = { debug: false, PSCore: "pwsh", userProfile: true };
     /**
      * Initialize a workspace
      * @param {string} workspacePath: The path to the workspace root
@@ -196,13 +196,19 @@ const pow = (function () {
      */
     function _POWPromise(command, strict = false, json = false) {
         return new Promise(function (resolve, reject) {
+            const pshell = PShell();
+            let pid = pshell.init({
+                pwsh: execOptions.PSCore === "pwsh" ? true : false,
+                verbose: execOptions.debug,
+                noProfile: !execOptions.userProfile
+            });
             if (execOptions.debug)
-                console.log("EXEC", command);
-            pshell.exec(command, execOptions)
+                console.log("EXEC", pid, command);
+            pshell.exec(command, [])
                 .then((out) => {
                 try {
                     if (execOptions.debug)
-                        console.log("STDOUT", out.stdout.substring(0, 200));
+                        console.log("STDOUT", pid, out.stdout.substring(0, 200));
                     let result = _processResult(out, json);
                     if (strict && !result.success)
                         reject(new POWError(`Failure of '${command}'!`, result.messages));
