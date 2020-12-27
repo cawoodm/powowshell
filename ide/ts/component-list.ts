@@ -1,4 +1,3 @@
-/* global Vue */
 let modComponentList = function (Vue) {
     Vue.component("component-list", {
         props: ["store"],

@@ -54,24 +54,30 @@
     <v-snackbar v-model="message.show" timeout="message.timeout" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
     <v-snackbar v-model="longMessage.show" :timeout="0" multi-line top :color="longMessage.color">{{ longMessage.text }} <v-btn color="longMessage.color" flat @click="longMessage.show = false">Close</v-btn></v-snackbar>
 </v-app>
-<script src="./js/vue.min.js"></script>
-<script src="./js/vuetify.js"></script>
-<script src='./js/dragula.js'></script>
+<script src="./js/lib/vue.min.js"></script>
+<script src="./js/lib/vuetify.js"></script>
+<script src='./js/lib/dragula.js'></script>
 <script>
-if (typeof process === "undefined") {
+if (typeof window.require) {
     var exports = {} // Fix TypeScript reference to exports not known in browser
     // Write JS Modules as <script> tags for Browser Demo (non-electron)
     document.write('<script src="./js/component-list.js"><'+'/script>');
     document.write('<script src="./js/pipeline-form.js"><'+'/script>');
     document.write('<script src="./js/pipeline-manager.js"><'+'/script>');
-    document.write('<script src="./js/pow-mock.js"><'+'/script>');
+    document.write('<script src="./js/own/pow-mock.js"><'+'/script>');
     document.write('<script src="./js/loading.js"><'+'/script>');
+    window.require = function(what) {
+        if (what==='vue') return Vue
+    }
+    //document.write('<script src="./js/main.js"><'+'/script>');
+} else {
+    var {process, require} = window._preload;
 }
 </script>
 <script src="./js/cmdlet-list.js"></script>
-<script src="./js/step-grid.js"></script>
-<script src="./js/step-form.js"></script>
-<script src="./js/data-table.js"></script>
+<script src="./js/own/step-grid.js"></script>
+<script src="./js/own/step-form.js"></script>
+<script src="./js/own/data-table.js"></script>
 <script src="./ide.js"></script>
 </body>
 </html>

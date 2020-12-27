@@ -1,4 +1,6 @@
 /* global Vue */
+import Vue from 'vue';
+import fs from 'fs';
 Vue.component("cmdlet-list", {
     props: [],
     data: function() {

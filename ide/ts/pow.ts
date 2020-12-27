@@ -12,11 +12,11 @@
  *  }
  */
 import * as POWType from "./pow-types";
-const pow = (function(){
+import fs from "fs";
+import path from "path";
+import {PShell} from "./pshell";
 
-    const fs = require("fs");
-    const path = require("path");
-    const PShell = require("./pshell").PShell;
+const pow = (function(){
 
     let workspace = ".";
     let execOptions : {debug: boolean; PSCore: string, userProfile: boolean} = {debug: false, PSCore: "pwsh", userProfile: true};
@@ -107,7 +107,7 @@ const pow = (function(){
             if (!fs.existsSync(directory)) fs.mkdirSync(directory);
             fs.writeFile(path.resolve(directory, "pipeline.json"), data, (err)=>{
                 if (!err) resolve(new POWResult(true, "Pipeline saved!", [], {}));
-                else reject(new POWError(err, []));
+                else reject(new POWError(err.message, []));
             })
         });
     }
@@ -122,7 +122,7 @@ const pow = (function(){
             fs.readFile(pipeline, "utf8", (err, data)=>{
                 data = data.replace(/^\uFEFF/, ''); // Drop BOM
                 if (!err) resolve(new POWResult(true, "Pipeline loaded!", [], JSON.parse(data)));
-                else reject(new POWError(err, []));
+                else reject(new POWError(err.message, []));
             })
         });
     }
@@ -224,7 +224,7 @@ const pow = (function(){
             });
             if (execOptions.debug) console.log("EXEC", pid, command);
             pshell.exec(command, [])
-                .then((out)=>{
+                .then((out: any)=>{
                     try {
                         if (execOptions.debug) console.log("STDOUT", pid, out.stdout.substring(0,200));
                         let result = _processResult(out, json);

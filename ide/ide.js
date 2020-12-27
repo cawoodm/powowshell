@@ -1,6 +1,4 @@
 /* global Vue dragula formBuilder dataTableBuilder console pipelineManager */
-const {process, require} = window._preload;
-const electron = require("electron");
 // Load modules depending on environment
 if (typeof process !== "undefined") {
     // Electron/Node environment
@@ -9,6 +7,7 @@ if (typeof process !== "undefined") {
     pipelineManager = require("./js/pipeline-manager") //  eslint-disable-line
     pipelineForm = require("./js/pipeline-form") //  eslint-disable-line
     modLoading = require("./js/loading") //  eslint-disable-line
+    const electron = require("electron");
     var {dialog} = electron.remote;
 } else {
     // Browser/demo environment
@@ -187,6 +186,7 @@ window.onload = function() {
             },
             pipelineLoad: function(id, opts) {
                 // Load pipeline definition
+                let root = this;
                 opts = opts || {};
                 if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and load a new pipeline?")) return;
                 this.showLoading(`Loading pipeline (${id})...`);
@@ -194,7 +194,7 @@ window.onload = function() {
                     .then((res)=>{
                         pipelineManager.import(res.object);
                         pow.execOptions.PSCore=res.object.runtime=="ps5"?"powershell":"pwsh";
-                        if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
+                        if (root.$refs.stepGrid) root.$refs.stepGrid.doUpdate();
                         this.pipeline = res.object;
                         this.showLoading(false);
                     })
@@ -217,16 +217,19 @@ window.onload = function() {
             },
             pipelineOpen: function() {
                 if (typeof dialog === "undefined") return alert("Not implemented in the demo!\nTry download the app and run it with electron for all the features.")
-                let file = dialog.showOpenDialog({
+                dialog.showOpenDialog({
                     properties: ["openFile"],
                     filters: { name: "Pipelines", extensions: ["json"] }
-                });
-                if (!file) return;
-                pow.load(file[0]).then((res)=>{
-                    pipelineManager.import(res.object);
-                    if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
-                    this.pipeline = pipelineManager.getDefinition();
+                }).then(data => {
+                    const file = data.filePaths;
+                    if (!file) return;
+                    pow.load(file[0]).then((res)=>{
+                        pipelineManager.import(res.object);
+                        if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
+                        this.pipeline = pipelineManager.getDefinition();
+                    }).catch(this.handlePOWError);
                 }).catch(this.handlePOWError);
+
             },
             pipelineSave: function() {
                 let root = this;
@@ -283,7 +286,7 @@ window.onload = function() {
                 }
             });
             if (app.DEVMODE) {
-                console.clear(); // Vue/electron junk warnings
+                //console.clear(); // Vue/electron junk warnings
                 pow.execOptions.PSCore="pwsh"; // Testing PowerShell Core (v6)
                 pow.execOptions.debug=true;
                 //root.componentsLoad();root.cmdletsLoad();return;

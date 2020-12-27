@@ -4,12 +4,12 @@
  *  This also allows us to swap out the library later
  */
 type ShellOpts =  {
-    executionPolicy: string;
-    noProfile: boolean;
-    verbose: boolean;
-    inputEncoding: string;
-    outputEncoding: string;
-    pwsh: boolean
+    executionPolicy?: string;
+    noProfile?: boolean;
+    verbose?: boolean;
+    inputEncoding?: string;
+    outputEncoding?: string;
+    pwsh?: boolean
 }
 interface SearchFunc {
     (source: string, subString: string): boolean;

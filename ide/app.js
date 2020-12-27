@@ -24,10 +24,10 @@ function createMainWindow() {
 	const mainWindowStateKeeper = windowStateKeeper("main");
 	const win = new electron.BrowserWindow({
 		title: "main",
-		x: mainWindowStateKeeper.x,
-		y: mainWindowStateKeeper.y,
-		width: mainWindowStateKeeper.width,
-		height: mainWindowStateKeeper.height,
+		x: mainWindowStateKeeper.x || 10,
+		y: mainWindowStateKeeper.y || 10,
+		width: mainWindowStateKeeper.width || 1200,
+		height: mainWindowStateKeeper.height || 1000,
 		webPreferences: {
 			preload: path.join(app.getAppPath(), "preload.js"),
 			contextIsolation: false,

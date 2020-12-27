@@ -1,13 +1,14 @@
 {
     "compilerOptions": {
-        "rootDir": "./ide/ts",
-        "outDir": "./ide/js",
+        "rootDir": "./ts",
+        "outDir": "./js",
         "target": "es2017",
-        "module": "commonjs",
+        "module": "none",
         "lib": ["dom", "es6"],
         "removeComments" :false,
         "sourceMap": true,
         "moduleResolution":"node",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "types": ["node"]
     }
 }
