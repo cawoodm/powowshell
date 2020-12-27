@@ -107,7 +107,7 @@ const pow = (function () {
     async function load(pipeline) {
         return new Promise(function (resolve, reject) {
             fs.readFile(pipeline, "utf8", (err, data) => {
-                data = data.replace(/^\uFEFF/, ''); // Drop BOM
+                data = data.replace(/^\uFEFF/, ""); // Drop BOM
                 if (!err)
                     resolve(new POWResult(true, "Pipeline loaded!", [], JSON.parse(data)));
                 else
@@ -148,7 +148,7 @@ const pow = (function () {
     async function preview(step, component) {
         let path = component.executable;
         //if (component.type=="component") path = "!"+path;
-        let params = JSON.stringify(step.parameters).replace(/"/g, '`"');
+        let params = JSON.stringify(step.parameters).replace(/"/g, "`\"");
         //console.log(`pow preview "${path}" "${params}"`)
         if (component.output.match(/text\/json/))
             // JSON Component returns an object

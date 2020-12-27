@@ -10,7 +10,9 @@ if (process.env.NODE_ENV!=="prod") {
 		electron: pathtoElectron,
 		hardResetMethod: "exit"
 	});
-	require("electron-debug")();
+	require("electron-debug")({
+		devToolsMode: "previous"
+	});
 }
 
 let mainWindow;
@@ -20,7 +22,6 @@ function onClosed() {
 
 function createMainWindow() {
 	const mainWindowStateKeeper = windowStateKeeper("main");
-
 	const win = new electron.BrowserWindow({
 		title: "main",
 		x: mainWindowStateKeeper.x,
@@ -28,7 +29,9 @@ function createMainWindow() {
 		width: mainWindowStateKeeper.width,
 		height: mainWindowStateKeeper.height,
 		webPreferences: {
-			nodeIntegration: true,
+			preload: path.join(app.getAppPath(), "preload.js"),
+			contextIsolation: false,
+			enableRemoteModule: true,
 			allowEval: false
 		}
 	});

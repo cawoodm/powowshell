@@ -1,5 +1,6 @@
 /* global Vue dragula formBuilder dataTableBuilder console pipelineManager */
-
+const {process, require} = window._preload;
+const electron = require("electron");
 // Load modules depending on environment
 if (typeof process !== "undefined") {
     // Electron/Node environment
@@ -8,7 +9,7 @@ if (typeof process !== "undefined") {
     pipelineManager = require("./js/pipeline-manager") //  eslint-disable-line
     pipelineForm = require("./js/pipeline-form") //  eslint-disable-line
     modLoading = require("./js/loading") //  eslint-disable-line
-    var {dialog} = require("electron").remote
+    var {dialog} = electron.remote;
 } else {
     // Browser/demo environment
     // Modules loaded in index.html via dynamic script tags

@@ -13,8 +13,9 @@ The IDE require certain features (spawn powershell) in NodeJS v11 or higher so g
 1. Clone this repository with git: `git clone git@github.com:cawoodm/powowshell.git`
 2. Run `install` from DOS/CMD to install the `pow` command for powershell
 3. Start `powershell` and then run `pow cmdlets generate` so that the IDE knows all your installed cmdlets and functions
-3. To use the IDE, install electron: `npm install -g electron`
-4. Run the IDE with `npm start` or `electron .`
+3. To use the IDE install electron globally: `npm install -g electron`
+4. `cd ide` then install dependencies `npm i`
+4. Run the IDE: `npm start` or `electron .`
 
 ## Examples
 This repo includes an 2 example pipelines in `./examples/` as well as a bunch of components.
