@@ -54,6 +54,5 @@ function main() {
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

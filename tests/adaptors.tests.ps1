@@ -86,7 +86,6 @@ function CheckAdaptorOut($type, $o, $should, [switch]$param) {
     }
 }
 
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main
 #$DebugPreference = $DebugPreference_

@@ -18,7 +18,8 @@
 			"reference": "FileList.ps1",
 			"input": "",
 			"parameters": {
-				"Path": ".\\data\\test.log"
+        "Path": "../data/",
+        "Filter": "*.log"
 			},
 			"stream": ""
 		},

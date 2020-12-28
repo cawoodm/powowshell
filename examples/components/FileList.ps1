@@ -51,5 +51,4 @@ function main() {
 	$files | ConvertTo-Json
 }
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-Set-StrictMode -Version Latest
 main

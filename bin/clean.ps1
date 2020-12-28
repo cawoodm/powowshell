@@ -28,6 +28,5 @@ function main() {
 	Pop-Location
 }
 function Show-Message($msg, $Color) {Write-Host $Msg -ForegroundColor $Color}
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

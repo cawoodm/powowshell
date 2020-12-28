@@ -211,6 +211,5 @@ function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" 
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
-#Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

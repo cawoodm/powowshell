@@ -10,7 +10,6 @@ param(
     [int]$runMode=3,
     [int]$traceMode=0
 )
-Set-StrictMode -Version Latest
 
 # Trace function calls (1) or variable assignments (2)
 Set-PSDebug -Strict -Trace $traceMode

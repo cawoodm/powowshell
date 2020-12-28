@@ -7,7 +7,6 @@
  All content you change will be overwritten each time you update PowowShell!
 
 #>
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $_POW = @{

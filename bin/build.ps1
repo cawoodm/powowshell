@@ -18,25 +18,28 @@ param(
     [Parameter(Mandatory)][String]$Path,
     [String]$Output
 )
-$OutputPath="./"
+$OutputPath="./build/"
 function main() {
 
 	# Save path we are started from
-    $StartPath = (Get-Location).Path
-    
-    $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
-	if ($null -eq $FullPath) {throw "Path to pipeline $Path not found!"}
-    if ($Output) {$OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue}
-    if ($null -eq $OutputPath) {throw "Output path $Output not found!"}
-    Push-Location $FullPath.Path
-    try {
-        BuildingPipeline
-    } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-        #throw $_
-    } finally {
-        Set-Location $StartPath
-    }
+  $StartPath = (Get-Location).Path
+
+  if (Test-Path $OutputPath) {Remove-Item $OutputPath -Recurse -Force}
+  New-Item -Path $OutputPath -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
+  
+  $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
+  if ($null -eq $FullPath) {throw "Path to pipeline $Path not found!"}
+  if ($Output) {$OutputPath = Resolve-Path $Output -ErrorAction SilentlyContinue}
+  if ($null -eq $OutputPath) {throw "Output path $Output not found!"}
+  Push-Location $FullPath.Path
+  try {
+      BuildingPipeline
+  } catch {
+      $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+      #throw $_
+  } finally {
+      Set-Location $StartPath
+  }
 }
 
 function BuildingPipeline() {
@@ -69,13 +72,16 @@ function BuildingPipeline() {
 
     Show-Message "SUCCESS: BUILD completed" Green
 
-    $p=$Path; if ($Output) {$p=$Output}
-    "Usage:`n  POW run $p"
-    "OR`n  POW run $p -Trace"
-    "OR`n  $p/run_prod.ps1"
+    Push-Location $StartPath
+    $p = Join-Path $Path $OutputPath | Resolve-Path -Relative;
+    Pop-Location
+    if ($Output) {$p=$Output}
+    "Usage:`n  pow run $p"
+    "OR`n  pow run $p -Trace"
+    "OR`n  $(Join-Path $p run_prod.ps1)"
 
     # Show params
-    $cmd = Get-Command ./run_prod.ps1
+    $cmd = Get-Command "$OutputPath/run_prod.ps1"
     "`nParameters:"
     $cmd.Parameters.Keys |
         Where-Object {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} |
@@ -128,7 +134,7 @@ function CreateSteps($pipelineDef, $COMPONENTS, $ADAPTORS) {
     $stepHeaderProcess = "process {"
     $stepHeaderEnd = "end {"
     $StepComment = $null
-    $stepFooterMain = "}`nSet-StrictMode -Version Latest`nmain"
+    $stepFooterMain = "}`nmain"
     $stepFooterStream = "}`n"
 
     $Count = 0
@@ -343,8 +349,7 @@ function ReSerializeParams($parameters) {
             $pType = $pObj.type
             if ($pType) {$pType="[$pType]"}
             $pMust = $pObj.mandatory
-            Set-StrictMode -Version Latest
-            if ($pMust -eq $true) {$pMust = "[Parameter(Mandatory=`$true)]"} else {$pMust=""}
+                        if ($pMust -eq $true) {$pMust = "[Parameter(Mandatory=`$true)]"} else {$pMust=""}
             if ($pVal.Contains("`{") -and $pVal.EndsWith("}")) {
                 # Parameter is code (a PowerShell Expression)
                 # TODO: Escape code for PS
@@ -380,6 +385,5 @@ function ReSerializePipelineParams($obj) {
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

@@ -76,7 +76,6 @@ function Invoke-PowowShell {
 
 }
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 #########################################
 Invoke-PowowShell -Command $Command -p1 $p1 -p2 $p2 -p3 $p3

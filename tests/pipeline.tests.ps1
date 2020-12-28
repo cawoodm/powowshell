@@ -17,7 +17,6 @@ function main() {
         Set-Location $StartPath
     }
 }
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main
 #$DebugPreference = $DebugPreference_

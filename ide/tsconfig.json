@@ -3,7 +3,7 @@
         "rootDir": "./ts",
         "outDir": "./js",
         "target": "es2017",
-        "module": "none",
+        "module": "commonjs",
         "lib": ["dom", "es6"],
         "removeComments" :false,
         "sourceMap": true,

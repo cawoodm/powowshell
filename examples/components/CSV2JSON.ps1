@@ -33,7 +33,6 @@ param(
         [string]$Delimiter=",",
         [string[]]$Header
 )
-Set-StrictMode -Version Latest
 if ($Header) {
     $InputObject | ConvertFrom-Csv -Header $Header -Delimiter $Delimiter | ConvertTo-JSON
 } else {

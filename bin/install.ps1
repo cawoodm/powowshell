@@ -97,7 +97,6 @@ function main() {
     }
 }
 
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 . "$PSScriptRoot/common.ps1"
 main

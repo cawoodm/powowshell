@@ -37,7 +37,6 @@ param(
 		[String]$p1,
 		[String]$p2
 )
-Set-StrictMode -Version Latest
 Write-Verbose ("ExecuteTemplate=" + $ExecuteTemplate)
 $command = $ExecuteTemplate -f $p0, $p1, $p2
 Invoke-Expression -Command $command | ConvertTo-Json -Depth $Depth

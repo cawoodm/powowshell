@@ -72,6 +72,5 @@ function main() {
 }
 
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

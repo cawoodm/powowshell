@@ -12,3 +12,4 @@ examples/**/step_*.ps1
 examples/**/run_*.ps1
 workspace.txt
 ide/js/*.*
+build/

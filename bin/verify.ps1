@@ -68,10 +68,10 @@ function main() {
     Write-Verbose $Path
 	Push-Location $Path
 	try {
-        if (-not (Test-Path .\run_prod.ps1)) {throw "Pipeline is not built!"}
+        if (-not (Test-Path ./build/run_prod.ps1)) {throw "Pipeline is not built!"}
         if (Test-Path .\errors.log) {Remove-Item .\errors.log}
         if (Test-Path .\warnings.log) {Remove-Item .\warnings.log}
-        $null = & .\run_prod.ps1 @Parameters -WhatIf 2> .\errors.log 3> .\warnings.log
+        $null = & ./build/run_prod.ps1 @Parameters -WhatIf 2> .\errors.log 3> .\warnings.log
         $outputErr = Get-Content .\errors.log -Raw
         $outputWar = Get-Content .\warnings.log -Raw
         if ($outputErr) {
@@ -88,7 +88,7 @@ function main() {
             Show-Message "Your pipeline was verified with no errors"
         }
         # Show params
-        #$cmd = Get-Command .\run_prod.ps1
+        #$cmd = Get-Command ./build/run_prod.ps1
         #"`nParameters:"
         #$cmd.Parameters.Keys | Where-Object {$_ -notin [System.Management.Automation.PSCmdlet]::CommonParameters -and $_ -notin [System.Management.Automation.PSCmdlet]::OptionalCommonParameters} | Where-Object {
         #    #if ($cmd.Parameters[$_].Attributes[0].Mandatory) {"$_ (mandatory)"} else {$_}
@@ -107,6 +107,5 @@ function  Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main

@@ -78,7 +78,6 @@ function Assert($expr, $msg, $val) {
 }
 function ErrMsg($msg){$Host.UI.WriteErrorLine($msg)}
 function SuccessMsg($msg){Write-Host $msg  -ForegroundColor Green}
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main
 #$DebugPreference = $DebugPreference_

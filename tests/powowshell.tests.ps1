@@ -66,6 +66,5 @@ function main() {
 }
 function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 main
