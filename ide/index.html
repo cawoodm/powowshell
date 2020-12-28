@@ -58,7 +58,7 @@
 <script src="./js/lib/vuetify.js"></script>
 <script src='./js/lib/dragula.js'></script>
 <script>
-if (typeof window.require) {
+if (typeof window._preload === 'undefined') {
     var exports = {} // Fix TypeScript reference to exports not known in browser
     // Write JS Modules as <script> tags for Browser Demo (non-electron)
     document.write('<script src="./js/component-list.js"><'+'/script>');
