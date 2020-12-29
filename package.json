@@ -20,6 +20,6 @@
     "@types/node": "^11.13.0"
   },
   "devDependencies": {
-    "electron": "^5.0.1"
+    "electron": "^7.2.4"
   }
 }
