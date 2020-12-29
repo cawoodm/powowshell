@@ -56,8 +56,8 @@ function main() {
         if ((..\examples\pipeline1\run_prod.ps1 | ConvertFrom-Json)[1].age -eq "100") {"Pipeline: OK"} else {ErrMsg "Pipeline: FAIL"}
 
     } catch {
-		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-		#throw $_
+    #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+     throw $_
     } finally {
         Set-Location $StartPath
     }
@@ -68,12 +68,12 @@ function Assert($expr, $msg, $val) {
         Write-Verbose "OK: $msg"
         return 1
     } else {
-        $Host.UI.WriteErrorLine("FAIL: $msg ($val)")
+        #$Host.UI.WriteErrorLine("FAIL: $msg ($val)")
         return 0
     }
     } catch {
         if ($VerbosePreference -eq "Continue") {Write-Warning "ERROR in {$($expr.ToString())} : $($_.Exception.Message)"}
-        $Host.UI.WriteErrorLine("FAIL: $msg ($val)")
+        #$Host.UI.WriteErrorLine("FAIL: $msg ($val)")
     }
 }
 function ErrMsg($msg){$Host.UI.WriteErrorLine($msg)}

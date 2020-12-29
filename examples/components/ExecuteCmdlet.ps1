@@ -10,13 +10,13 @@
 
  .Parameter Depth
   The depth of the JSON output to be returned
-	
+  
  .Parameter p0
  The first parameter passed in. Can be used in ExecuteTemplate as {0}
-	
+  
  .Parameter p1
  The second parameter passed in. Can be used in ExecuteTemplate as {1}
-	
+  
  .Inputs
  text
 
@@ -30,12 +30,12 @@
 [CmdletBinding(DefaultParameterSetName="Std")] 
 [OutputType([String])]
 param(
-	[Parameter(Mandatory)]
-		[String]$ExecuteTemplate,
-		[Int32]$Depth=2,
-		[String]$p0,
-		[String]$p1,
-		[String]$p2
+  [Parameter(Mandatory)]
+    [String]$ExecuteTemplate,
+    [Int32]$Depth=2,
+    [String]$p0,
+    [String]$p1,
+    [String]$p2
 )
 Write-Verbose ("ExecuteTemplate=" + $ExecuteTemplate)
 $command = $ExecuteTemplate -f $p0, $p1, $p2

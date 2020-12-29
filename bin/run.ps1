@@ -56,6 +56,7 @@ function main() {
   try {
     $exec = "./build/run_prod.ps1"
     if ($Options -contains "trace") {$exec="./build/run_trace.ps1"}
+    if (-not (Test-Path $exec)) {throw "POW101: Pipeline has not been built!"}
     if ($Parameters) {
       $result = & $exec @parameters
     } else {
@@ -66,9 +67,11 @@ function main() {
     }
     return $result
   } catch {
-    Show-Message "ERROR: !!! PIPELINE RUN FAILED !!!" Red
-    $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-    #throw $_
+    #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+    throw $_
+    #[Console]::Error.WriteLine(($erresult | ConvertTo-Json))
+    #$PSCmdlet.WriteError("{}")
+    #Write-Error("{}")
   } finally {
     Set-Location $StartPath
   }
@@ -76,5 +79,6 @@ function main() {
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
-$ErrorActionPreference = "Stop"
+#$ErrorView="CategoryView"
+#$ErrorActionPreference = "Stop"
 main

@@ -4,9 +4,9 @@
 
  .Description
   Accepts custom tabular data about people and return contents as a JSON Array
-	The data must be in the format:
-	NAME|AGE|GENDER
-	However, the record and field separator can be anything.
+  The data must be in the format:
+  NAME|AGE|GENDER
+  However, the record and field separator can be anything.
 
  .Parameter Delimiter
   Specifies the field separator. Default is a comma ",")
@@ -41,11 +41,11 @@ $r = 0
 $str = [string]$InputObject
 
 if ($RecordSeparator) {
-	$sep = $RecordSeparator
+  $sep = $RecordSeparator
 } else {
-	if ($str.IndexOf("`r`n") -ge 0) {$sep = "`r`n"}
-	elseif ($str.IndexOf("`r") -ge 0) {$sep = "`r"}
-	else {$sep = "`n"}
+  if ($str.IndexOf("`r`n") -ge 0) {$sep = "`r`n"}
+  elseif ($str.IndexOf("`r") -ge 0) {$sep = "`r"}
+  else {$sep = "`n"}
 }
 
 $rows = $str -split $sep

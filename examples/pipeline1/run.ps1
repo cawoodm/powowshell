@@ -21,13 +21,13 @@ if (-not (Test-Path './trace')) {New-Item -Path .\trace -Type directory | Out-Nu
 Remove-Item -Path .\trace\tmp_*.txt
 
 $PipelineParams = @{
-	DataSource = $DataSource;
-	p2 = $p2;
+  DataSource = $DataSource;
+  p2 = $p2;
 };
 
 # Get our context by including all globals
 $PipelineGlobals = @{
-	foo = "bar"
+  foo = "bar"
 };
 
 if ($runMode -eq 3) {

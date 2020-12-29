@@ -32,7 +32,7 @@ function main() {
         }
         Pop-Location
     } else {
-	Show-Message "POW! PowowShell Packs a Punch!" Cyan
+  Show-Message "POW! PowowShell Packs a Punch!" Cyan
 @"
 Usage: pow <command>
 Commands: "install", "version", "help", "workspace", "clean", "build", "script", verify", "run", "inspect", "components", "cmdlets", "pipeline", "preview", "examples", "adaptors"

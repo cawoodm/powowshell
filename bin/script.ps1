@@ -20,14 +20,14 @@ function main() {
     # Include common settings/functions
     . "$PSScriptRoot/common.ps1"
 
-	# Save path we are started from
+  # Save path we are started from
     $StartPath = (Get-Location).Path
 
     # Map folder to pipeline.json
     if ($Path -notlike "*.ps1") {$Path += "/pipeline.json"}
 
     $FullPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
-	if ($null -eq $FullPath) {throw "Path to script definition $Path not found!"}
+  if ($null -eq $FullPath) {throw "Path to script definition $Path not found!"}
     try {
         $def = Get-Content $Path | ConvertFrom-Json
 
@@ -73,9 +73,9 @@ function main() {
         $lines -join "`n"
 
     } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-        $Host.UI.WriteErrorLine($Path)
-        #throw $_
+        #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+        #$Host.UI.WriteErrorLine($Path)
+        throw $_
     } finally {
         Set-Location $StartPath
     }

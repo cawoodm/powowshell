@@ -1,7 +1,5 @@
-/* global Vue */
-import Vue from 'vue';
-import fs from 'fs';
-Vue.component("cmdlet-list", {
+const modCmdletList = function (Vue) {
+  Vue.component("cmdlet-list", {
     props: [],
     data: function() {
         return {
@@ -48,3 +46,6 @@ Vue.component("cmdlet-list", {
     </v-expansion-panel-content>
 `
 });
+}
+// @ts-ignore
+if (typeof module !== "undefined") module.exports = modCmdletList;

@@ -5,7 +5,7 @@
     "tasks": [
         {
             "type": "typescript",
-            "tsconfig": "tsconfig.json",
+            "tsconfig": "ide/tsconfig.json",
             "isBackground": true,
             "problemMatcher": [
                 "$tsc"
@@ -14,7 +14,7 @@
         {
             "type": "typescript",
             "label": "TypeScript Compiler Watcher Thingy...",
-            "tsconfig": "tsconfig.json",
+            "tsconfig": "ide/tsconfig.json",
             "option": "watch",
             "problemMatcher": [
                 "$tsc-watch"

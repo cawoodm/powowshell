@@ -11,13 +11,13 @@
 
  .Parameter Filter
   The wildcard for matching files (e.g. *.csv)
-	
+  
  .Parameter Recurse
   If $true, will search all sub-folders
-	
+  
  .Example
  .\FileList.ps1 -Path C:\windows -Filter *.exe
-	
+  
  .Inputs
  none
  
@@ -29,26 +29,26 @@
 [CmdletBinding(DefaultParameterSetName="Std")]
 [OutputType([string])]
 param(
-	[string]$Path,
-	[string]$Filter,
-	[switch]$Recurse
+  [string]$Path,
+  [string]$Filter,
+  [switch]$Recurse
 )
 Set-StrictMode -Version 3.0
 function main() {
-	$files = @()
-	Get-ChildItem -Path $Path -File -Filter $Filter -Recurse:$Recurse|
-	  ForEach-Object {
-		$f = $null
-		$len = 0
-		if ($_.PSobject.Properties.Name -match "Length") {$len = $_.Length}
-		$f = @{
-			name=$_.Name
-			fullName=$_.FullName
-			size=$len
-		}
-		if ($f) {$files += New-Object -TypeName PSObject -Property $f}
-	}
-	$files | ConvertTo-Json
+  $files = @()
+  Get-ChildItem -Path $Path -File -Filter $Filter -Recurse:$Recurse|
+    ForEach-Object {
+    $f = $null
+    $len = 0
+    if ($_.PSobject.Properties.Name -match "Length") {$len = $_.Length}
+    $f = @{
+      name=$_.Name
+      fullName=$_.FullName
+      size=$len
+    }
+    if ($f) {$files += New-Object -TypeName PSObject -Property $f}
+  }
+  $files | ConvertTo-Json
 }
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 main

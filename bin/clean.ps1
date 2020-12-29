@@ -15,17 +15,17 @@ param(
 )
 function main() {
 
-	# Include common settings/functions
-	. "$PSScriptRoot/common.ps1"
+  # Include common settings/functions
+  . "$PSScriptRoot/common.ps1"
 
   $Path = (Resolve-Path -Path $Path).Path
-	Push-Location $Path
-	Remove-Item -Force step_*.ps1
-	Remove-Item -Force run_*.ps1
-	Remove-Item -Force *.log
-	Remove-Item -Force ./trace/*.txt
-	Show-Message "SUCCESS: CLEAN completed" Green
-	Pop-Location
+  Push-Location $Path
+  Remove-Item -Force step_*.ps1
+  Remove-Item -Force run_*.ps1
+  Remove-Item -Force *.log
+  Remove-Item -Force ./trace/*.txt
+  Show-Message "SUCCESS: CLEAN completed" Green
+  Pop-Location
 }
 function Show-Message($msg, $Color) {Write-Host $Msg -ForegroundColor $Color}
 $ErrorActionPreference = "Stop"

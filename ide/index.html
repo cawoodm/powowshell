@@ -52,7 +52,24 @@
         <loading ref="loading"></loading>
     </v-content>
     <v-snackbar v-model="message.show" timeout="message.timeout" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
-    <v-snackbar v-model="longMessage.show" :timeout="0" multi-line top :color="longMessage.color">{{ longMessage.text }} <v-btn color="longMessage.color" flat @click="longMessage.show = false">Close</v-btn></v-snackbar>
+    <!--<v-snackbar v-model="longMessage.show" :timeout="20000" multi-line top :color="longMessage.color"><v-btn color="longMessage.color" flat @click="longMessage.show = false">Close</v-btn><div style="overflow-y:scroll">{{ longMessage.text }}</div></v-snackbar>-->
+    <v-dialog v-model="longMessage.show">
+      <v-card>
+        <v-card-title :class="longMessage.color">
+          Error
+        </v-card-title>
+        <v-card-text>
+          <pre style="white-space: pre-wrap;">
+            {{ longMessage.text }}
+          </pre>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="longMessage.show = false">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 </v-app>
 <script src="./js/lib/vue.min.js"></script>
 <script src="./js/lib/vuetify.js"></script>
@@ -61,6 +78,7 @@
 var exports = {} // Fix TypeScript reference to exports not known in browser
 if (typeof window._preload === 'undefined') {
     // Write JS Modules as <script> tags for Browser Demo (non-electron)
+    document.write('<script src="./js/cmdlet-list.js"><'+'/script>');
     document.write('<script src="./js/component-list.js"><'+'/script>');
     document.write('<script src="./js/pipeline-form.js"><'+'/script>');
     document.write('<script src="./js/pipeline-manager.js"><'+'/script>');
@@ -74,7 +92,6 @@ if (typeof window._preload === 'undefined') {
     var {process, require} = window._preload;
 }
 </script>
-<script src="./js/cmdlet-list.js"></script>
 <script src="./js/own/step-grid.js"></script>
 <script src="./js/own/step-form.js"></script>
 <script src="./js/own/data-table.js"></script>

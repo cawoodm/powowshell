@@ -39,3 +39,5 @@ $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 
 # Common functions
 function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
+function Show-Error($errmsg) {$host.ui.WriteErrorLine($errmsg)}
+#function Show-Error($errmsg) {[Console]::Error.WriteLine($errmsg)}

@@ -24,7 +24,7 @@ param(
 function main() {
 
     $Path = $Path.replace('.ps1', '')
-	$FullPath = (Resolve-Path -Path $Path).Path
+  $FullPath = (Resolve-Path -Path $Path).Path
     Write-Verbose "Components Path=$Path; FullPath=$FullPath"
     Push-Location $FullPath
     try {
@@ -57,8 +57,8 @@ function main() {
         if ($Action -like "export") {return $JSON}
         return $Components
     } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-        #throw $_
+        #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+        throw $_
     } finally {
         Pop-Location
     }
@@ -90,7 +90,7 @@ function LoadComponents($Path) {
             & "$PSScriptRoot/inspect.ps1" $script.Fullname
         } catch {
             # Error message on each component but continue
-            $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+            #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
         }
     }
 

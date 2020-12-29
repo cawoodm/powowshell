@@ -4,13 +4,13 @@
 
  .Parameter Command
  The command string to be executed
-		
+    
  .Inputs
  none
 
  .Outputs
  text
-		
+    
 #>
 param(
     [String]$Command

@@ -44,7 +44,7 @@ param(
 )
 function main() {
 
-	# Save path we are started from
+  # Save path we are started from
     $StartPath = (Get-Location).Path
 
     if ($Parameters -is [string]) {
@@ -66,8 +66,8 @@ function main() {
     Write-Verbose $Parameters
     $Path = (Resolve-Path -Path $Path).Path
     Write-Verbose $Path
-	Push-Location $Path
-	try {
+  Push-Location $Path
+  try {
         if (-not (Test-Path ./build/run_prod.ps1)) {throw "Pipeline is not built!"}
         if (Test-Path .\errors.log) {Remove-Item .\errors.log}
         if (Test-Path .\warnings.log) {Remove-Item .\warnings.log}
@@ -95,13 +95,13 @@ function main() {
         #}
     } catch {
         Show-Message "!!! PIPELINE VERIFICATION FAILED !!!" Red
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-        #throw $_
+        #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+        throw $_
     } finally {
         Remove-Item .\errors.log -ErrorAction SilentlyContinue
         Remove-Item .\warnings.log -ErrorAction SilentlyContinue
-		Set-Location $StartPath
-	}
+    Set-Location $StartPath
+  }
 }
 function  Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
 

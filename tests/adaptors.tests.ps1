@@ -11,8 +11,8 @@ function main() {
         if ("object" -like $Filter) {$success += CheckAdaptorObject; $tests++}
         if ($success -eq $tests) {Write-Host "SUCCESS: Adaptors passed all $tests tests" -ForegroundColor Green} else {$Host.UI.WriteErrorLine("FAIL: Adaptors passed $success of $tests - $($tests-$success) failed")}
     } catch {
-		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-		#throw $_
+    #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+     throw $_
     } finally {
         Set-Location $StartPath
     }

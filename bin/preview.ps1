@@ -34,18 +34,18 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
 param(
     [Parameter(Mandatory)][String]$Path,
-	$Parameters,
-	$InputObject
+  $Parameters,
+  $InputObject
 )
 
 function main() {
 
-	# Save path we are started from
-	$StartPath = (Get-Location).Path
+  # Save path we are started from
+  $StartPath = (Get-Location).Path
 
     try {
-		# Add .ps1 to components with a path so `pow inspect !csv2json` works
-		if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
+    # Add .ps1 to components with a path so `pow inspect !csv2json` works
+    if (($Path -like "*\*" -or $Path -like "*/*") -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
         Write-Verbose "JSON: $Parameters"
         if ($Parameters -is [hashtable]) {
             $ParamHash = $Parameters
@@ -80,12 +80,12 @@ function main() {
         Write-Verbose "PREVIEW EXEC: $exec"
         Invoke-Expression $exec
 
-	} catch {
-		$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-		#throw $_
-	} finally {
-		Set-Location $StartPath
-	}
+  } catch {
+    #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+     throw $_
+  } finally {
+    Set-Location $StartPath
+  }
 
 }
 

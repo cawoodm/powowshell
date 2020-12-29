@@ -27,7 +27,7 @@ function main() {
         # Check Cache
         Set-Location $PSScriptRoot
         $CacheDir = $_POW.CACHER
-		if (-not (Test-Path "$CacheDir/cmdlets")) {$null = New-Item -Path "$CacheDir/cmdlets" -ItemType Directory}
+    if (-not (Test-Path "$CacheDir/cmdlets")) {$null = New-Item -Path "$CacheDir/cmdlets" -ItemType Directory}
         $CachePath = "$CacheDir/cmdlets.json"
         $CacheFile=$null;$JSON=$null
         if ($Action -notlike "generate" -and (Test-Path $CachePath)) {
@@ -97,8 +97,8 @@ function main() {
             return $Cmdlets
         }
     } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-        #throw $_
+        #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+        throw $_
     } finally {
         Set-Location $StartPath
     }

@@ -20,13 +20,13 @@ param(
 )
 function main() {
 
-	# Save path we are started from
+  # Save path we are started from
     $StartPath = (Get-Location).Path
 
     # Location of our workspace setting
     $WSPath = "$($_POW.HOME)\workspace.txt"
 
-	try {
+  try {
         $WPath=$null
 
         if ($Path) {
@@ -46,10 +46,10 @@ function main() {
         # Must return a string so IDE can | convertto-json
         return [string]$WPath
     } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+        #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     } finally {
         Set-Location $StartPath
-	}
+  }
 }
 
 . "$PSScriptRoot/common.ps1"

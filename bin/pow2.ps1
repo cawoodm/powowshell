@@ -1,14 +1,14 @@
 [CmdletBinding(SupportsShouldProcess)]
-	param(
-			[Parameter(Mandatory)][String[]]
-			$Command,
-			$p1,$p2,$p3
+  param(
+      [Parameter(Mandatory)][String[]]
+      $Command,
+      $p1,$p2,$p3
     )
 #########################################
 function Invoke-PowowShell {
     [CmdletBinding(SupportsShouldProcess)]
     [Alias('pow')]
-	param(
+  param(
         [Parameter(Mandatory=$true)][String[]]
         [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "cmdlets", "pipeline", "preview", "examples", "adaptors", "script")]
         $Command,
@@ -69,7 +69,7 @@ function Invoke-PowowShell {
             }
         }
     } catch {
-        $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+        #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     } finally {
         Set-Location $StartPath
     }

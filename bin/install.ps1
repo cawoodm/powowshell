@@ -1,12 +1,12 @@
 <#
-	.Synopsis
-	Install PowowShell as a Global CmdLet (Module)
+  .Synopsis
+  Install PowowShell as a Global CmdLet (Module)
 
-	.Description
-	Once installed you can run "pow <command>" directly from PowerShell
+  .Description
+  Once installed you can run "pow <command>" directly from PowerShell
 
-	.Parameter Verify
-	Only check if PowowShell is installed
+  .Parameter Verify
+  Only check if PowowShell is installed
 
 #>
 [CmdletBinding(SupportsShouldProcess)]

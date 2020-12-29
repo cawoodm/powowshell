@@ -4,6 +4,7 @@ if (typeof process !== "undefined") {
     // Electron/Node environment
     var pow = require("./js/pow").pow;
     modComponentList = require("./js/component-list") //  eslint-disable-line
+    modCmdletList = require("./js/cmdlet-list") //  eslint-disable-line
     pipelineManager = require("./js/pipeline-manager") //  eslint-disable-line
     pipelineForm = require("./js/pipeline-form") //  eslint-disable-line
     modLoading = require("./js/loading") //  eslint-disable-line
@@ -14,6 +15,7 @@ if (typeof process !== "undefined") {
     // Modules loaded in index.html via dynamic script tags
 }
 modComponentList(Vue)
+modCmdletList(Vue)
 pipelineForm = pipelineForm(Vue)
 modLoading(Vue)
 
@@ -109,8 +111,12 @@ window.onload = function() {
                         if (Array.isArray(obj.object))
                             dataTableBuilder.showTable(this.$root, {title: "Result", items: obj.object});
                         else {
-                            let data = JSON.stringify(obj.object, null, 2);
-                            alert(data)
+                            if (obj.success) {
+                              let data = JSON.stringify(obj.object, null, 2);
+                              alert("IDE:powBuild" + data)
+                            } else {
+                              this.handlePOWError(obj)      
+                            }
                         }
                         this.showLoading(0);
                     }).catch((err)=>{
@@ -120,14 +126,18 @@ window.onload = function() {
             },
             handlePOWError: function(err) {
                 let message = "";
+                console.log("handlePOWError", typeof err.message, typeof err.messages)
                 if (err.constructor.name === "POWError") message += "POWError:\n";
                 if (err.message) message += err.message+"\n";
                 if (err.messages && Array.isArray(err.messages))
-                    err.messages.forEach((msg)=>message += "\n" + msg.type + ": " + msg.message);
+                    err.messages.forEach(msg => {
+                      message += "\n" + msg.type + ": " + (msg.obj?"("+msg.obj.scriptName+") ":"") + msg.message
+                    });
                 console.log(err);
                 this.showLongMessage(message, "error");
             },
             showLongMessage: function(text, color) {
+              console.log("showLongMessage", text)
                 color = color || "info";
                 if (this.longMessage.show) {
                     // Already visible, add to the message
@@ -159,7 +169,7 @@ window.onload = function() {
                     let component = app.getComponent(step.reference);
                     formBuilder.showForm(this.$root, step, component);
                 } catch(e) {
-                    alert(e.message)
+                    alert("IDE100:showStepDialog:", e.message)
                 }
             },
             componentsLoad: function() {
@@ -264,7 +274,7 @@ window.onload = function() {
                         res.object.forEach((o)=>{
                             let msg = o.code+"\n"+o.description;
                             msg = msg.replace("`n", "\n");
-                            alert(msg)
+                            alert("PowExamples:", msg)
                         });
                     }).catch(this.handlePOWError);
             });
@@ -291,11 +301,12 @@ window.onload = function() {
                 pow.execOptions.debug=true;
                 //root.componentsLoad();root.cmdletsLoad();return;
                 pow.init("!examples")
+                    .then(()=>root.pipelineLoad("pipeline3"))
                     .then(()=>{
+                        //console.clear();
                         root.componentsLoad()
                         root.cmdletsLoad()
                     })
-                    .then(()=>root.pipelineLoad("pipeline2"))
                     //.then(()=>root.run())
                     .catch(this.handlePOWError);
             } else {

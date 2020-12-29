@@ -120,7 +120,7 @@ const pow = (function(){
     async function load(pipeline: string) {
         return new Promise(function(resolve, reject) {
             fs.readFile(pipeline, "utf8", (err, data)=>{
-                data = data.replace(/^\uFEFF/, ''); // Drop BOM
+                data = data.replace(/^\uFEFF/, ''); // Strip BOM
                 if (!err) resolve(new POWResult(true, "Pipeline loaded!", [], JSON.parse(data)));
                 else reject(new POWError(err.message, []));
             })
@@ -236,7 +236,12 @@ const pow = (function(){
                         reject(e);
                     }
                 }).catch((err)=>{
-                    reject(err);
+                    try {
+                      const errorObject = JSON.parse(err.message.trim().replace(/^\uFEFF/, '')); // Strip BOM
+                      resolve(_processResult({stderr: errorObject}, true));
+                    } catch(e) {
+                      reject(err);
+                    }
                 });
         });
     }
@@ -257,24 +262,28 @@ const pow = (function(){
         // Get stderr as a series of ERROR messages
         if (out.stderr) {
             success = false;
-            messages.push(new POWMessage("ERROR", out.stderr))
+            let msg = typeof out.stderr === 'object' ? out.stderr.message : out.stderr;
+            let obj = typeof out.stderr === 'object' ? out.stderr : null;
+            messages.push(new POWMessage("ERROR", msg, obj))
         }
 
         let obj = null;
-        // Process JSON output
-        if (json) {
+        if (out.stdout) {
+          if (json) {
+          // Process JSON output
             try{
                 obj = JSON.parse(out.stdout)
             } catch(e) {
-                messages.unshift(new POWMessage("ERROR", e.message))
-                throw new POWError(`Invalid JSON Object: ${e.message}`, messages)
+                messages.unshift(new POWMessage("ERROR", e.message, null))
+                throw new POWError(`POW102:Invalid JSON Object: ${e.message}`, messages)
             }
-        } else {
-            // Get stdout as a series of INFO messages
-            let outlines = out.stdout.split(/\r?\n/);
-            for (let o=0; o < outlines.length && o < 25; o++) {
-                messages.push(new POWMessage("INFO", outlines[o]))
-            }
+          } else {
+              // Get stdout as a series of INFO messages
+              let outlines = out.stdout.split(/\r?\n/); // TODO: INTEROP
+              for (let o=0; o < outlines.length && o < 25; o++) {
+                  messages.push(new POWMessage("INFO", outlines[o], null))
+              }
+          }
         }
 
         return new POWResult(success, out.stdout, messages, obj)
@@ -320,9 +329,10 @@ const POWResult = function(success, output, messages, object) {
  * @param {string} type The type of message ERROR|WARN|INFO|DEBUG
  * @param {string} message The message text
  */
-const POWMessage = function(type, message) {
+const POWMessage = function(type: string, message: string, obj: any) {
     this.type =  type || "INFO";
     this.message = message;
+    this.obj = obj || null;
 }
 
 /**

@@ -5,7 +5,7 @@
   "description": "Read csv export from procmon and find stuff.",
   "parameters": {
     "Path": {
-      "default": ".\\data\\Logfile.csv",
+      "default": "../data/Logfile.csv",
       "type": "string"
     }
   },
