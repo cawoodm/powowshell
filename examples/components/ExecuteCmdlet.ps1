@@ -21,7 +21,7 @@
  text
 
  .Outputs
- text/json
+ any
  
  .Example
  .\ExecuteCmdlet.ps1 -ExecuteTemplate "Get-ChildItem {0} {1}" -p0 "C:\temp" -p1 "*.txt"
@@ -39,4 +39,4 @@ param(
 )
 Write-Verbose ("ExecuteTemplate=" + $ExecuteTemplate)
 $command = $ExecuteTemplate -f $p0, $p1, $p2
-Invoke-Expression -Command $command | ConvertTo-Json -Depth $Depth
+Invoke-Expression -Command $command #| ConvertTo-Json -Depth $Depth

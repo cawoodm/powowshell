@@ -22,4 +22,4 @@ $obj = $InputObject | ConvertFrom-JSON
 $obj | % {
   Add-Member -InputObject $_ -NotePropertyName $Name -NotePropertyValue $Value
 }
-$obj | ConvertTo-Json
+$obj #| ConvertTo-Json

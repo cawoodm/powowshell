@@ -25,22 +25,11 @@
 		},
 		{
 			"id": "B1",
-			"name": "Parse Names File",
-			"reference": "CSV2JSON.ps1",
+			"name": "Select file name and size",
+			"reference": "SelectFields.ps1",
 			"input": "A1",
 			"parameters": {
-				"Delimiter": "|",
-				"Header": "{\"name\", \"age\", \"email\", \"source\"}"
-			},
-			"stream": ""
-		},
-		{
-			"id": "C1",
-			"name": "Select Name and Email",
-			"reference": "SelectFields.ps1",
-			"input": "B1",
-			"parameters": {
-				"Fields": "{\"name\", \"age\", \"email\"}"
+				"Fields": ["name","size"]
 			},
 			"stream": ""
 		}

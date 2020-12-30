@@ -24,7 +24,7 @@ param(
 function main() {
 
   try {
-    # Add .ps1 to components with a path so `pow inspect !csv2json` works
+    # Add .ps1 to components with a path so `pow inspect !componentName` works
     if ($Path.indexOf([IO.Path]::DirectorySeparatorChar) -ge 0 -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
     $RealPath = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
     if ($RealPath) {

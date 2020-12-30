@@ -7,19 +7,10 @@
   "repository": "https://github.com/cawoodm/powowshell",
   "main": "ide/app.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron ide",
     "test": "POWERSHELL -f ./tests/allTests.ps1"
-  },
-  "engines": {
-    "node": ">=11.0.0"
   },
   "keywords": [
     "PowerShell"
-  ],
-  "dependencies": {
-    "@types/node": "^11.13.0"
-  },
-  "devDependencies": {
-    "electron": "^5.0.1"
-  }
+  ]
 }

@@ -27,7 +27,7 @@ let modComponentList = function (Vue) {
         },
         mounted: function() {
             this.filter = "";
-            this.loading = true;
+            this.loading = false;
         },
         template: `
         <v-expansion-panel-content @hook:updated="$root.componentsUpdated">

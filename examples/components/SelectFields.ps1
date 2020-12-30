@@ -3,10 +3,10 @@
  Selects only certain fields from the input
 
  .Inputs
- text/json
+ any/PSObj
 
  .Outputs
- text/json
+ any/PSObj
 
  .Example
  .\SelectFields.ps1 '{"a": "foo", "b": 2, "c": 3}' | .\examples\components\SelectFields.ps1 -Fields "a", "b"
@@ -18,8 +18,4 @@ param(
     [String[]]$Fields
 )
 
-$data = $input | ConvertFrom-JSON
-
-$data |
-    Select-Object -Property $Fields |
-    ConvertTo-JSON
+$input | Select-Object -Property $Fields

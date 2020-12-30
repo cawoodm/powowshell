@@ -80,56 +80,6 @@
                         ]
     },
     {
-        "reference":  "csv2json.ps1",
-        "name":  "CSV2JSON",
-        "type":  "component",
-        "executable":  "components\\CSV2JSON.ps1",
-        "synopsis":  "Convert CSV data to JSON format",
-        "description":  "Accepts tabular CSV data and return contents as a JSON Array",
-        "whatif":  false,
-        "parameters":  [
-                           {
-                               "name":  "InputObject",
-                               "type":  "string",
-                               "piped":  true,
-                               "pipedMode":  "value",
-                               "required":  true,
-                               "default":  null,
-                               "description":  null,
-                               "values":  null
-                           },
-                           {
-                               "name":  "Delimiter",
-                               "type":  "string",
-                               "piped":  null,
-                               "pipedMode":  null,
-                               "required":  false,
-                               "default":  ",",
-                               "description":  "Specifies the field separator. Default is a comma \",\")",
-                               "values":  null
-                           },
-                           {
-                               "name":  "Header",
-                               "type":  "string[]",
-                               "piped":  null,
-                               "pipedMode":  null,
-                               "required":  false,
-                               "default":  null,
-                               "description":  null,
-                               "values":  null
-                           }
-                       ],
-        "input":  "string",
-        "inputFormat":  "text/csv",
-        "inputDescription":  "A String in CSV format",
-        "output":  "string",
-        "outputFormat":  "text/json",
-        "outputDescription":  "A JSON array object",
-        "POWMessages":  [
-
-                        ]
-    },
-    {
         "reference":  "curl.ps1",
         "name":  "CURL",
         "type":  "component",

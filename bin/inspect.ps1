@@ -29,7 +29,7 @@ function main() {
     # A necessary evil here so we can query properties without try/catch or other shenanigans
     Set-StrictMode -Off
     if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
-    # Add .ps1 to components with a path so `pow inspect !csv2json` works
+    # Add .ps1 to components with a path so `pow inspect !componentName` works
     if ($Path.indexOf([IO.Path]::DirectorySeparatorChar) -ge 0 -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
     $Executable = Resolve-Path -Path $Path -ErrorAction SilentlyContinue
     if ($Executable) {

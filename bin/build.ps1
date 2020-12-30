@@ -337,7 +337,11 @@ function ReSerializeObject($obj) {
     elseif ($null -eq $pVal) {
       # Don't produce null parameters
     }
-    else {
+    elseif ($pVal -is [array]) {
+      $arrVal = '"' + ($pVal -join '", "') + '"'
+      # TODO: Escape String for PS
+      $res += "`t$($pName) = $arrVal`n"
+    } else {
       # Parameter is a String
       # TODO: Escape String for PS
       $res += "`t$($pName) = `"$($pVal)`"`n"

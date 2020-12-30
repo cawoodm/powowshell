@@ -22,7 +22,7 @@
  none
  
  .Outputs
- text/json
+ PSObj
  {name,fullName,size(int)}
 
 #>
@@ -33,7 +33,6 @@ param(
   [string]$Filter,
   [switch]$Recurse
 )
-Set-StrictMode -Version 3.0
 function main() {
   $files = @()
   Get-ChildItem -Path $Path -File -Filter $Filter -Recurse:$Recurse|
@@ -48,7 +47,7 @@ function main() {
     }
     if ($f) {$files += New-Object -TypeName PSObject -Property $f}
   }
-  $files | ConvertTo-Json
+  $files
 }
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 main

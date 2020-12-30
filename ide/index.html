@@ -22,13 +22,16 @@
         </v-menu>
         <div v-if="pipeline.id">{{pipeline.name}} ({{pipeline.id}} for {{pipeline.runtime}}) <v-icon @click="pipelineEdit" small>edit</v-icon></div>
         <v-spacer></v-spacer>
-        <v-btn color="red" @click="run">Run</v-btn>
+        <v-btn color="green" @click="check">Check</v-btn>
+        <v-btn color="orange" @click="run">Run</v-btn>
+        <!--
         <v-menu offset-y>
             <v-btn slot="activator" color="primary">Help</v-btn>
             <v-list>
                 <v-list-tile><v-list-tile-title>About</v-list-tile-title></v-list-tile>
             </v-list>
         </v-menu>
+        -->
     </v-toolbar>
 
     <v-navigation-drawer app clipped permanent width="250">
@@ -51,7 +54,7 @@
         <step-grid ref="stepGrid"></step-grid>
         <loading ref="loading"></loading>
     </v-content>
-    <v-snackbar v-model="message.show" timeout="message.timeout" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
+    <v-snackbar v-model="message.show" :timeout="message.timeout" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
     <!--<v-snackbar v-model="longMessage.show" :timeout="20000" multi-line top :color="longMessage.color"><v-btn color="longMessage.color" flat @click="longMessage.show = false">Close</v-btn><div style="overflow-y:scroll">{{ longMessage.text }}</div></v-snackbar>-->
     <v-dialog v-model="longMessage.show">
       <v-card>

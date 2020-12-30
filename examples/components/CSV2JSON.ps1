@@ -34,8 +34,8 @@ param(
         [string[]]$Header
 )
 if ($Header) {
-    $InputObject | ConvertFrom-Csv -Header $Header -Delimiter $Delimiter | ConvertTo-JSON
+    $InputObject | ConvertFrom-Csv -Header $Header -Delimiter $Delimiter #| ConvertTo-JSON
 } else {
     Write-Verbose ($InputObject | ConvertFrom-Csv -Delimiter $Delimiter).GetType()
-    $InputObject | ConvertFrom-Csv -Delimiter $Delimiter | ConvertTo-JSON
+    $InputObject | ConvertFrom-Csv -Delimiter $Delimiter #| ConvertTo-JSON
 }

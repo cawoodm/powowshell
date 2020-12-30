@@ -25,7 +25,7 @@ param(
     [Parameter(Mandatory)][String]$Path,
     $Parameters=@{},
     [ValidateSet("trace", "export")]
-    [string[]]$Options
+      [string[]]$Options
 )
 function main() {
 
@@ -36,6 +36,7 @@ function main() {
   $StartPath = (Get-Location).Path
 
   if ($Parameters -is [string]) {
+    Write-Verbose "POW:RUN: Got Parameters $Parameters"
       if ($Parameters -like '@*') {
           $Parameters = Invoke-Expression $Parameters
       } else {
@@ -58,14 +59,13 @@ function main() {
     if ($Options -contains "trace") {$exec="./build/run_trace.ps1"}
     if (-not (Test-Path $exec)) {throw "POW101: Pipeline has not been built!"}
     if ($Parameters) {
+      Write-Verbose "POW:RUN: & $exec @parameters"
       $result = & $exec @parameters
     } else {
+      Write-Verbose "POW:RUN: & $exec"
       $result = & $exec
     }
-    if ($Options -contains "export" -and $result -isnot [string]) {
-      return ConvertTo-Json $result -Compress
-    }
-    return $result
+    $result
   } catch {
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_

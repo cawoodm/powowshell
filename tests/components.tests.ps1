@@ -13,7 +13,7 @@ function main() {
         foreach($component in $components) {
             if ($component.reference -notlike $filter) {continue}
             $i++
-            try{$component.reference+=""}catch{err "ERROR: $i. Something about $component is not right"}
+            try{$component.reference+=""}catch{throw "ERROR: $i. Something about $component is not right"}
             $reference = $component.reference
             Write-Verbose "Component $reference"
             $component.POWMessages | ForEach-Object {

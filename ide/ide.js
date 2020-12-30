@@ -90,6 +90,30 @@ window.onload = function() {
                 else
                     this.$refs.loading.showLoading(true, msg, title);
             },
+            check: function() {
+              let root = this;
+              if (pipelineManager.isDirty() && confirm("Do you want to save before checking?")) {
+                  return root.pipelineSave().then(root.check);
+              }
+              this.showLoading("Building "+this.pipeline.id, "Checking...")
+              return pow.build("!"+this.pipeline.id)
+                .then(()=>{
+                  this.showLoading(false);
+                  this.showLoading("Verifying "+this.pipeline.id, "Checking...")
+                  return pow.verify("!"+this.pipeline.id);
+                })
+                .then((obj)=>{
+                  if (obj.success) {
+                    this.showMessage("Validation OK", "green")
+                  } else {
+                    this.handlePOWError(obj)      
+                  }
+                  this.showLoading(0);
+                }).catch((err)=>{
+                  this.showLoading(0);
+                  this.handlePOWError(err)
+              });
+            },
             run: function() {
                 let root = this;
                 if (pipelineManager.isDirty() && confirm("Do you want to save before running?")) {
@@ -150,7 +174,7 @@ window.onload = function() {
                 this.longMessage.show = true;
             },
             showMessage: function(text, color) {
-                console.log("showMessage", text)
+                console.log("showMessage", text, this.message)
                 color = color || "info";
                 if (this.message.show) {
                     // Already visible, add to the message
@@ -302,12 +326,14 @@ window.onload = function() {
                 //root.componentsLoad();root.cmdletsLoad();return;
                 pow.init("!examples")
                     .then(()=>root.pipelineLoad("pipeline3"))
+                    //.then(()=>root.pipelineLoad("procmon1"))
+                    .then(()=>root.check())
+                    //.then(()=>root.run())
                     .then(()=>{
                         //console.clear();
-                        root.componentsLoad()
-                        root.cmdletsLoad()
+                        //root.componentsLoad()
+                        //root.cmdletsLoad()
                     })
-                    //.then(()=>root.run())
                     .catch(this.handlePOWError);
             } else {
                 root.componentsLoad();

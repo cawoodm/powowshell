@@ -133,7 +133,7 @@ const pow = (function(){
      * @returns {Promise} Promise with a POWResult
      */
     async function build(pipelineId) {
-        return execStrict(`pow build "${pipelineId}"`);
+      return execStrict(`pow build "${pipelineId}"`);
     }
 
     /**
@@ -142,7 +142,7 @@ const pow = (function(){
      * @returns {Promise} Promise with a POWResult
      */
     async function verify(pipelineId) {
-        return execStrict(`pow verify "${pipelineId}"`);
+        return execStrictJSON(`pow verify "${pipelineId}" $null -export`);
     }
 
     /**
@@ -151,7 +151,7 @@ const pow = (function(){
      * @returns {Promise} Promise with a POWResult containing an object (pipeline result)
      */
     async function run(path) {
-        return execStrictJSON(`pow run "${path}" $null export`);
+        return execStrictJSON(`pow run "${path}" $null -export`);
     }
 
     /**
@@ -205,7 +205,7 @@ const pow = (function(){
      * @returns {Promise} Promise with a POWResult(.object=Array of examples)
      */
     async function examples(path:string) {
-        return execStrictJSON(`pow examples "${path}" export`);
+        return execStrictJSON(`pow examples "${path}" -export`);
     }
 
     /**
@@ -290,22 +290,22 @@ const pow = (function(){
     }
 
     return {
-        init: init,
-        execOptions: execOptions,
-        version: version,
-        build: build,
-        verify: verify,
-        run: run,
-        preview: preview,
-        inspect: inspect,
-        components: components,
-        cmdlets: cmdlets,
-        examples: examples,
-        pipeline: pipeline,
-        save: save,
-        load: load,
-        exec: exec,
-        execStrict: execStrict,
+        init,
+        execOptions,
+        version,
+        build,
+        verify,
+        run,
+        preview,
+        inspect,
+        components,
+        cmdlets,
+        examples,
+        pipeline,
+        save,
+        load,
+        exec,
+        execStrict,
         getWorkspace: ()=>workspace
     }
 
