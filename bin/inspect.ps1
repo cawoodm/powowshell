@@ -210,15 +210,18 @@ function Get-ParamType($param) {
 function Get-OPReturn($cmd) {
   $result = Get-OP($cmd)
   if ($result -is [array]) {
-    $result = $result[0].ToLower() -replace "[\r\n]", ""
-    # If we have multiple object types, just output object
-    if ($result -like "* *") {$result="object"}
-    return [string]$result;
+    Write-Warning "$($cmd.name) has multiple possible output types ($($result -join ', '))!"
+    # If we have multiple object types, just 'any'
+    $result="any"
+  } elseif ($result -like '* *') {
+    Write-Warning "$($cmd.name) has multiple possible output types ($result)!"
+    $result="any"
   }
+  return [string]$result;
 }
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
-function Get-OP($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{$null}}
+function Get-OP($cmd) {try{@($cmd.returnValues.returnValue | ForEach-Object {$_.type.name})}catch{$null}}
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
