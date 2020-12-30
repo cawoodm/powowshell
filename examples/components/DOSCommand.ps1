@@ -12,6 +12,8 @@
  text
     
 #>
+[CmdletBinding()]
+[OutputType([String])]
 param(
     [String]$Command
 )

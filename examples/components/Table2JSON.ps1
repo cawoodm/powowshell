@@ -43,9 +43,7 @@ $str = [string]$InputObject
 if ($RecordSeparator) {
   $sep = $RecordSeparator
 } else {
-  if ($str.IndexOf("`r`n") -ge 0) {$sep = "`r`n"}
-  elseif ($str.IndexOf("`r") -ge 0) {$sep = "`r"}
-  else {$sep = "`n"}
+  if ($str.IndexOf("`r`n") -ge 0) {$sep = "`r`n"} elseif ($str.IndexOf("`r") -ge 0) {$sep = "`r"} else {$sep = "`n"}
 }
 
 $rows = $str -split $sep

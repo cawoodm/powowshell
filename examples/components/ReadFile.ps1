@@ -21,4 +21,5 @@ param(
 )
 
 # The Magic Happens Here...
+Write-Verbose "ReadFile.ps1 $Path"
 Get-Content -Raw -LiteralPath $Path

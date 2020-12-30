@@ -96,7 +96,7 @@ function ReadPipelineDefinition($Path) {
     Get-Content -Raw ./pipeline.json | ConvertFrom-Json
   }
   catch {
-    throw ("Error Parsing Pipeline Definition: $Path" + $_)
+    throw ("Error Parsing Pipeline Definition '$Path': " + $_)
   }
 }
 
@@ -165,8 +165,7 @@ function CreateSteps($pipelineDef, $COMPONENTS, $ADAPTORS) {
     $outputType = $component.output
     if (-not $outputType) {
       Write-Verbose "NOTE: No OutputType found for component '$ref'!"
-    }
-    elseif (-not $ADAPTORS.ContainsKey($outputType)) {
+    } elseif (-not $ADAPTORS.ContainsKey($outputType)) {
       #throw "No adaptor found for output ($outputType) of component '$ref'!"
       Write-Warning "No adaptor found for output ($outputType) of component '$ref'!"
     }
@@ -184,13 +183,11 @@ function CreateSteps($pipelineDef, $COMPONENTS, $ADAPTORS) {
       $cmd1 = $cmd1.replace('$InputObject', '$_')
       $stepHeader2 = $stepHeaderProcess
       $stepFooter = $stepFooterStream
-    }
-    elseif ($step.stream -eq "end") {
+    } elseif ($step.stream -eq "end") {
       $cmd1 = $cmd1.replace('$InputObject', '$input')
       $stepHeader2 = $stepHeaderEnd
       $stepFooter = $stepFooterStream
-    }
-    else {
+    } else {
       $stepHeader2 = $stepHeaderMain
       $stepFooter = $stepFooterMain
     }
@@ -252,6 +249,7 @@ function CreatePipeline_prod($pipelineDef, $COMPONENTS) {
   }
 
   # Return OUTPUT
+  # TODO: Coerce single objects to arrays for consistent JSON
   $cmd += "`t`$OP_$($id)`n"
 
   # Clean up
@@ -327,17 +325,13 @@ function ReSerializeObject($obj) {
       # Parameter is code (a PowerShell Expression)
       # TODO: Escape code for PS
       $res += "`t$($pName) = " + $pVal.SubString(1, $pVal.Length - 2) + "`n"
-    }
-    elseif ($pVal -eq $true) {
+    } elseif ($pVal -eq $true) {
       $res += "`t$($pName) = `$true`n"
-    }
-    elseif ($pVal -eq $false) {
+    } elseif ($pVal -eq $false) {
       $res += "`t$($pName) = `$false`n"
-    }
-    elseif ($null -eq $pVal) {
+    } elseif ($null -eq $pVal) {
       # Don't produce null parameters
-    }
-    elseif ($pVal -is [array]) {
+    } elseif ($pVal -is [array]) {
       $arrVal = '"' + ($pVal -join '", "') + '"'
       # TODO: Escape String for PS
       $res += "`t$($pName) = $arrVal`n"
@@ -369,8 +363,7 @@ function ReSerializeParams($parameters) {
         # Parameter is code (a PowerShell Expression)
         # TODO: Escape code for PS
         $res += "`t$pMust$pType`$$($pName) = (" + $pVal.SubString(1, $pVal.Length - 2) + "),`n"
-      }
-      else {
+      } else {
         # Parameter is a String
         # TODO: Escape String for PS
         $res += "`t$pMust$pType`$$($pName) = `"$($pVal)`",`n"

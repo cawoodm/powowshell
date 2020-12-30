@@ -29,7 +29,6 @@ function main() {
     Push-Location $FullPath
     try {
         # Check Cache
-        # ASSUME: Cache is in same folder as components
         $CachePath = "$($_POW.CACHER)/components.json"
         $CacheFile=$null;$JSON=$null
         if ($Action -notlike "generate" -and (Test-Path $CachePath)) {

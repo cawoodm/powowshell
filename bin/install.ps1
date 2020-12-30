@@ -83,8 +83,7 @@ function main() {
             Show-Message "Checking cmdlets installed..."
             pow cmdlets check
             Show-Message " Type 'pow help' for a list of commands"
-        }
-        else {
+        } else {
             Show-Message "Nope, the 'pow' CmdLet is not installed!" Red
         }
         return $null

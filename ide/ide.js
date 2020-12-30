@@ -327,12 +327,12 @@ window.onload = function() {
                 pow.init("!examples")
                     .then(()=>root.pipelineLoad("pipeline3"))
                     //.then(()=>root.pipelineLoad("procmon1"))
-                    .then(()=>root.check())
+                    //.then(()=>root.check())
                     //.then(()=>root.run())
                     .then(()=>{
                         //console.clear();
-                        //root.componentsLoad()
-                        //root.cmdletsLoad()
+                        root.componentsLoad()
+                        root.cmdletsLoad()
                     })
                     .catch(this.handlePOWError);
             } else {

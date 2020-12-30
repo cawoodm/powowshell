@@ -45,7 +45,7 @@
         "Fields": "{\"name\", \"age\", \"email\"}"
       },
       "input": "B1",
-      "stream": ""
+      "stream": "process"
     }
   ],
   "input": {},

@@ -39,4 +39,4 @@ v0.1.3 23.03.2019
 
 v0.1.1 16.03.2019
 * Drop DOS support
-* Generate components.json with `pow components ./examples/components export | ConvertTo-JSON`
+* Generate components.json with `pow components ./examples/components`

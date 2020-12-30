@@ -70,7 +70,7 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
         // Import
         assert(()=>PM.import(testPipeline), "Pipeline import");
         assert(()=>PM.getStep("A1").reference.match(/readfile/i), "Test pipeline step A1 is ReadFile")
-        assert(()=>PM.getStep("B1").reference.match(/csv2json/i), "Test pipeline step B1 is CSV2JSON")
+        assert(()=>PM.getStep("B1").reference.match(/convertfrom-csv/i), "Test pipeline step B1 is ConvertFrom-Csv")
         assert(()=>PM.getStep("C1").reference.match(/selectfields/i), "Test pipeline step C1 is SelectFields")
         assert(()=>typeof PM.getStep("A1").parameters.Path === "string", "Step A1 of imported pipeline has a 'Path' parameter")
 
@@ -89,9 +89,11 @@ let pipelineManager = require("../ide/js/pipeline-manager.js");
     if (FUNC.fails() > 0) {
         columnsToString();
         console.log("\x1b[31m", `FAIL: pipeline-manager.js failed ${FUNC.fails()} of ${FUNC.tests()} tests`)
+        console.log("\x1b[0m")
         process.exit(1)
     } else {
         console.log("\x1b[32m", `SUCCESS: pipeline-manager.js passed ${FUNC.tests()} tests successfully`);
+        console.log("\x1b[0m")
         process.exit(0)
     }
 })(console, process.argv.slice(2));

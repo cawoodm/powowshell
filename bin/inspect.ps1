@@ -28,6 +28,7 @@ function main() {
   try {
     # A necessary evil here so we can query properties without try/catch or other shenanigans
     Set-StrictMode -Off
+    $POWMessages=@();
     if ($ExportPath) {$ExportPath = (Resolve-Path -Path $ExportPath).Path}
     # Add .ps1 to components with a path so `pow inspect !componentName` works
     if ($Path.indexOf([IO.Path]::DirectorySeparatorChar) -ge 0 -and $Path -notlike "*.ps1") {$Path="$Path.ps1"}
@@ -42,22 +43,25 @@ function main() {
       $cmd2 = Get-Command -Name $Executable -ErrorAction SilentlyContinue
       if ($null -eq $cmd) {throw "Invalid POW Component '$Executable'!"}
       $outputType = Get-OPType($cmd2)
+      if (-not $outputType) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="No output type on '$NiceName'! Consider adding a [OutputType()] annotation."}}
       $outputFormat = Get-OPReturn($cmd)
-      if (-not $outputFormat) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="No output on '$NiceName'!"}}
+      if (-not $outputFormat) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="No output format on '$NiceName'! Consider adding a .Outputs annotation."}}
     } else {
       $CompType = "cmdlet"
       $Executable = $Path
       Write-Verbose "Inspecting installed CmdLet $Path ..."
       $Name = $Path
-      # ASSUME: Cache path is from root
       $CachePath = "$($_POW.CACHER)/help"
       if (-not (Test-Path $CachePath)) {$null = New-Item -Path $CachePath -ItemType Directory}
       if (Test-Path "$CachePath/$Name.json") {
         $cmd = Get-Content "$CachePath/$Name.json" | ConvertFrom-Json
       } else {
         $cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
+        # Help returns prefix match so "Get-Item" => ["Get-Item", "Get-Item2"]
+        if ($cmd -is [array]) {$cmd = $cmd | Where-Object {$_.Name -like $Name}}
         if ($cmd.details.name -notlike $Name) {
-          throw "'$Name' is an alias, please inspect the full name $($cmd.details.name)!"
+          Write-Warning "'$Name' is an alias, please inspect the full name $($cmd.details.name)!"
+          return
         }
         # Cache help because Get-Help can be slow
         $cmd | ConvertTo-Json -Depth 7 | Set-Content -Encoding UTF8 -Path "$CachePath/$($cmd.details.name).json"
@@ -66,12 +70,13 @@ function main() {
       $NiceName = $cmd.details.name
       $outputType = Get-OPReturn($cmd)
       # CmdLets don't know our output formats like "text/json"
+      # TODO: Can we assume PSObj?
       $outputFormat=$null
     }
     # PS1: Should we use extension or not ???
     $reference = $Name.ToLower()
 
-    $POWMessages=@(); $whatif=$false; #$confirm=$false; $passthru=$false;
+    $whatif=$false; #$confirm=$false; $passthru=$false;
     $paramsOut = @(); $inputType=$null; $inputFormat = $null; $inputDesc = $null; $outputDesc=$null; $PipedParamCount=0;
     if ($cmd.PSObject.Properties.item("details")) {
       $boolMap = @{"true"=$true;"false"=$false}
@@ -142,11 +147,17 @@ function main() {
     $outputType = $outputType -replace '^system\.', ''
     $inputType = $inputType -replace '^system\.', ''
     $inputType = $inputType.toLower();
-    #$POWMessages | % {Write-Warning ($_.type + ": " + $_.message)}
 
-    # PSObjects are Objects
-    #$MapTypes=@{psobject="object"}
-    #if ($MapTypes.Contains($inputType)) {$inputType=$MapTypes[$inputType]}
+    # Map PSObjects to the object adaptor
+    $MapTypes=@{
+      "psobject"="object"
+      "psobject[]"="object[]"
+      "management.automation.psobject"="object"
+      "management.automation.psobject[]"="object[]"
+    }
+    if ($MapTypes.Contains($inputType)) {$inputType=$MapTypes[$inputType]}
+    if ($MapTypes.Contains($outputType)) {$outputType=$MapTypes[$outputType]}
+
     if ($CompType -eq "component") {$outputDesc = Get-OPDesc($cmd)}
     $result = [PSCustomObject]@{
       "reference" = $reference;
@@ -155,6 +166,7 @@ function main() {
       "executable" = $Executable;
       "synopsis" = $synopsis;
       "description" = $description;
+      "module" = $cmd.ModuleName;
       "whatif" = $whatif;
       "parameters" = $paramsOut;
       "input" = $inputType;
@@ -172,6 +184,7 @@ function main() {
         return $result | ConvertTo-Json
       }
     } else {
+      $POWMessages | ForEach-Object {Write-Warning ($_.type + ": " + $_.message)}
       return $result
     }
   } catch {
@@ -185,14 +198,12 @@ function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower() -replace "[
 function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{$null}}
 function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name+"`n" -split "[\r\n]")}catch{$null}}
 function GetParamValues($param) {
-  if ($param.parameterValueGroup.parameterValue){return $param.parameterValueGroup.parameterValue}
-  elseif ($param.Attributes.ValidValues) {return $param.Attributes.ValidValues}
+  if ($param.parameterValueGroup.parameterValue){return $param.parameterValueGroup.parameterValue} elseif ($param.Attributes.ValidValues) {return $param.Attributes.ValidValues}
   # With strictmode on we don't get the ValidValues!
 }
 function Get-ParamType($param) {
   $result=$null
-  if ($param.parameterValue.value) {$result = [string]$param.parameterValue.value.toLower()}
-  elseif ($param.type.name) {$result = [string]$param.type.name.toLower()}
+  if ($param.parameterValue.value) {$result = [string]$param.parameterValue.value.toLower()} elseif ($param.type.name) {$result = [string]$param.type.name.toLower()}
   if ($result -like "switchparameter") {$result = "switch"}
   return $result;
 }

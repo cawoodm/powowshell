@@ -30,8 +30,7 @@ function main() {
     foreach ($script in $scripts) {
       $script = $script.Name
       if ($script -notlike "*.ps1" -and $script -notlike "*.js") { continue }
-      $script1 = $script.replace(".tests.", ".")
-      Write-Host "Testing $script :"
+      Write-Host "Testing $($script):"
       if ($script -like "*.js") {
         & node "$script" $verbose $Debug
         if ($LASTEXITCODE) { throw "FAIL: $script" }
@@ -42,7 +41,6 @@ function main() {
           & "./$script" | Out-Null
         }
       }
-      [Console]::ResetColor()
     }
         
   }
@@ -50,6 +48,7 @@ function main() {
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
   }
   finally {
+    [Console]::ResetColor() # Console]::ForegroundColor="White"
     Set-Location $StartPath
   }
 }

@@ -45,18 +45,15 @@ function Invoke-PowowShell {
     if ($p1 -is [string] -and $p1 -like "!*") {
       if ($Command -in "inspect", "components", "preview", "examples") {
         $p1 = $p1.replace("!", "$Workspace/components/"); $p1 += ".ps1"
-      }
-      elseif ($command -eq "adaptors") {
+      } elseif ($command -eq "adaptors") {
         # Adaptors are in /core/adaptors
         $p1 = $p1.replace("!", "../core/adaptors");
         $p1 = Resolve-Path $p1
-      }
-      elseif ($command -eq "workspace") {
+      } elseif ($command -eq "workspace") {
         # e.g. "!examples" should be relative to the root of the app
         $p1 = $p1.replace("!", "../");
         $p1 = Resolve-Path $p1
-      }
-      else {
+      } else {
         # !pipeline1 => $Workspace/pipeline1/
         $p1 = $p1.replace("!", "$Workspace/");
       }
@@ -66,10 +63,7 @@ function Invoke-PowowShell {
     ForEach ($Cmd in $Command) {
       $result = try {
         Write-Verbose "`"$BinPath/$Cmd.ps1`" $p1 $p2 $p3"
-        if ($p3) { & "$BinPath/$Cmd.ps1" $p1 $p2 $p3 }
-        elseif ($p2) { & "$BinPath/$Cmd.ps1" $p1 $p2 }
-        elseif ($p1) { & "$BinPath/$Cmd.ps1" $p1 }
-        else { & "$BinPath/$Cmd.ps1" }
+        if ($p3) { & "$BinPath/$Cmd.ps1" $p1 $p2 $p3 } elseif ($p2) { & "$BinPath/$Cmd.ps1" $p1 $p2 } elseif ($p1) { & "$BinPath/$Cmd.ps1" $p1 } else { & "$BinPath/$Cmd.ps1" }
       } catch {
         #Write-Error "Error in '$cmd' command:" + $_
         throw $_
@@ -91,8 +85,7 @@ function Invoke-PowowShell {
     }
     if ($Options -contains "export") {
       $Host.UI.WriteErrorLine(($erresult | ConvertTo-Json))
-    }
-    else {
+    } else {
       $Host.UI.WriteErrorLine("ERR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     }
   }

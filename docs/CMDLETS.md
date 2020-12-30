@@ -27,3 +27,17 @@ $Components = Get-Content .\examples\components\components.json | ConvertFrom-Js
 ($Components + $CmdLets) | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 .\examples\components.json
 
 Get-Command | Select Name, Type, Source, Module, Version | Sort Name | ogv
+
+## Useful Commands
+### List 10 Most Common Cmdlet Input Types
+```
+pow cmdlets list | group input | sort count -Descending | select -first 10
+```
+### List Most Common Object Outputs
+```
+pow cmdlets list | ? {$_.output -like '*object*'} | group output | sort count -Descending
+```
+### List the 10 Modules with the most Cmdlets
+```
+pow cmdlets list | group module | sort count -Descending | select -first 10
+```

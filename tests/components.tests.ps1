@@ -18,16 +18,18 @@ function main() {
             Write-Verbose "Component $reference"
             $component.POWMessages | ForEach-Object {
                 $msg = $_
-                if ($msg.type -eq "WARNING") {Write-Warning $msg.message}
-                elseif ($msg.type -eq "ERROR") {ErrMsg $msg.message}
-                else {Write-Host $msg.message -ForegroundColor Cyan}
+                if ($msg.type -eq "WARNING") {Write-Warning $msg.message} elseif ($msg.type -eq "ERROR") {ErrMsg $msg.message} else {Write-Host $msg.message -ForegroundColor Cyan}
             }
             $SelfTest = $component.executable.replace(".ps1", ".tests.ps1");
             Write-Verbose "Self-test $SelfTest :"
             if (Test-Path $SelfTest) {
                 # Self-testing
                 Write-Verbose "Self-testing $SelfTest :"
-                & $SelfTest
+                try {
+                  & $SelfTest -EA Continue
+                } catch {
+                  Write-Host "ERROR: Component '$($component.executable)' self-test failed: $($_.Exception.Message)" -ForegroundColor Yellow
+                }
             }
         }
 
@@ -52,12 +54,9 @@ function main() {
         $success += Assert {$global:cmd.parameters[1].values.length -gt 1} "Inspect CURL component parameter Method has values"; $tests++
         if ($success -eq $tests) {SuccessMsg "SUCCESS: Inspect works"} else {ErrMsg "FAIL: Inspect failed $($tests-$success) of $tests tests!"}
 
-        # Test Pipeline1
-        if ((..\examples\pipeline1\run_prod.ps1 | ConvertFrom-Json)[1].age -eq "100") {"Pipeline: OK"} else {ErrMsg "Pipeline: FAIL"}
-
     } catch {
-    #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-     throw $_
+      #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+      throw $_
     } finally {
         Set-Location $StartPath
     }
@@ -78,6 +77,6 @@ function Assert($expr, $msg, $val) {
 }
 function ErrMsg($msg){$Host.UI.WriteErrorLine($msg)}
 function SuccessMsg($msg){Write-Host $msg  -ForegroundColor Green}
-$ErrorActionPreference = "Stop"
+#$ErrorActionPreference = "Stop"
 main
 #$DebugPreference = $DebugPreference_
