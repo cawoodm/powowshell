@@ -6,7 +6,7 @@ function FUNC(verbose) {
         fails: ()=>fails,
         addFails: ()=>fails++,
         assert: function(cond, msg, exception) {
-            //if (verbose) console.log("\x1b[36m", "... " + msg);
+            if (verbose) console.log("\x1b[36m", "... " + msg);
             try {
                 tests++;
                 let res = typeof cond === "function"?cond():eval(cond);

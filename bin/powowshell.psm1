@@ -61,18 +61,15 @@ function Invoke-PowowShell {
     if ($p1 -is [string] -and $p1 -like "!*") {
       if ($Command -in "inspect", "components", "preview", "examples") {
         $p1 = $p1.replace("!", "$Workspace/components/"); $p1 += ".ps1"
-      }
-      elseif ($command -eq "adaptors") {
+      } elseif ($command -eq "adaptors") {
         # Adaptors are in /core/adaptors
         $p1 = $p1.replace("!", "../core/adaptors");
         $p1 = Resolve-Path $p1
-      }
-      elseif ($command -eq "workspace") {
+      } elseif ($command -eq "workspace") {
         # e.g. "!examples" should be relative to the root of the app
         $p1 = $p1.replace("!", "../");
         $p1 = Resolve-Path $p1
-      }
-      else {
+      } else {
         # !pipeline1 => $Workspace/pipeline1/
         $p1 = $p1.replace("!", "$Workspace/");
       }
@@ -91,14 +88,14 @@ function Invoke-PowowShell {
         throw $_
       }
     }
-    if ($Export) {# -and $result -isnot [string]) {
+    if ($Export) {
+      # -and $result -isnot [string]) {
       Write-Verbose "POW: JSONOUT"
       return ConvertTo-Json $result -Compress
     }
     Write-Verbose "POW: STDOUT"
     return $result
-  }
-  catch {
+  } catch {
     $erresult = @{
       scriptName       = (Split-Path -Path $_.InvocationInfo.ScriptName -Leaf)
       scriptLineNumber = $_.InvocationInfo.ScriptLineNumber
@@ -107,12 +104,11 @@ function Invoke-PowowShell {
     }
     if ($Options -contains "export") {
       $Host.UI.WriteErrorLine(($erresult | ConvertTo-Json))
-    }
-    else {
+    } else {
+      # TODO: This references the components/component.ps1 but not the step which would be more useful!
       $Host.UI.WriteErrorLine("ERR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     }
-  }
-  finally {
+  } finally {
     Set-Location $StartPath
   }
 

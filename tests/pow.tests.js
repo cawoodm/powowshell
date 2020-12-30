@@ -36,7 +36,8 @@
             out = await pow.build("!pipeline1"); assert(out.success, `Build of pipeline1 should succeed: '${out.messages[0].message}'`)
 
             // Test verifying a pipeline
-            out = await pow.verify("!pipeline1"); assert(out.success, `Verification of pipeline1 should succeed: '${out.messages[0].message}'`)
+            out = await pow.verify("!pipeline1"); 
+            assert(out.success, `Verification of pipeline1 should succeed: '${out.object.length}'`)
 
             // Test running a pipeline
             out = await pow.run("!pipeline1"); assert(out.success, `Running a pipeline1 should succeed: '${out.object.length} items'`)

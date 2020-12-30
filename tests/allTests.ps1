@@ -43,11 +43,10 @@ function main() {
       }
     }
         
-  }
-  catch {
+  } catch {
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-  }
-  finally {
+    throw $_
+  } finally {
     [Console]::ResetColor() # Console]::ForegroundColor="White"
     Set-Location $StartPath
   }

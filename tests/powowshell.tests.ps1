@@ -23,10 +23,10 @@ function main() {
         & pow build !pipeline1 | Out-Null
         Show-Message "SUCCESS: pow build" -ForegroundColor Green
 
-        & pow verify ../examples/pipeline1 "@{DataSource='.\data\names.txt'}" | Out-Null
+        & pow verify ../examples/pipeline1 "@{DataSource='..\data\names.txt'}" | Out-Null
         Show-Message "SUCCESS: pow verify" -ForegroundColor Green
 
-        & pow run !pipeline1 @{DataSource='.\data\names.txt'} | Out-Null
+        & pow run !pipeline1 @{DataSource='..\data\names.txt'} | Out-Null
         Show-Message "SUCCESS: pow run" -ForegroundColor Green
 
         & pow script !pipeline2 | Out-Null

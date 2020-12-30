@@ -237,10 +237,12 @@ const pow = (function(){
                     }
                 }).catch((err)=>{
                     try {
+                      // TODO: If strict=true we should probably not resolve here
                       const errorObject = JSON.parse(err.message.trim().replace(/^\uFEFF/, '')); // Strip BOM
-                      resolve(_processResult({stderr: errorObject}, true));
+                      resolve(_processResult({stderr: errorObject}));
                     } catch(e) {
-                      reject(err);
+                      if (strict) reject(_processResult({stderr: err.message}));
+                      else resolve(_processResult({stderr: err.message}));
                     }
                 });
         });

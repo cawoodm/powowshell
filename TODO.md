@@ -1,7 +1,8 @@
 # TODO
 
-## IDE
-* Better display of error messages if JSON is not returned
+* pow.exec vs pow.execStrict error handling
+* Decide whether adaptors work on data type (cmdlet.output) or format (cmdlet.outputFormat)
+  * `pow components ! | select name, output, outputFormat`
 
 ## Build
 * Build Modes:

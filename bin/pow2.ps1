@@ -75,8 +75,7 @@ function Invoke-PowowShell {
     }
     Write-Verbose "POW: STDOUT"
     return $result
-  }
-  catch {
+  } catch {
     $erresult = @{
       scriptName       = (Split-Path -Path $_.InvocationInfo.ScriptName -Leaf)
       scriptLineNumber = $_.InvocationInfo.ScriptLineNumber
@@ -88,8 +87,7 @@ function Invoke-PowowShell {
     } else {
       $Host.UI.WriteErrorLine("ERR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     }
-  }
-  finally {
+  } finally {
     Set-Location $StartPath
   }
 

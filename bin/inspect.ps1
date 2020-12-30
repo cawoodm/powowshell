@@ -44,7 +44,7 @@ function main() {
       if ($null -eq $cmd) {throw "Invalid POW Component '$Executable'!"}
       $outputType = Get-OPType($cmd2)
       if (-not $outputType) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="No output type on '$NiceName'! Consider adding a [OutputType()] annotation."}}
-      $outputFormat = Get-OPReturn($cmd)
+      $outputFormat = Get-OutputsAnnotation($cmd)
       if (-not $outputFormat) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="No output format on '$NiceName'! Consider adding a .Outputs annotation."}}
     } else {
       $CompType = "cmdlet"
@@ -70,7 +70,7 @@ function main() {
       $NiceName = $cmd.details.name
       $outputType = Get-OPReturn($cmd)
       # CmdLets don't know our output formats like "text/json"
-      # TODO: Can we assume PSObj?
+      # TODO: Can we assume PSObj? Or does null mean we don't know and don't care?
       $outputFormat=$null
     }
     # PS1: Should we use extension or not ???
@@ -209,19 +209,33 @@ function Get-ParamType($param) {
 }
 function Get-OPReturn($cmd) {
   $result = Get-OP($cmd)
+  # TODO: Normalize multiple types, exclude None and pick one?
   if ($result -is [array]) {
     Write-Warning "$($cmd.name) has multiple possible output types ($($result -join ', '))!"
     # If we have multiple object types, just 'any'
-    $result="any"
+    $result="object"
   } elseif ($result -like '* *') {
     Write-Warning "$($cmd.name) has multiple possible output types ($result)!"
-    $result="any"
+    $result="object"
   }
   return [string]$result;
+}
+function Get-OutputsAnnotation($cmd) {
+  $result = Get-OPA($cmd)
+  if ($result -is [array]) {
+    $result = $result[0].ToLower() -replace "[\r\n]", ""
+    # If we have multiple object types, just output object
+    if ($result -like "* *") {
+      Write-Warning "$($cmd.name) has multiple possible output types ($result)!"
+      $result="object"
+    }
+    return [string]$result;
+  }
 }
 function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
 function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
 function Get-OP($cmd) {try{@($cmd.returnValues.returnValue | ForEach-Object {$_.type.name})}catch{$null}}
+function Get-OPA($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name+"`n" -split "`n")}catch{$null}}
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING

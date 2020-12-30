@@ -1,6 +1,6 @@
 {
   "name": "powowshell",
-  "version": "v0.1.10",
+  "version": "v0.1.11",
   "description": "PowowShell: A Graphical PowerShell Designer",
   "author": "Marc Cawood",
   "license": "MIT",
@@ -8,7 +8,7 @@
   "main": "ide/app.js",
   "scripts": {
     "start": "electron ide",
-    "test": "POWERSHELL -f ./tests/allTests.ps1"
+    "test": "pwsh -f ./tests/allTests.ps1"
   },
   "keywords": [
     "PowerShell"

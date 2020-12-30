@@ -35,12 +35,10 @@ function main() {
   
   try {
     BuildingPipeline
-  }
-  catch {
+  } catch {
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_
-  }
-  finally {
+  } finally {
     Set-Location $StartPath
   }
 }
@@ -73,7 +71,7 @@ function BuildingPipeline() {
   # Transform definition of pipeline into run_prod.ps1
   CreatePipeline_prod $pipelineDef $COMPONENTS
 
-  Show-Message "SUCCESS: BUILD completed" Green
+  Show-Message "SUCCESS: BUILD '$($pipelineDef.id)' completed" Green
 
   Push-Location $StartPath
   $p = Join-Path $Path $OutputPath | Resolve-Path -Relative;
@@ -94,8 +92,7 @@ function BuildingPipeline() {
 function ReadPipelineDefinition($Path) {
   try {
     Get-Content -Raw ./pipeline.json | ConvertFrom-Json
-  }
-  catch {
+  } catch {
     throw ("Error Parsing Pipeline Definition '$Path': " + $_)
   }
 }
@@ -167,7 +164,7 @@ function CreateSteps($pipelineDef, $COMPONENTS, $ADAPTORS) {
       Write-Verbose "NOTE: No OutputType found for component '$ref'!"
     } elseif (-not $ADAPTORS.ContainsKey($outputType)) {
       #throw "No adaptor found for output ($outputType) of component '$ref'!"
-      Write-Warning "No adaptor found for output ($outputType) of component '$ref'!"
+      Write-Warning "No adaptor found for output ($outputType) of $($component.type) '$ref'!"
     }
 
     # Add a comment
@@ -372,8 +369,7 @@ function ReSerializeParams($parameters) {
     $res = $res -replace ',\n$', "`n"
     $res += ")`n"
     return $res
-  }
-  catch {
+  } catch {
     # TODO: Why are we catching here??
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
   }

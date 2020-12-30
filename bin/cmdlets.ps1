@@ -102,12 +102,10 @@ function main() {
     } elseif ($Action -notlike "generate" -and $Action -notlike "check") {
       return $Cmdlets
     }
-  }
-  catch {
+  } catch {
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_
-  }
-  finally {
+  } finally {
     Set-Location $StartPath
   }
 }

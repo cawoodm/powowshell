@@ -20,10 +20,7 @@ function main() {
 
   $Path = (Resolve-Path -Path $Path).Path
   Push-Location $Path
-  Remove-Item -Force step_*.ps1
-  Remove-Item -Force run_*.ps1
-  Remove-Item -Force *.log
-  Remove-Item -Force ./trace/*.txt
+  Remove-Item -Force ./build/ -Recurse
   Show-Message "SUCCESS: CLEAN completed" Green
   Pop-Location
 }

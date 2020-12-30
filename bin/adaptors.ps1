@@ -40,8 +40,7 @@ function main() {
       try {
         $Adaptors = $JSON | ConvertFrom-Json
         Write-Verbose "Adaptor cache is fresh"
-      }
-      catch { throw "Adaptor cache is corrupted (invalid JSON)!" }
+      } catch { throw "Adaptor cache is corrupted (invalid JSON)!" }
     }
     if ($Action -like "generate" -or $null -eq $Adaptors) {
       # Process all .in files (ASSUME: .out.ps1 exists also)
