@@ -15,11 +15,11 @@
     "PowerShell"
   ],
   "devDependencies": {
-    "@types/node": "^14.14.16",
-    "@typescript-eslint/eslint-plugin": "^4.11.0",
-    "@typescript-eslint/parser": "^4.11.0",
+    "@types/node": "^14.14.17",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
+    "@typescript-eslint/parser": "^4.11.1",
     "electron-debug": "^3.2.0",
-    "electron-reload": "^1.4.0",
+    "electron-reload": "^1.5.0",
     "eslint": "^7.16.0",
     "eslint-config-strongloop": "^2.1.0",
     "eslint-plugin-import": "^2.22.1",
@@ -31,7 +31,7 @@
   "dependencies": {
     "electron-settings": "^4.0.0",
     "node-powershell": "^4.0.0",
-    "powershell": "^2.3.1",
+    "powershell": "^2.3.2",
     "vue": "^2.6.12"
   }
 }
