@@ -8,6 +8,12 @@ OR run the following in PowerShell to install globally
 Import-Module -Global ./bin/powowshell.psm1 -Force
 Type "pow help" for a list of commands
 
+.Parameter Export
+Export results as JSON
+
+.Parameter AsArray
+Export JSON results as Array
+
 .Example
 pow help
 Get general help with a list of commands
@@ -30,7 +36,8 @@ function Invoke-PowowShell {
     [ValidateSet("install", "version", "help", "workspace", "clean", "build", "verify", "run", "inspect", "components", "cmdlets", "pipeline", "preview", "examples", "adaptors", "script")]
     $Command,
     $p1, $p2, $p3,
-    [switch]$Export
+    [switch]$Export,
+    [switch]$AsArray
   )
 
   # Save path we are started from
@@ -59,8 +66,9 @@ function Invoke-PowowShell {
     #  instead of: pow inspect ./examples/components/mycomponent.ps1
     if (Test-Path $_POW.WORKSPACE) { $Workspace = Get-Content "$($_POW.HOME)/workspace.txt"; Write-Verbose "WORKSPACE: $Workspace" } else { $Workspace = (Resolve-Path "../").Path }
     if ($p1 -is [string] -and $p1 -like "!*") {
-      if ($Command -in "inspect", "components", "preview", "examples") {
-        $p1 = $p1.replace("!", "$Workspace/components/"); $p1 += ".ps1"
+      if ($Command -in "inspect", "components", "examples") {
+        $p1 = $p1.replace("!", "$Workspace/components/");
+        if ($p1 -notlike '*.ps1') {$p1 += ".ps1"}
       } elseif ($command -eq "adaptors") {
         # Adaptors are in /core/adaptors
         $p1 = $p1.replace("!", "../core/adaptors");
@@ -90,8 +98,14 @@ function Invoke-PowowShell {
     }
     if ($Export) {
       # -and $result -isnot [string]) {
-      Write-Verbose "POW: JSONOUT"
-      return ConvertTo-Json $result -Compress
+      if ($AsArray -and -not ($result -is [array])) {
+        Write-Verbose "POW: JSONARRAYOUT"
+        if ($null -eq $result) {return '[]'}
+        return ConvertTo-Json $result -Compress -AsArray -Depth 10
+      } else {
+        Write-Verbose "POW: JSONOUT"
+        return ConvertTo-Json $result -Compress -Depth 10
+      }
     }
     Write-Verbose "POW: STDOUT"
     return $result
@@ -102,7 +116,7 @@ function Invoke-PowowShell {
       message          = $_.Exception.Message
       stack            = $PSItem.ScriptStackTrace
     }
-    if ($Options -contains "export") {
+    if ($Export -or $Options -contains "export") {
       $Host.UI.WriteErrorLine(($erresult | ConvertTo-Json))
     } else {
       # TODO: This references the components/component.ps1 but not the step which would be more useful!

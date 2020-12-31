@@ -35,6 +35,7 @@ param(
 )
 function main() {
   $files = @()
+  write-verbose "Get-ChildItem -Path $Path -File -Filter $Filter -Recurse:$Recurse"
   Get-ChildItem -Path $Path -File -Filter $Filter -Recurse:$Recurse|
     ForEach-Object {
     $f = $null

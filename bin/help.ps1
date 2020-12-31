@@ -47,7 +47,6 @@ Command examples:
  * pow run !pipeline1 -Trace -Verbose : Run a pipeline with verbose output and each step's output logged to trace directory
  * pow run <pipeline> @params: Run a pipeline passing in parameters (using splatting)
  * pow pipeline <pipeline> : Return a pipeline definition
- * pow pipeline <pipeline> export: Return a pipeline definition as JSON
  * pow clean, build, verify <pipeline> : Delete a built pipeline, re-build it and verify it
  * pow inspect <component.ps1> : Inspects a component
  * pow inspect !component.ps1 : Inspects a component in the workspace

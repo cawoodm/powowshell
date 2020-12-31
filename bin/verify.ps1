@@ -19,9 +19,6 @@
  An optional hashmap of parameters to pass
  Can also be a string in the form "param1=x;param2=y"
 
- .Parameter Option
- export: will export the output as JSON
-
  .Example
  pow verify ./pipeline1
  Verify a pipeline runs

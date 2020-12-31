@@ -33,10 +33,10 @@ function main() {
         Show-Message "SUCCESS: pow script" -ForegroundColor Green
 
         # TODO: Test pipeline run export
-        #$res = & pow run !pipeline2 $null export
-        #Show-Message "SUCCESS: pow run !pipeline2 export" -ForegroundColor Green
+        #& pow run !pipeline2 $null -Export
+        #Show-Message "SUCCESS: pow run !pipeline2 -Export" -ForegroundColor Green
 
-        & pow components ! export | Out-Null
+        & pow components ! -Export | Out-Null
         Show-Message "SUCCESS: pow components" -ForegroundColor Green
 
         $cmd = & pow inspect Invoke-WebRequest
@@ -54,7 +54,7 @@ function main() {
         & pow adaptors list | Out-Null
         Show-Message "SUCCESS: pow adaptors" -ForegroundColor Green
 
-        & pow preview !DateAdder 2 | Out-Null
+        & pow preview !pipeline1 (Resolve-Path ../examples/components/DateAdder.ps1) 2 | Out-Null
         Show-Message "SUCCESS: pow preview" -ForegroundColor Green
 
     } catch {

@@ -59,7 +59,7 @@
     <v-dialog v-model="longMessage.show">
       <v-card>
         <v-card-title :class="longMessage.color">
-          Error
+          {{ longMessage.title }}
         </v-card-title>
         <v-card-text>
           <pre style="white-space: pre-wrap;">

@@ -45,7 +45,7 @@ let pipelineForm = function(Vue) {
                             <v-textarea label="Description" hint="Description of what this pipeline does and how" v-model="def.description" box></v-textarea>
                         </v-flex>
                         <v-flex xs4>
-                            <v-select :items="[{value:'ps5',text:'PowerShell v5'},{value:'ps6',text:'PowerShell v6'},{value:'ps*',text:'Any PowerShell v*'}]" label="Runtime" v-model="def.runtime"></v-select>
+                            <v-select :items="[{value:'ps5',text:'PowerShell 5'},{value:'ps6',text:'PowerShell 6'},{value:'ps7',text:'PowerShell 7'},{value:'ps*',text:'Any PowerShell v*'}]" label="Runtime" v-model="def.runtime"></v-select>
                         </v-flex>
                         </v-layout>
                     </v-container>

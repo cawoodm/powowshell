@@ -88,13 +88,13 @@ const pow = (function(){
     async function pipeline(path) {
         // If we don't have a !* or a */* path, add the ! prefix
         if (!path.match(/^!/) && !path.match(/[\\/]/)) path = "!"+path;
-        return execStrictJSON(`pow pipeline "${path}" export`);
+        return execStrictJSON(`pow pipeline "${path}" -Export`);
     }
 
     /**
      * Save a pipeline definition to pipeline.json
      * @param {POWPipelineDef} pipeline Path to the pipeline (e.g. "!pipeline1" for default workspace)
-     * @param {string} pipelineId Pipeline ID (ie.)
+     * @param {string} pipelineId Pipeline ID
      * @returns {Promise} Promise with a POWResult
      */
     async function save(pipeline: POWType.PipelineDef, pipelineId) {
@@ -156,21 +156,22 @@ const pow = (function(){
 
     /**
      * Preview a step
+     * @param {string} pipelineId Pipeline ID
      * @param {StepDef} step Step definition
      * @param {Object} component Component definition
      * @returns {Promise} Promise with a POWResult containing an object (step result)
      */
-    async function preview(step, component) {
+    async function preview(pipelineId, step, component) {
         let path = component.executable;
         //if (component.type=="component") path = "!"+path;
         let params = JSON.stringify(step.parameters).replace(/"/g, '`"');
         //console.log(`pow preview "${path}" "${params}"`)
         if (component.output.match(/text\/json/))
             // JSON Component returns an object
-            return execStrictJSON(`pow preview "${path}" "${params}"`);
+            return execStrictJSON(`pow preview "${pipelineId}" "${path}" "${params}"`);
         else
             // Normal component returns a string
-            return execStrict(`pow preview "${path}" "${params}"`);
+            return execStrict(`pow preview "${pipelineId}" "${path}" "${params}"`);
     }
 
     /**
@@ -188,7 +189,7 @@ const pow = (function(){
      * @returns {Promise} Promise with a POWResult (.object=Array of component definitions)
      */
     async function components(path = "!") {
-        return execStrictJSON(`pow components "${path}" export`);
+        return execStrictJSON(`pow components "${path}" -Export`);
     }
 
     /**
@@ -205,7 +206,7 @@ const pow = (function(){
      * @returns {Promise} Promise with a POWResult(.object=Array of examples)
      */
     async function examples(path:string) {
-        return execStrictJSON(`pow examples "${path}" -export`);
+        return execStrictJSON(`pow examples "${path}" -Export -AsArray`);
     }
 
     /**

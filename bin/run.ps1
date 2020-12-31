@@ -13,7 +13,6 @@
 
  .Parameter Option
  trace: will trace each step's input and output to the trace\ folder of the pipeline for debugging
- export: will export the output as JSON
 
  .Example
  pow run ./examples/pipeline1 @{DataSource="./data/names.txt"}
@@ -24,7 +23,7 @@
 param(
     [Parameter(Mandatory)][String]$Path,
     $Parameters=@{},
-    [ValidateSet("trace", "export")]
+    [ValidateSet("trace")]
       [string[]]$Options
 )
 function main() {
@@ -79,6 +78,6 @@ function main() {
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
-#$ErrorView="CategoryView"
+# EA Should probably be set by the person running the pipeline
 #$ErrorActionPreference = "Stop"
 main

@@ -40,7 +40,7 @@ function main() {
       # We can return cached results
       try {
         $NoFilter = ($null -eq $Filter -or $Filter -eq "");
-        # TODO: Use pow's -Export switch
+        # PERFORMANCE: Using pow's -Export switch means unnecessary parsing of JSON
         if ($Action -like "export" -and $NoFilter) {
           $CmdLets = $JSON
         } elseif ($NoFilter) {

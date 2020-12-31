@@ -19,7 +19,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$Path,
-    [ValidateSet("generate", "export", "list")][string]$Action=$null
+    [ValidateSet("generate", "list")][string]$Action=$null
 )
 function main() {
 
@@ -37,7 +37,7 @@ function main() {
             if ($JSON -match "^\["){} else {$JSON=$null; $CacheFile=$null} # Cache is gone
         }
         # Action = export : Return cached JSON
-        if ($Action -like "export" -and $CacheFile) {return $JSON}
+        #if ($Action -like "export" -and $CacheFile) {return $JSON}
         # When did a component last change
         $LastWriteTime = (Get-ChildItem ./ -File -Filter *.ps1 | Where-Object name -notlike *.tests.ps1* | Sort-Object LastWriteTime -Descending | Select-Object -First 1).LastWriteTime
         if ($Action -like "generate" -or $null -eq $CacheFile -or $LastWriteTime -gt $CacheFile.LastWriteTime) {
@@ -53,7 +53,7 @@ function main() {
             Write-Verbose "Component cache is fresh"
         }
         # Update the cache
-        if ($Action -like "export") {return $JSON}
+        #if ($Action -like "export") {return $JSON}
         return $Components
     } catch {
         #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")

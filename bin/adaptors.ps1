@@ -11,13 +11,12 @@
 
  .Parameter Action
  Action generate: Bypass adaptor cache and read adaptors
- Action export: Export as JSON
  Action list: List adaptors (via cache)
 
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
-  [ValidateSet("generate", "export", "list")][string[]]$Action = $null
+  [ValidateSet("generate", "list")][string[]]$Action = $null
 )
 function main() {
 
@@ -57,12 +56,7 @@ function main() {
       $JSON | Set-Content -Encoding UTF8 -Path $CachePath
     }
     Write-Verbose "$($Adaptors.length) adaptors found"
-    if ($Action -like "export") {
-      # Provide a serialized JSON export
-      return $JSON
-    } else {
-      return $Adaptors
-    }
+    return $Adaptors
   } catch {
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_
