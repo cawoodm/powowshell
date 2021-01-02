@@ -292,6 +292,10 @@ window.onload = function () {
         this.redraw();
       });
       this.$root.$on("pipelineFormOK", this.pipelineFormOK);
+      this.$root.$on("componentHelp", (step, component  ) => {
+        let msg = (component.synopsis||"") + "\n" + (component.description||"")
+        this.showLongMessage(msg, step.reference, "Help")
+      });
       this.$root.$on("componentExamples", (reference, type) => {
         let ref = type === "cmdlet" ? reference : "!" + reference;
         pow.examples(ref)

@@ -49,7 +49,7 @@ const StepForm = Vue.extend({
             this.$root.$emit("componentExamples", this.step.reference, this.component.type);
         },
         help() {
-            alert((this.component.synopsis||"") + "\n" + (this.component.description||""))
+          this.$root.$emit("componentHelp", this.step, this.component)
         },
         cancel() {
             this.close();
