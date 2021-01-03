@@ -109,5 +109,5 @@ function  Show-Message($msg, $Color = "White") { Write-Host $Msg -ForegroundColo
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
-$ErrorActionPreference = "Stop"
+#$ErrorActionPreference = "Stop"
 main

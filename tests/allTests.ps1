@@ -28,12 +28,15 @@ function main() {
     Where-Object name -like $Filter |
     Where-Object name -like "*.tests.*"
     foreach ($script in $scripts) {
+      $Global:LASTEXITCODE=0
       $script = $script.Name
       if ($script -notlike "*.ps1" -and $script -notlike "*.js") { continue }
       Write-Host "Testing $($script):"
       if ($script -like "*.js") {
         & node "$script" $verbose $Debug
-        if ($LASTEXITCODE) { throw "FAIL: $script" }
+        if ($LASTEXITCODE) {
+          throw "FAIL: $script"
+        }
       } else {
         if ($verbose) {
           & "./$script"
@@ -52,5 +55,6 @@ function main() {
   }
 }
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-$ErrorActionPreference = "Stop"
+# This causes pow verify to fail on errortest pipeline
+#$ErrorActionPreference = "Stop"
 main

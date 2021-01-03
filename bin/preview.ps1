@@ -62,9 +62,13 @@ function main() {
       $Parameters = "@ParamHash"
     }
     
-    # Change to pipeline's build directory so that relative paths work
+    # Verify pipeline exists and is built
     $PipelinePath = $Pipeline
-    Push-Location (Join-Path $PipelinePath "build" )
+    $PipelineRunPath = Join-Path $PipelinePath "build"
+    if (-not (Test-Path $PipelineRunPath)) {throw "Pipeline is not built!"}
+    
+    # Change to pipeline's build directory so that relative paths work
+    Push-Location $PipelineRunPath
 
     # Read component/cmdlet definition
     $component = & pow "inspect" $Reference

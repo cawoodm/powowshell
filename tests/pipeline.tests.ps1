@@ -27,5 +27,7 @@ function main() {
     Set-Location $StartPath
   }
 }
-$ErrorActionPreference = "Stop"
+# We can't assume a pipeline being verified does not output errors
+#$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 main

@@ -1,0 +1,29 @@
+{
+  "id": "errortest",
+  "name": "Error Test",
+  "description": null,
+  "parameters": {
+    "Throw": {
+      "type": "switch"
+    }
+  },
+  "globals": {},
+  "steps": [
+    {
+      "id": "A1",
+      "reference": "testmessagetypes.ps1",
+      "name": "TestMessageTypes",
+      "description": null,
+      "stream": null,
+      "parameters": {
+        "CreateErrorOutput": true,
+        "CreateWarningOutput": true,
+        "ThrowException": false
+      },
+      "input": null
+    }
+  ],
+  "input": {},
+  "output": {},
+  "runtime": "ps*"
+}

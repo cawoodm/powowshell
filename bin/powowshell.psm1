@@ -60,75 +60,53 @@ function Invoke-PowowShell {
     # Include common settings/functions
     . "./common.ps1"
 
-    # Resolve ! paths with the workspace
-    #  Doing this: (Resolve-Path ./examples).path > ./workspace.txt
-    #  Lets you do this: pow inspect mycomponent
-    #  instead of: pow inspect ./examples/components/mycomponent.ps1
-    if (Test-Path $_POW.WORKSPACE) { $Workspace = Get-Content "$($_POW.HOME)/workspace.txt"; Write-Verbose "WORKSPACE: $Workspace" } else { $Workspace = (Resolve-Path "../").Path }
     if ($p1 -is [string] -and $p1 -like "!*") {
-      if ($Command -in "inspect", "components", "examples") {
-        $p1 = $p1.replace("!", "$Workspace/components/");
-        if ($p1 -notlike '*.ps1') {$p1 += ".ps1"}
-      } elseif ($command -eq "adaptors") {
-        # Adaptors are in /core/adaptors
-        $p1 = $p1.replace("!", "../core/adaptors");
-        $p1 = Resolve-Path $p1
-      } elseif ($command -eq "workspace") {
-        # e.g. "!examples" should be relative to the root of the app
-        $p1 = $p1.replace("!", "../");
-        $p1 = Resolve-Path $p1
-      } else {
-        # !pipeline1 => $Workspace/pipeline1/
-        $p1 = $p1.replace("!", "$Workspace/");
-      }
+      $p1 = ResolveWorkspace $Command $p1
     }
     # Get back to the location of the caller
     Pop-Location
     ForEach ($Cmd in $Command) {
-      $result = try {
-        Write-Verbose "`"$BinPath/$Cmd.ps1`" $p1 $p2 $p3"
-        if ($p3) { & "$BinPath/$Cmd.ps1" $p1 $p2 $p3 }
-        elseif ($p2) { & "$BinPath/$Cmd.ps1" $p1 $p2 }
-        elseif ($p1) { & "$BinPath/$Cmd.ps1" $p1 }
-        else { & "$BinPath/$Cmd.ps1" }
+      try {
+        $exec = "& `"$BinPath/$Cmd.ps1`" `$p1 `$p2 `$p3"
+        Write-Verbose "POW:EXEC1: & `"$BinPath/$Cmd.ps1`" $p1 $p2 $p3"
+        Write-Verbose "POW:EXEC1: & `"$BinPath/$Cmd.ps1`" $p1 $p2 $p3"
+        if ($p3) {  } elseif ($p2) { $exec = $exec -replace "\`$p3", "" } elseif ($p1) { $exec = $exec -replace "\`$p2 \`$p3", "" } else { $exec = $exec -replace "\`$p1 \`$p2 \`$p3", "" }
+        if ($Export) {$exec += " *>&1 | & $BinPath/lib/Output-POWJSON.ps1"}
+        $execstr = $exec
+        $execstr = $execstr -replace "\`$p1", ($p1 | convertto-json -Compress)
+        $execstr = $execstr -replace "\`$p2", ($p2 | convertto-json -Compress)
+        $execstr = $execstr -replace "\`$p3", ($p3 | convertto-json -Compress)
+        Write-Verbose "POW:EXEC: $execstr"
+        Invoke-Expression -Command $exec
+        return
       } catch {
         #Write-Error "Error in '$cmd' command:" + $_
         throw $_
       }
     }
-    if ($Export) {
-      # -and $result -isnot [string]) {
-      if ($AsArray -and -not ($result -is [array])) {
-        Write-Verbose "POW: JSONARRAYOUT"
-        if ($null -eq $result) {return '[]'}
-        return ConvertTo-Json $result -Compress -AsArray -Depth 10
-      } else {
-        Write-Verbose "POW: JSONOUT"
-        return ConvertTo-Json $result -Compress -Depth 10
-      }
-    }
-    Write-Verbose "POW: STDOUT"
-    return $result
   } catch {
+    $scriptName = $null;
+    if ($_.InvocationInfo.ScriptName) {(Split-Path -Path $_.InvocationInfo.ScriptName -Leaf)}
     $erresult = @{
-      scriptName       = (Split-Path -Path $_.InvocationInfo.ScriptName -Leaf)
+      powType          = "X" # Exception
+      scriptName       = $scriptName
       scriptLineNumber = $_.InvocationInfo.ScriptLineNumber
       message          = $_.Exception.Message
       stack            = $PSItem.ScriptStackTrace
     }
-    if ($Export -or $Options -contains "export") {
-      $Host.UI.WriteErrorLine(($erresult | ConvertTo-Json))
+    if ($Options -contains "export") {
+      $Host.UI.WriteErrorLine(($erresult | ConvertTo-Json -Compress -Depth 2))
     } else {
-      # TODO: This references the components/component.ps1 but not the step which would be more useful!
-      $Host.UI.WriteErrorLine("ERR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+      $Host.UI.WriteErrorLine("ABORT in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     }
   } finally {
     Set-Location $StartPath
   }
 
+  if ($PSCmdlet.ShouldProcess("Target", "Operation")){}
+
 }
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-#$ErrorActionPreference = "Stop"
 #########################################
 New-Alias -Name pow -Value Invoke-PowowShell -Force
 Export-ModuleMember -Function Invoke-PowowShell -Alias pow

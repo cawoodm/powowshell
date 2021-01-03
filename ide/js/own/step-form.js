@@ -80,6 +80,7 @@ const StepForm = Vue.extend({
                 <span class="headline">{{title}}</span>
                 <v-spacer></v-spacer>
                 <v-icon @click="help()" color="white">help</v-icon>
+                <v-icon @click="cancel()" color="white">cancel</v-icon>
             </v-toolbar>
             <v-card-text>
                 <v-container grid-list-xs>

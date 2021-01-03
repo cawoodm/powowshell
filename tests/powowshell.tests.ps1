@@ -8,28 +8,28 @@ function main() {
     try {
         Push-Location $PSScriptRoot
 
-        & pow version | Out-Null
+        pow version -Verbose:$VerbosePreference | Out-Null
         Show-Message "SUCCESS: pow is installed" -ForegroundColor Green
 
-        & ..\bin\help.ps1 verify | Out-Null
+        & ..\bin\help.ps1 verify -Verbose:$VerbosePreference | Out-Null
         Show-Message "SUCCESS: pow help" -ForegroundColor Green
 
-        & pow workspace ../examples | Out-Null
+        & pow workspace ../examples -Verbose:$VerbosePreference | Out-Null
         Show-Message "SUCCESS: pow workspace" -ForegroundColor Green
 
-        & pow clean !pipeline1 | Out-Null
+        & pow clean !pipeline1 -Verbose:$VerbosePreference | Out-Null
         Show-Message "SUCCESS: pow clean" -ForegroundColor Green
 
-        & pow build !pipeline1 | Out-Null
+        & pow build !pipeline1 -Verbose:$VerbosePreference | Out-Null
         Show-Message "SUCCESS: pow build" -ForegroundColor Green
 
-        & pow verify ../examples/pipeline1 "@{DataSource='..\data\names.txt'}" | Out-Null
+        & pow verify ../examples/pipeline1 @{DataSource='..\data\names.txt'} -Verbose:$VerbosePreference | Out-Null
         Show-Message "SUCCESS: pow verify" -ForegroundColor Green
-
-        & pow run !pipeline1 @{DataSource='..\data\names.txt'} | Out-Null
+        
+        & pow run !pipeline1 @{DataSource='..\data\names.txt'} -Verbose:$VerbosePreference | Out-Null
         Show-Message "SUCCESS: pow run" -ForegroundColor Green
 
-        & pow script !pipeline2 | Out-Null
+        & pow script !pipeline2 -Verbose:$VerbosePreference | Out-Null
         Show-Message "SUCCESS: pow script" -ForegroundColor Green
 
         # TODO: Test pipeline run export
@@ -43,7 +43,7 @@ function main() {
         if ($cmd.parameters[0].Name -eq "Uri" -and $cmd.parameters[0].Required -eq $true){Show-Message "SUCCESS: pow inspect Invoke-WebRequest cmdlet" -ForegroundColor Green}
 
         $cmd = & pow inspect !CSV2JSON
-        if ($cmd.parameters[0].Name -eq "InputObject" -and $cmd.parameters[0].Required -eq $true){Show-Message "SUCCESS: pow inspect CSV2JSON componenet" -ForegroundColor Green}
+        if ($cmd.parameters[0].Name -eq "InputObject" -and $cmd.parameters[0].Required -eq $true){Show-Message "SUCCESS: pow inspect CSV2JSON component" -ForegroundColor Green}
 
         & pow examples !CSV2JSON | Out-Null
         Show-Message "SUCCESS: pow examples" -ForegroundColor Green
@@ -66,5 +66,5 @@ function main() {
 }
 function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
-$ErrorActionPreference = "Stop"
+#$ErrorActionPreference = "Stop"
 main

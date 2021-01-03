@@ -18,11 +18,17 @@ export type POWMessage = {
     type: string,
     message: string
 }
-export type POWResult = {
-    success: boolean,
-    output: string,
-    object: any,
-    messages: POWMessage[]
+export class POWResult {
+  public success: boolean;
+  public output: string;
+  public object: object;
+  public messages: any[];
+  constructor(success: boolean, output: string, messages: any[], object: object) {
+    this.success = success;
+    this.output = output;
+    this.object = object;
+    this.messages = messages || [];
+  }
 }
 export type POWError = {
     message: string,

@@ -28,37 +28,42 @@ param(
 )
 function main() {
 
-  # Include common settings/functions
-  . "$PSScriptRoot/common.ps1"
-
   # Save path we are started from
   $StartPath = (Get-Location).Path
 
   if ($Parameters -is [string]) {
-    Write-Verbose "POW:RUN: Got Parameters $Parameters"
-      if ($Parameters -like '@*') {
-          $Parameters = Invoke-Expression $Parameters
-      } else {
-          # Parameters in the form of "p1=x"
-          Write-Verbose $Parameters
-          $Parameters = ($Parameters -replace ";", "`n") # Newlines separate parameters
-          # If the user doesn't escape backspaces
-          if ($Parameters -notlike "*\\*") {
-              # Escape them
-              $Parameters = $Parameters.replace("\", "\\")
-          }
-          $Parameters = ConvertFrom-StringData $Parameters
+    if ($Parameters -like '@*') {
+      $Parameters = Invoke-Expression $Parameters
+    } else {
+      # Parameters in the form of "p1=x"
+      Write-Verbose $Parameters
+      $Parameters = ($Parameters -replace ";", "`n") # Newlines separate parameters
+      # If the user doesn't escape backspaces
+      if ($Parameters -notlike "*\\*") {
+        # Escape them
+       $Parameters = $Parameters.replace("\", "\\")
       }
-      #$p = $ExecutionContext.InvokeCommand.ExpandString($Parameters)
+      $Parameters = ConvertFrom-StringData $Parameters
+    }
+    #$p = $ExecutionContext.InvokeCommand.ExpandString($Parameters)
   }
+  Write-Verbose $Parameters
   $Path = (Resolve-Path -Path $Path).Path
+  Write-Verbose $Path
   Push-Location $Path
   try {
     $exec = "./build/run_prod.ps1"
     if ($Options -contains "trace") {$exec="./build/run_trace.ps1"}
     if (-not (Test-Path $exec)) {throw "POW101: Pipeline has not been built!"}
-    if ($Parameters) {
-      Write-Verbose "POW:RUN: & $exec @parameters"
+    if (Test-Path .\errors.log) { Remove-Item .\errors.log }
+    if (Test-Path .\warnings.log) { Remove-Item .\warnings.log }
+    & ./build/run_prod.ps1 @Parameters -WhatIf
+    return
+    $exec = "./build/run_prod.ps1"
+    if ($Options -contains "trace") {$exec="./build/run_trace.ps1"}
+    if (-not (Test-Path $exec)) {throw "POW101: Pipeline has not been built!"}
+    if ($Parameters -and $Parameters.Count -gt 0) {
+      Write-Verbose "POW:RUN: & $exec $($parameters | ConvertTo-Json)"
       $result = & $exec @parameters
     } else {
       Write-Verbose "POW:RUN: & $exec"
@@ -66,7 +71,8 @@ function main() {
     }
     $result
   } catch {
-    #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+    Write-Verbose "POW:RUN: Caught Error"
+    $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_
     #[Console]::Error.WriteLine(($erresult | ConvertTo-Json))
     #$PSCmdlet.WriteError("{}")
@@ -79,5 +85,5 @@ function main() {
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 # EA Should probably be set by the person running the pipeline
-#$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 main

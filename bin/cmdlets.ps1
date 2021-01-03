@@ -50,8 +50,8 @@ function main() {
         }
         Write-Verbose "Cmdlet cache is fresh"
         if ($Action -like "export") {
-          if ($NoFilter) { return $JSON }
-          return $CmdLets | ConvertTo-Json -Depth 10
+          if ($NoFilter) { return $JSON  -replace "\r?\n", " "}
+          return (Out-Json $CmdLets) # | ConvertTo-Json -Depth 10
         }
         if ($Action -notlike "generate" -and $Action -notlike "check") {
           return $Cmdlets
@@ -98,7 +98,7 @@ function main() {
       $JSON = ConvertTo-Json -Depth 10 -InputObject $Cmdlets
     }
     if ($Action -like "export") {
-      return $JSON
+      return $JSON -replace "\r?\n", " "
     } elseif ($Action -notlike "generate" -and $Action -notlike "check") {
       return $Cmdlets
     }

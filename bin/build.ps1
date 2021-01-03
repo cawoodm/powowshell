@@ -342,7 +342,7 @@ function ReSerializeObject($obj) {
   return $res
 }
 function ReSerializeParams($parameters) {
-  Write-Verbose "BUILDER ReSerializeParams"
+  Write-Verbose "BUILDER ReSerializeParams: $parameters"
   if ($parameters -is [array]) { throw "Parameters object should not be an array!" }
   try {
     $res = "[CmdletBinding(SupportsShouldProcess)]`n"
@@ -351,7 +351,7 @@ function ReSerializeParams($parameters) {
       $pName = $param.Name
       $pObj = $param.Value
       Set-StrictMode -Off
-      $pVal = $pObj.default
+      $pVal = if($pObj.default){$pObj.default}else{''}
       $pType = $pObj.type
       if ($pType) { $pType = "[$pType]" }
       $pMust = $pObj.mandatory
@@ -360,10 +360,12 @@ function ReSerializeParams($parameters) {
         # Parameter is code (a PowerShell Expression)
         # TODO: Escape code for PS
         $res += "`t$pMust$pType`$$($pName) = (" + $pVal.SubString(1, $pVal.Length - 2) + "),`n"
-      } else {
+      } elseif($pVal) {
         # Parameter is a String
         # TODO: Escape String for PS
         $res += "`t$pMust$pType`$$($pName) = `"$($pVal)`",`n"
+      } else {
+        $res += "`t$pMust$pType`$$($pName),`n"
       }
     }
     $res = $res -replace ',\n$', "`n"

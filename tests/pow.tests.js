@@ -1,9 +1,10 @@
 (function powTest(console, args) {
 
-  let verbose = args.indexOf("verbose") >= 0 ? true : false;
-  let debug = args.indexOf("debug") >= 0 ? true : false;
+  let verbose = args.indexOf("verbose") >= 0;
+  let debug = args.indexOf("debug") >= 0;
+  let halt = args.indexOf("halt") >= 0;
 
-  let FUNC = require("./functions")(verbose);
+  let FUNC = require("./functions")({verbose,halt});
   let assert = FUNC.assert;
 
   let pow = require("../ide/js/pow").pow;
@@ -14,11 +15,19 @@
   (async () => {
     let out;
     try {
+      
+      pow.execOptions.debug = !!debug;
+
+      if (true) {
+        //console.clear();
+        try { out = await pow.execStrictJSON("pow run !errortest 'Throw=$true' -Export"); assert(false, "Should have an exception - we should not be here!!!") } catch (e) { assert(e.messages.length > 0, "Should have exceptions with pipeline !errortest -Throw") }
+        console.log("OK")
+        process.exit(0)
+      }
 
       // Basic checks of powershell execution, error and output handling
-      pow.execOptions.debug = !!debug;
       out = await pow.exec("Get-Date1"); assert(out.success === false, "Should have no success calling unknown CmdLet")
-      try { out = await pow.execStrict("Get-Date1"); assert(false, "Should have an exception - we should not be here!!!") } catch (e) { assert(e.messages.length > 0, "Should have exceptions in execStrict") }
+      try { out = await pow.execStrict("Get-Date1"); assert(false, "Should have an exception - we should not be here!!!") } catch (e) { assert(e.messages.length > 0, "Should have messages on exceptions in execStrict") }
       out = await pow.exec("Get-Date -f 'yyyy-MM-dd'"); assert(out.output.match(/\d{4}-\d{2}-\d{2}/), `Should have a date: ${out.output}`)
 
       // Basic POW Tests
@@ -61,6 +70,13 @@
       out = await pow.examples("!csv2json"); assert(out.success, `Should load examples: ${out.success}`)
       assert(out.object.length > 1, `Should load more than 1 example: ${out.object.length}`)
       assert(out.object.every(e => e.title && e.code), `Examples should all have a title and some code.`)
+      
+      // Test error and message handling
+      out = await pow.execStrictJSON("pow run !errortest -Export");
+      assert(out.object.length===2, 'Should be 2 output lines');
+      assert(out.messages.length===4, 'Should be 4 messages');
+      assert(out.messages[0].type === 'ERROR', 'First message should be an ERROR');
+      try { out = await pow.execStrictJSON("pow run !errortest 'Throw=$true' -Export"); assert(false, "Should have an exception - we should not be here!!!") } catch (e) { assert(e.messages.length > 0, "Should have exceptions with pipeline !errortest -Throw") }
 
     } catch (e) {
       let stk = e.stack.split(/\n/)

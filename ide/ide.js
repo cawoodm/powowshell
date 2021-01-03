@@ -1,4 +1,4 @@
-/* global Vue dragula formBuilder dataTableBuilder console pipelineManager */
+/* global Vue dragula formBuilder dataTableBuilder pipelineManager */
 // Load modules depending on environment
 if (typeof process !== "undefined") {
   // Electron/Node environment
@@ -14,13 +14,13 @@ if (typeof process !== "undefined") {
   // Browser/demo environment
   // Modules loaded in index.html via dynamic script tags
 }
-modComponentList(Vue)
-modCmdletList(Vue)
-pipelineForm = pipelineForm(Vue)
-modLoading(Vue)
+// eslint-disable-next-line no-undef
+modComponentList(Vue),modCmdletList(Vue),modLoading(Vue);
 
 // Initialisation
 let app = {};
+// eslint-disable-next-line no-undef
+app.pipelineForm = pipelineForm(Vue);
 pipelineManager.reset();
 app.components = {};
 app.cmdlets = {};
@@ -198,9 +198,9 @@ window.onload = function () {
           this.showMessage("IDE100:showStepDialog:" + e.message, "error")
         }
       },
-      componentsLoad: function () {
+      componentsLoad: function(reload) {
         this.showLoading("Loading POW Components")
-        return pow.components()
+        return pow.components(null, reload)
           .then((obj) => {
             this.showLoading(false);
             app.components = obj.object;
@@ -220,10 +220,9 @@ window.onload = function () {
           .catch(this.handlePOWError)
           .finally(() => this.showLoading(false));
       },
-      pipelineLoad: function (id, opts) {
+      pipelineLoad: function (id) {
         // Load pipeline definition
         let root = this;
-        opts = opts || {};
         if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and load a new pipeline?")) return;
         this.showLoading(`Loading pipeline (${id})...`);
         return pow.pipeline(`${id}`)
@@ -239,7 +238,7 @@ window.onload = function () {
       },
       pipelineEdit: function () {
         //this.$refs.pipelineForm.showForm(pipelineManager.getDefinition());
-        pipelineForm.showForm(this.$root, pipelineManager.getDefinition());
+        app.pipelineForm.showForm(this.$root, pipelineManager.getDefinition());
       },
       pipelineFormOK: function (def) {
         Object.assign(this.pipeline, def);
@@ -248,7 +247,7 @@ window.onload = function () {
         if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and start a new pipeline?")) return;
         pipelineManager.reset();
         this.pipeline = pipelineManager.getDefinition()
-        pipelineForm.showForm(this.$root, pipelineManager.getDefinition());
+        app.pipelineForm.showForm(this.$root, pipelineManager.getDefinition());
         this.redraw();
       },
       pipelineOpen: function () {
@@ -292,6 +291,9 @@ window.onload = function () {
         this.redraw();
       });
       this.$root.$on("pipelineFormOK", this.pipelineFormOK);
+      this.$root.$on("componentsLoad", (reload) => {
+        this.componentsLoad(reload);
+      });
       this.$root.$on("componentHelp", (step, component  ) => {
         let msg = (component.synopsis||"") + "\n" + (component.description||"")
         this.showLongMessage(msg, step.reference, "Help")
