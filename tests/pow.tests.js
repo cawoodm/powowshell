@@ -88,7 +88,7 @@
           if (["ERROR", "WARNING"].indexOf(msg.type) >= 0 || verbose)
             console.log("\t", `${msg.type}: ${msg.message}`)
         }
-      FUNC.addFails;
+      FUNC.addFails();
     }
 
     if (FUNC.fails() > 0) {
