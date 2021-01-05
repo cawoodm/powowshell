@@ -1,0 +1,1 @@
+electron %~dp0\ide

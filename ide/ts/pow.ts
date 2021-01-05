@@ -21,6 +21,7 @@ import POWResult = POWType.POWResult;
 const pow = (function () {
 
   let workspace = ".";
+  let verbosePreference: boolean;
   let execOptions: { debug: boolean; PSCore: string, userProfile: boolean } = { debug: false, PSCore: "pwsh", userProfile: true };
 
   /**
@@ -28,7 +29,8 @@ const pow = (function () {
    * @param {string} workspacePath: The path to the workspace root
    * @returns {Promise} Promise with true if successful
    */
-  async function init(workspacePath) {
+  async function init(workspacePath, verbose) {
+    verbosePreference = verbose === true;
     return new Promise(function (resolve, reject) {
       _POWPromise(`pow workspace ${workspacePath} -Export`, true, true).then((result:  POWResult) => {
         if (result.success && Array.isArray(result.object) && result.object.length === 1) {
@@ -161,6 +163,16 @@ const pow = (function () {
   }
 
   /**
+   * Run and trace a built pipeline
+   * @param {string} path Path to pipeline (or "!pipelineId" for default workspace)
+   * @returns {Promise} Promise with a POWResult containing an object (pipeline result)
+   */
+  async function trace(path): Promise<POWResult> {
+    // TODO: We should only execStrict if the pipeline has $ErrorActionPreference="Stop"
+    return execStrictJSON(`pow run "${path}" '' trace -Export`);
+  }
+
+  /**
    * Preview a step
    * @param {string} pipelineId Pipeline ID
    * @param {StepDef} step Step definition
@@ -217,7 +229,7 @@ const pow = (function () {
    * @returns {Promise} Promise with a POWResult(.object=Array of examples)
    */
   async function examples(path: string) {
-    return execStrictJSON(`pow examples "${path}" -Export -AsArray`);
+    return execStrictJSON(`pow examples "${path}" -Export`);
   }
 
   /**
@@ -234,6 +246,7 @@ const pow = (function () {
         verbose: execOptions.debug,
         noProfile: !execOptions.userProfile
       });
+      command = command + (verbosePreference?' -Verbose':'');
       if (execOptions.debug) console.log("EXEC", pid, command);
       pshell.exec(command, [])
         .then((out: any) => {
@@ -284,18 +297,28 @@ const pow = (function () {
     //  One complete JSON object
     if (out.stderr) {
       success = false;
-      let msg = typeof out.stderr === "object" ? out.stderr.message : out.stderr;
-      let obj = typeof out.stderr === "object" ? out.stderr : null;
-      messages.push(new POWMessage("ERROR", msg, obj))
+      if (out.stderr === "object") {
+        messages.push(new POWMessage(MessageTypes[out.stderr.powType], out.stderr.message, out.stderr))
+      } else {
+        // Drop trailing newlines which make primitives like "foo" into "foo\n"
+        out.stderr = out.stderr.trim();
+        // Split output by newline, skipping empty lines
+        let outlines = out.stderr.split(/\r?\n/).filter(l => !!l);
+        messages.push(...outlines.map(parseLine));
+      }
     }
 
     let obj = null;
     if (out.stdout) {
+      // Drop trailing newlines which make primitives like "foo" into "foo\n"
+      out.stdout = out.stdout.trim();
+      // Split output by newline, skipping empty lines
+      let outlines = out.stdout.split(/\r?\n/).filter(l => !!l);
       if (json) {
         // Process JSON output
         //  each line should be a JSON object
         obj = [];
-        out.stdout.split(/\r?\n/).filter(line => !!line).map(line => {
+        outlines.filter(line => !!line).map(line => {
           try {
             let lineObj = JSON.parse(line);
             if (lineObj.powType) {
@@ -304,20 +327,26 @@ const pow = (function () {
               obj.push(lineObj);
             }
           } catch (e) {
+            // Expected JSON but got something else - probably a message from the Invoke-PowowShell Runtime wrapper
+            /*
             messages.unshift(new POWMessage("ERROR", e.message, null))
             throw new POWError(`POWJS102:Invalid JSON Object: ${e.message}`, messages)
+            */
+            // We can ignore these in prod
+            // messages.push(parseLine(line))
           }
         });
       } else {
-        // Get stdout as a series of INFO messages
-        let outlines = out.stdout.split(/\r?\n/); // TODO: INTEROP
-        for (let o = 0; o < outlines.length && o < 25; o++) {
-          messages.push(new POWMessage("INFO", outlines[o], null))
-        }
+        // Get stdout as a series of messages where stdout(Write-Output) has type OUTPUT
+        messages.push(...outlines.map(parseLine))
       }
     }
 
     return new POWResult(success, out.stdout, messages, obj)
+  }
+  function parseLine(line) {
+    const parsedLine = line.match(/^((ERROR)|(WARNING)|(INFO)|(VERBOSE)): (.*)/);
+    return new POWMessage(parsedLine ? parsedLine[1] : "OUTPUT", parsedLine ? parsedLine[parsedLine.length - 1] : line, null)
   }
 
   return {
@@ -327,6 +356,7 @@ const pow = (function () {
     build,
     verify,
     run,
+    trace,
     preview,
     inspect,
     components,

@@ -191,7 +191,9 @@ function Get-ParamType($param) {
 }
 function Get-OPReturn($cmd) {
   $result = Get-OP($cmd)
+  $result = $result.trim() -split "\r?\n"
   # TODO: Normalize multiple types, exclude None and pick one?
+  Write-Warning ($result | convertto-json)
   if ($result -is [array]) {
     Write-Warning "$($cmd.name) has multiple possible output types ($($result -join ', '))!"
     # If we have multiple object types, just 'any'

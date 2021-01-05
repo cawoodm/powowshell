@@ -12,12 +12,12 @@ function FUNC({ verbose, halt }) {
         let res = typeof cond === "function" ? cond() : eval(cond);
         if (res) {
           if (verbose && !exception) {
-            console.log("\x1b[32m", "\tSUCCESS: " + msg);
+            console.log("\x1b[32m", "  SUCCESS: " + msg);
             return true;
           }
         } else {
           fails++;
-          console.log("\x1b[31m", "\tFAIL: " + msg);
+          console.log("\x1b[31m", "  FAIL: " + msg);
           if (halt)
             throw new Error("Halting on assert fail: " + msg);
           return false;
@@ -25,12 +25,12 @@ function FUNC({ verbose, halt }) {
       } catch (e) {
         if (!exception) {
           fails++;
-          console.log("\x1b[31m", "\tFAIL: " + msg);
-          console.log("\x1b[33m", "\t\tEXCEPTION: " + e.message);
+          console.log("\x1b[31m", "  FAIL: " + msg);
+          console.log("\x1b[33m", "    EXCEPTION: " + e.message);
           console.log(e);
           throw new Error("HALT TEST: Unexpected exception:" + e.message + "\n" + e.trace);
         } else {
-          if (verbose) console.log("\x1b[32m", "\tSUCCESS: " + msg);
+          if (verbose) console.log("\x1b[32m", "  SUCCESS: " + msg);
           return true;
         }
       }

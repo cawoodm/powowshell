@@ -39,10 +39,10 @@ $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING
 
 # Common functions
 function Show-Message($msg, $Color="White") {Write-Host $Msg -ForegroundColor $Color}
-function Show-Error($errmsg) {$host.ui.WriteErrorLine($errmsg)}
+function Show-Error($errmsg) {$host.UI.WriteErrorLine($errmsg)}
 #function Show-Error($errmsg) {[Console]::Error.WriteLine($errmsg)}
 function ResolveWorkspace($Command, $Path) {
-  Write-Verbose "RW: cmd=$Command path=$Path"
+  Write-Verbose "WKSPC: cmd=$Command path=$Path"
 # Resolve ! paths with the workspace
 #  Doing this: (Resolve-Path ./examples).path > ./workspace.txt
 #  Lets you do this: pow inspect mycomponent
@@ -68,15 +68,15 @@ function ResolveWorkspace($Command, $Path) {
   Write-Verbose "To:$Path"
   return (Resolve-Path $Path).Path
 }
-function Out-Json($obj) {
-  Write-Verbose "POW:LIB:OP: JSONARRAYOUT"
+function Out-Json($obj, [switch]$AsArray) {
+  Write-Verbose "POW:LIB:OP: JSONARRAYOUT:$AsArray"
   # Handle nulls
   if ($null -eq $obj) {
     if ($AsArray) {return '[]'} else {return 'null'}
   }
-  Write-Verbose "POW:LIB:OP:111"
   # Don't double wrap an array
   if ($AsArray -and $obj -is [array]) {$AsArray=$false}
+  Write-Verbose "POW:LIB:OP: JSONARRAYOUT:$AsArray"
   if ($_POW.RUNTIME_VERSION -ge 6) {
     $JSON = $obj | ConvertTo-Json -Compress -AsArray:$AsArray -Depth 10 # -EscapeHandling -EnumsAsStrings
   } else {
@@ -85,7 +85,7 @@ function Out-Json($obj) {
     if ($AsArray) {$JSON="[$JSON]"}
   }
   Write-Verbose "JSON=$JSON"
-  
+
   # Flatten JSON for 1 error per line
   $JSON = $JSON -replace "\r?\n", " "
   return $JSON

@@ -1,7 +1,6 @@
 #Thoughts
 
 # PS6: PWSH
-* We could use `ConvertTo-JSON -AsArray` to standardize arrays
 * `Get-Date | ConvertTo-Json` is better than PSv5
 
 # General PowerShell

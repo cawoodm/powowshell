@@ -24,6 +24,11 @@ function main() {
 
     # We install if we are not just Verifying
     if (-not $Verify) {
+      if (Get-Module "PowowShell" -EA 0) {
+        Write-Warning "PowowShell Module exists: You may need to restart PowerShell to seee the changes!"
+        Remove-Module -Name PowowShell
+        if (Get-Module PowowShell) {Write-Error "Module could not be removed! $((Get-Module PowowShell).Path)"} else {Write-Verbose "Removed PowowShell Module"}
+      }
       $Paths = $env:PSModulePath -split [IO.Path]::PathSeparator
       $File = Get-Item ./powowshell.psm1
       $File2 = Get-Item ./powowshell.psd1
@@ -33,11 +38,6 @@ function main() {
         $DestPath = $Path + "/powowshell"
         try {
           if (-not (Test-Path $DestPath)) { $null = New-Item -ItemType Directory $DestPath }
-          #if (Test-Path "$DestPath/powowshell.psm1") {
-          if ((Get-Module "PowowShell" -EA 0) -or (Get-Alias "pow" -EA 0)) {
-            Write-Warning "PowowShell Module exists: You may need to restart PowerShell to see the changes!"
-            Remove-Module -Name PowowShell
-          }
           Write-Verbose "Copying $File to $DestPath/powowshell.psm1 ..."
           $null = $File.CopyTo($DestPath + "/powowshell.psm1", $true) 2> $null
           $PathFinal = $DestPath + "/powowshell.psm1"
@@ -62,6 +62,7 @@ function main() {
       if (-not (Test-Path $_POW.CACHER)) { $null = New-Item -Path $_POW.CACHER -ItemType Directory }
 
       # Point the powowshell module back to this bin/ directory
+      Write-Verbose "Writing '$PSScriptRoot' to $DestPath/path.txt"
       $PSScriptRoot > "$DestPath/path.txt";
       if ($null -eq $PathFinal) {
         Show-Message "Could not find an existing powershell modules directory to install to!" Red

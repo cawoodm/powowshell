@@ -33,6 +33,8 @@ export function PShell() {
         exec: async function(command, args) {
             return new Promise(function(resolve, reject) {
                 PowerShell.addCommand(command);
+                //args && PowerShell.addParameters(args);
+                //args && args.forEach(PowerShell.addArgument);
                 PowerShell.invoke()
                     .then((output)=>{
                         resolve({stdout: output, stderr: null})

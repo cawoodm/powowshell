@@ -49,7 +49,6 @@ function main() {
   }
   Write-Verbose $Parameters
   $Path = (Resolve-Path -Path $Path).Path
-  Write-Verbose $Path
   Push-Location $Path
   try {
     $exec = "./build/run_prod.ps1"
@@ -57,7 +56,7 @@ function main() {
     if (-not (Test-Path $exec)) {throw "POW101: Pipeline has not been built!"}
     if (Test-Path .\errors.log) { Remove-Item .\errors.log }
     if (Test-Path .\warnings.log) { Remove-Item .\warnings.log }
-    & ./build/run_prod.ps1 @Parameters -WhatIf
+    & "$exec" @Parameters
     return
     $exec = "./build/run_prod.ps1"
     if ($Options -contains "trace") {$exec="./build/run_trace.ps1"}
@@ -72,7 +71,7 @@ function main() {
     $result
   } catch {
     Write-Verbose "POW:RUN: Caught Error"
-    $Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+    #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_
     #[Console]::Error.WriteLine(($erresult | ConvertTo-Json))
     #$PSCmdlet.WriteError("{}")

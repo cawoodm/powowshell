@@ -3,8 +3,9 @@
   let verbose = args.indexOf("verbose") >= 0;
   let debug = args.indexOf("debug") >= 0;
   let halt = args.indexOf("halt") >= 0;
+  let one = args.indexOf("one") >= 0;
 
-  let FUNC = require("./functions")({verbose,halt});
+  let FUNC = require("./functions")({ verbose, halt });
   let assert = FUNC.assert;
 
   let pow = require("../ide/js/pow").pow;
@@ -15,12 +16,17 @@
   (async () => {
     let out;
     try {
-      
-      pow.execOptions.debug = !!debug;
 
-      if (true) {
+      pow.execOptions.debug = !!debug;
+      verbosePreference = verbose ? ' -Verbose' : '';
+
+      // out = await pow.init(workspacePath, verbose); assert(out.success, "Should find our ./examples/ workspace: " + out.success)
+
+      if (one) {
         //console.clear();
-        try { out = await pow.execStrictJSON("pow run !errortest 'Throw=$true' -Export"); assert(false, "Should have an exception - we should not be here!!!") } catch (e) { assert(e.messages.length > 0, "Should have exceptions with pipeline !errortest -Throw") }
+        out = await pow.run("!errortest");
+        assert(out.object.length === 2, `Should be 2 output lines: got ${out.object.length}`);
+        assert(out.messages.length === 4, `Should be 4 messages: got ${out?.messages.length}`);
         console.log("OK")
         process.exit(0)
       }
@@ -32,7 +38,7 @@
 
       // Basic POW Tests
       out = await pow.version(); assert(out.match(/0\.\d\.\d/), `Should have a pow version number: ${out.match(/v\d+\.\d+\.\d+/)}`)
-      out = await pow.init(workspacePath); assert(out.success, "Should find our ./examples/ workspace: " + out.success)
+      out = await pow.init(workspacePath, verbose); assert(out.success, "Should find our ./examples/ workspace: " + out.success)
       out = pow.getWorkspace(); assert(out.match(/examples/), `Workspace should be set to 'examples': (${out})`)
 
       // Test loading pipeline
@@ -49,9 +55,11 @@
       assert(out.success, `Verification of pipeline1 should succeed: '${out.object.length}'`)
 
       // Test running a pipeline
-      out = await pow.run("!pipeline1"); assert(out.success, `Running a pipeline1 should succeed: '${out.object.length} items'`)
+      out = await pow.run("!pipeline1"); assert(out.success, `Running a pipeline1 should succeed with ${out.object.length} items`)
       assert(out.object[0].name === "John Doe", `Should have 'John Doe' in our pipeline output: '${out.object[0].name}'`)
-      //out.messages.forEach((msg)=>{console.log(msg.type, msg.message)})
+
+      // Test tracing a pipeline
+      out = await pow.trace("!pipeline1"); assert(out.success, `Tracing a pipeline1 should succeed with ${out.object.length} items`)
 
       // Test inspecting a single component
       out = await pow.inspect("!CSV2JSON"); assert(out.success, `Should inspect a component and see the reference: '${out.object.reference}'`)
@@ -70,18 +78,19 @@
       out = await pow.examples("!csv2json"); assert(out.success, `Should load examples: ${out.success}`)
       assert(out.object.length > 1, `Should load more than 1 example: ${out.object.length}`)
       assert(out.object.every(e => e.title && e.code), `Examples should all have a title and some code.`)
-      
+
       // Test error and message handling
-      out = await pow.execStrictJSON("pow run !errortest -Export");
-      assert(out.object.length===2, 'Should be 2 output lines');
-      assert(out.messages.length===4, 'Should be 4 messages');
+      await pow.build("!errortest");
+      out = await pow.run("!errortest");
+      assert(out.object.length === 2, `Should be 2 output lines: got ${out?.object.length}`);
+      assert(out.messages.length === 4, `Should be 4 messages: got ${out?.messages.length}`);
       assert(out.messages[0].type === 'ERROR', 'First message should be an ERROR');
       try { out = await pow.execStrictJSON("pow run !errortest 'Throw=$true' -Export"); assert(false, "Should have an exception - we should not be here!!!") } catch (e) { assert(e.messages.length > 0, "Should have exceptions with pipeline !errortest -Throw") }
 
     } catch (e) {
-      let stk = e.stack.split(/\n/)
-      console.error("\x1b[31m", "TEST cancelled:\n", e.message)
-      console.error(stk[1]);
+      let stk = e.stack?.split(/\n/)
+      console.error("\x1b[31m", "TEST cancelled:\n", e.message || '')
+      if (stk) console.error(stk[1]);
       if (e.messages)
         for (let i = 0; i < e.messages.length && i < 10; i++) {
           let msg = e.messages[i];
