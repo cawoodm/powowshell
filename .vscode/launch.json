@@ -52,7 +52,8 @@
             "request": "launch",
             "name": "Launch pow.tests.js",
             "program": "${workspaceFolder}\\tests\\pow.tests.js",
-            "args": ["verbose", "halt"]
+            "args": ["verbose", "debug", "one"],
+            "outFiles": ["ide/js"]
             //"program": "${workspaceFolder}\\bak\\tmp.js"
         }
     ]

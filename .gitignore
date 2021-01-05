@@ -3,7 +3,6 @@ trace/
 cache/
 dist/
 bak/
-*.log
 *.bat
 *.map
 tmp*
