@@ -20,7 +20,11 @@
         "vue"
     ],
     "rules": {
-        "quotes": ["error", "double"],
+        "max-len": "off",
+        "quote-props": "off",
+        "block-spacing": "off",
+        "space-before-function-paren": "off",
+        "complexity": ["warn", 10],
         "no-console": "off"
     },
     "root": true

@@ -15,7 +15,7 @@ if (typeof process !== "undefined") {
   // Modules loaded in index.html via dynamic script tags
 }
 // eslint-disable-next-line no-undef
-modComponentList(Vue),modCmdletList(Vue),modLoading(Vue);
+modComponentList(Vue), modCmdletList(Vue), modLoading(Vue);
 
 // Initialisation
 let app = {};
@@ -131,15 +131,19 @@ window.onload = function () {
             this.showLoading("Running " + this.pipeline.id, "Build and Run")
             return pow.run("!" + this.pipeline.id)
           })
-          .then((obj) => {
-            if (Array.isArray(obj.object))
-              dataTableBuilder.showTable(this.$root, { title: "Result", items: obj.object });
+          .then((res) => {
+            if (Array.isArray(res.object) && res.object.length > 0)
+              dataTableBuilder.showTable(this.$root, { title: "Result", items: res.object });
             else {
-              if (obj.success) {
-                let data = JSON.stringify(obj.object, null, 2);
-                alert("IDE:powBuild" + data)
+              if (res.success) {
+                if (res.object) {
+                  // TODO: Display single object
+                  let data = JSON.stringify(res.object, null, 2);
+                  alert("IDE:powBuild" + data)
+                }
+                this.showMessages(res.messages);
               } else {
-                this.handlePOWError(obj)
+                this.handlePOWError(res)
               }
             }
             this.showLoading(0);
@@ -159,6 +163,14 @@ window.onload = function () {
           });
         console.log(err);
         this.showLongMessage(message, "error");
+      },
+      showMessages: function (messages, type) {
+        if (!messages || !Array.isArray(messages)) return;
+        let message = "";
+        messages.forEach(msg => {
+          message += "\n" + msg.type + ": " + (msg.obj ? "(" + msg.obj.scriptName + ") " : "") + msg.message
+        });
+        this.showLongMessage(message, type);
       },
       showLongMessage: function (text, color, title) {
         console.log("showLongMessage", text)
@@ -198,7 +210,7 @@ window.onload = function () {
           this.showMessage("IDE100:showStepDialog:" + e.message, "error")
         }
       },
-      componentsLoad: function(reload) {
+      componentsLoad: function (reload) {
         this.showLoading("Loading POW Components")
         return pow.components(null, reload)
           .then((obj) => {
@@ -294,8 +306,8 @@ window.onload = function () {
       this.$root.$on("componentsLoad", (reload) => {
         this.componentsLoad(reload);
       });
-      this.$root.$on("componentHelp", (step, component  ) => {
-        let msg = (component.synopsis||"") + "\n" + (component.description||"")
+      this.$root.$on("componentHelp", (step, component) => {
+        let msg = (component.synopsis || "") + "\n" + (component.description || "")
         this.showLongMessage(msg, step.reference, "Help")
       });
       this.$root.$on("componentExamples", (reference, type) => {
@@ -333,10 +345,11 @@ window.onload = function () {
         pow.execOptions.debug = true;
         //root.componentsLoad();root.cmdletsLoad();return;
         pow.init("!examples")
-          .then(() => root.pipelineLoad("pipeline3"))
-          //.then(()=>root.pipelineLoad("procmon1"))
+          //.then(() => root.pipelineLoad("errortest"))
+          //.then(() => root.pipelineLoad("pipelin2"))
+          .then(() => root.pipelineLoad("procmon1"))
           //.then(()=>root.check())
-          //.then(()=>root.run())
+          .then(() => root.run())
           .then(() => {
             //console.clear();
             root.componentsLoad()

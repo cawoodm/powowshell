@@ -24,13 +24,16 @@ function main() {
     $verbose = if ($VerbosePreference -like "Continue") { "verbose" } else { "" }
     $Debug = if ($DebugMode) { "debug" } else { "" }
 
+    $tests = 0
+    $success = 0
     $scripts = Get-ChildItem |
-    Where-Object name -like $Filter |
-    Where-Object name -like "*.tests.*"
+      Where-Object name -like $Filter |
+      Where-Object name -like "*.tests.*"
     foreach ($script in $scripts) {
       $Global:LASTEXITCODE=0
       $script = $script.Name
       if ($script -notlike "*.ps1" -and $script -notlike "*.js") { continue }
+      $tests++
       Write-Host "Testing $($script):"
       if ($script -like "*.js") {
         & node "$script" $verbose $Debug
@@ -44,8 +47,13 @@ function main() {
           & "./$script" | Out-Null
         }
       }
+      $success++
     }
-        
+    if ($success/$tests) {
+      Write-Host "SUCCESS: All $success/$tests tests passed" -ForegroundColor Green
+    } else {
+      Write-Warning "Passed $success/$tests passed"
+    }
   } catch {
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_

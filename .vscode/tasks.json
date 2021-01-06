@@ -3,25 +3,32 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
-        {
-            "type": "typescript",
-            "tsconfig": "ide/tsconfig.json",
-            "isBackground": true,
-            "problemMatcher": [
-                "$tsc"
-            ]
-        },
-        {
-            "type": "typescript",
-            "label": "TypeScript Compiler Watcher Thingy...",
-            "tsconfig": "ide/tsconfig.json",
-            "option": "watch",
-            "problemMatcher": [
-                "$tsc-watch"
-            ],
-            "runOptions": {
-                "runOn": "folderOpen"
-            }
+      {
+        "type": "typescript",
+        "tsconfig": "ide/tsconfig.json",
+        "isBackground": true,
+        "problemMatcher": [
+          "$tsc"
+        ]
+      },
+      {
+        "type": "typescript",
+        "label": "TypeScript Compiler Watcher Thingy...",
+        "tsconfig": "ide/tsconfig.json",
+        "option": "watch",
+        "problemMatcher": [
+          "$tsc-watch"
+        ],
+        "runOptions": {
+          "runOn": "folderOpen"
         }
+      },
+      {
+        "type": "npm",
+        "script": "start",
+        "problemMatcher": [],
+        "label": "npm: start",
+        "detail": "electron ide"
+      }
     ]
 }
