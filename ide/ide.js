@@ -132,6 +132,7 @@ window.onload = function () {
             return pow.run("!" + this.pipeline.id)
           })
           .then((res) => {
+            this.showMessages(res.messages);
             if (Array.isArray(res.object) && res.object.length > 0)
               dataTableBuilder.showTable(this.$root, { title: "Result", items: res.object });
             else {
@@ -141,7 +142,6 @@ window.onload = function () {
                   let data = JSON.stringify(res.object, null, 2);
                   alert("IDE:powBuild" + data)
                 }
-                this.showMessages(res.messages);
               } else {
                 this.handlePOWError(res)
               }
@@ -168,9 +168,14 @@ window.onload = function () {
         if (!messages || !Array.isArray(messages)) return;
         let message = "";
         messages.forEach(msg => {
-          message += "\n" + msg.type + ": " + (msg.obj ? "(" + msg.obj.scriptName + ") " : "") + msg.message
+          message += this.codeFormat(msg)
         });
-        this.showLongMessage(message, type);
+        this.showLongMessage(message, type, "Messages");
+      },
+      codeFormat: function (msg) {
+        let typeColors = { ERROR: 'red', WARNING: 'orange', INFO: 'green', VERBOSE: 'purple', ABORT: 'darkred' };
+        let color = typeColors[msg.type] || 'black';
+        return `<font face="consolas,couriere new" color="${color}">` + msg.type + ": " + (msg.obj ? "(" + msg.obj.scriptName + ") " : "") + msg.message + '</font><br>'
       },
       showLongMessage: function (text, color, title) {
         console.log("showLongMessage", text)
@@ -183,7 +188,8 @@ window.onload = function () {
           return;
         }
         this.longMessage.title = title;
-        this.longMessage.text = text;
+        this.longMessage.text = !text.match(/</) ? text : '';
+        this.longMessage.html = text.match(/</) ? text : '';
         this.longMessage.color = color;
         this.longMessage.show = true;
       },
@@ -308,7 +314,7 @@ window.onload = function () {
       });
       this.$root.$on("componentHelp", (step, component) => {
         let msg = (component.synopsis || "") + "\n" + (component.description || "")
-        this.showLongMessage(msg, step.reference, "Help")
+        this.showLongMessage(msg, null, step.name)
       });
       this.$root.$on("componentExamples", (reference, type) => {
         let ref = type === "cmdlet" ? reference : "!" + reference;
@@ -345,9 +351,9 @@ window.onload = function () {
         pow.execOptions.debug = true;
         //root.componentsLoad();root.cmdletsLoad();return;
         pow.init("!examples")
-          //.then(() => root.pipelineLoad("errortest"))
+          .then(() => root.pipelineLoad("errortest"))
           //.then(() => root.pipelineLoad("pipelin2"))
-          .then(() => root.pipelineLoad("procmon1"))
+          //.then(() => root.pipelineLoad("procmon1"))
           //.then(()=>root.check())
           .then(() => root.run())
           .then(() => {

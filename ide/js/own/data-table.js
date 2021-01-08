@@ -12,12 +12,8 @@ const dataTableBuilder = (function () {
       // Convert primitives to objects for display
       data.items = data.items.map(i => typeof i === "object" ? i : { value: i })
       // Make dynamic headers if none specified
-      if (!data.headers && data.items) {
-        data.headers = [];
-        for (let field in data.items[0]) {
-          let hdr = { text: field, value: field };
-          data.headers.push(hdr)
-        }
+      if (!data.headers && Array.isArray(data.items)) {
+        data.headers = Object.keys(data.items[0]).map(field => ({ text: field, value: field }))
       }
       // Check if we have weird powershell dates
       for (let field in data.items[0]) {

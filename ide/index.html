@@ -1,30 +1,41 @@
 <html>
-    <head>
-        <title>PowowShell Designer</title>
-        <link type="text/css" rel="stylesheet" href="./css/fonts.css" />
-        <link type="text/css" rel="stylesheet" href="./css/vuetify.css" />
-        <link type="text/css" rel="stylesheet" href="./css/dragula.css" />
-        <link type="text/css" rel="stylesheet" href="./css/ide.css" />
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; font-src 'self' https://fonts.gstatic.com">
-    </head>
+
+<head>
+  <title>PowowShell Designer</title>
+  <link type="text/css" rel="stylesheet" href="./css/fonts.css" />
+  <link type="text/css" rel="stylesheet" href="./css/vuetify.css" />
+  <link type="text/css" rel="stylesheet" href="./css/dragula.css" />
+  <link type="text/css" rel="stylesheet" href="./css/ide.css" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; font-src 'self' https://fonts.gstatic.com">
+</head>
+
 <body>
-<v-app id="root">
+  <v-app id="root">
 
     <v-toolbar color="blue darken-3" app dark clipped-left>
-        <v-toolbar-title data-app>PowDesigner</v-toolbar-title>
-        <v-menu offset-y>
-            <v-btn slot="activator" color="primary">Pipeline</v-btn>
-            <v-list>
-                <v-list-tile @click="pipelineNew"><v-list-tile-title>New</v-list-tile-title></v-list-tile>
-                <v-list-tile @click="pipelineOpen"><v-list-tile-title>Open...</v-list-tile-title></v-list-tile>
-                <v-list-tile @click="pipelineSave"><v-list-tile-title>Save</v-list-tile-title></v-list-tile>
-            </v-list>
-        </v-menu>
-        <div v-if="pipeline.id">{{pipeline.name}} ({{pipeline.id}} for {{pipeline.runtime}}) <v-icon @click="pipelineEdit" small>edit</v-icon></div>
-        <v-spacer></v-spacer>
-        <v-btn color="green" @click="check">Check</v-btn>
-        <v-btn color="orange" @click="run">Run</v-btn>
-        <!--
+      <v-toolbar-title data-app>PowDesigner</v-toolbar-title>
+      <v-menu offset-y>
+        <v-btn slot="activator" color="primary">Pipeline</v-btn>
+        <v-list>
+          <v-list-tile @click="pipelineNew">
+            <v-list-tile-title>New</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="pipelineOpen">
+            <v-list-tile-title>Open...</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="pipelineSave">
+            <v-list-tile-title>Save</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+      <div v-if="pipeline.id">{{pipeline.name}} ({{pipeline.id}} for {{pipeline.runtime}}) <v-icon @click="pipelineEdit"
+          small>edit</v-icon>
+      </div>
+      <v-spacer></v-spacer>
+      <v-btn color="green" @click="check">Check</v-btn>
+      <v-btn color="orange" @click="run">Run</v-btn>
+      <!--
         <v-menu offset-y>
             <v-btn slot="activator" color="primary">Help</v-btn>
             <v-list>
@@ -35,34 +46,38 @@
     </v-toolbar>
 
     <v-navigation-drawer app clipped permanent width="250">
-        <v-expansion-panel expand v-model="panels">
-            <v-expansion-panel-content>
-                <div slot="header" class="body-2">Pipelines</div>
-                <v-list>
-                    <v-list-tile @click="pipelineLoad('pipeline1')">Example 1</v-list-tile>
-                    <v-list-tile @click="pipelineLoad('pipeline2')">Example 2</v-list-tile>
-                    <v-list-tile @click="pipelineLoad('pipeline3')">Example 3</v-list-tile>
-                    <v-list-tile @click="pipelineLoad('procmon1')">Streamed Data</v-list-tile>
-                </v-list>
-            </v-expansion-panel-content>
-            <cmdlet-list ref="cmdletList"></cmdlet-list>
-            <component-list ref="componentList"></component-list>
-        </v-expansion-panel>
+      <v-expansion-panel expand v-model="panels">
+        <v-expansion-panel-content>
+          <div slot="header" class="body-2">Pipelines</div>
+          <v-list>
+            <v-list-tile @click="pipelineLoad('pipeline1')">Example 1</v-list-tile>
+            <v-list-tile @click="pipelineLoad('pipeline2')">Example 2</v-list-tile>
+            <v-list-tile @click="pipelineLoad('pipeline3')">Example 3</v-list-tile>
+            <v-list-tile @click="pipelineLoad('procmon1')">Streamed Data</v-list-tile>
+          </v-list>
+        </v-expansion-panel-content>
+        <cmdlet-list ref="cmdletList"></cmdlet-list>
+        <component-list ref="componentList"></component-list>
+      </v-expansion-panel>
     </v-navigation-drawer>
 
     <v-content>
-        <step-grid ref="stepGrid"></step-grid>
-        <loading ref="loading"></loading>
+      <step-grid ref="stepGrid"></step-grid>
+      <loading ref="loading"></loading>
     </v-content>
-    <v-snackbar v-model="message.show" :timeout="message.timeout" multi-line top :color="message.color">{{ message.text }} </v-snackbar>
+    <v-snackbar v-model="message.show" :timeout="message.timeout" multi-line top :color="message.color">{{ message.text
+      }} </v-snackbar>
     <!--<v-snackbar v-model="longMessage.show" :timeout="20000" multi-line top :color="longMessage.color"><v-btn color="longMessage.color" flat @click="longMessage.show = false">Close</v-btn><div style="overflow-y:scroll">{{ longMessage.text }}</div></v-snackbar>-->
     <v-dialog v-model="longMessage.show">
       <v-card>
-        <v-card-title :class="longMessage.color">
-          {{ longMessage.title }}
-        </v-card-title>
+        <v-toolbar card dark :color="longMessage.color">
+          <span class="headline">{{ longMessage.title }}</span>
+          <v-spacer></v-spacer>
+          <v-icon @click="longMessage.show = false" color="white">cancel</v-icon>
+        </v-toolbar>
         <v-card-text>
-          <pre style="white-space: pre-wrap;">{{ longMessage.text }}</pre>
+          <div v-if="longMessage.html" v-html="longMessage.html"></div>
+          <pre v-if="longMessage.text" style="white-space: pre-wrap;">{{ longMessage.text }}</pre>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -71,31 +86,32 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-</v-app>
-<script src="./js/lib/vue.min.js"></script>
-<script src="./js/lib/vuetify.js"></script>
-<script src='./js/lib/dragula.js'></script>
-<script>
-var exports = {} // Fix TypeScript reference to exports not known in browser
-if (typeof window._preload === 'undefined') {
-    // Write JS Modules as <script> tags for Browser Demo (non-electron)
-    document.write('<script src="./js/cmdlet-list.js"><'+'/script>');
-    document.write('<script src="./js/component-list.js"><'+'/script>');
-    document.write('<script src="./js/pipeline-form.js"><'+'/script>');
-    document.write('<script src="./js/pipeline-manager.js"><'+'/script>');
-    document.write('<script src="./js/own/pow-mock.js"><'+'/script>');
-    document.write('<script src="./js/loading.js"><'+'/script>');
-    window.require = function(what) {
-        if (what==='vue') return Vue
+  </v-app>
+  <script src="./js/lib/vue.min.js"></script>
+  <script src="./js/lib/vuetify.js"></script>
+  <script src='./js/lib/dragula.js'></script>
+  <script>
+    var exports = {} // Fix TypeScript reference to exports not known in browser
+    if (typeof window._preload === 'undefined') {
+      // Write JS Modules as <script> tags for Browser Demo (non-electron)
+      document.write('<script src="./js/cmdlet-list.js"><' + '/script>');
+      document.write('<script src="./js/component-list.js"><' + '/script>');
+      document.write('<script src="./js/pipeline-form.js"><' + '/script>');
+      document.write('<script src="./js/pipeline-manager.js"><' + '/script>');
+      document.write('<script src="./js/own/pow-mock.js"><' + '/script>');
+      document.write('<script src="./js/loading.js"><' + '/script>');
+      window.require = function (what) {
+        if (what === 'vue') return Vue
+      }
+      //document.write('<script src="./js/main.js"><'+'/script>');
+    } else {
+      var { process, require } = window._preload;
     }
-    //document.write('<script src="./js/main.js"><'+'/script>');
-} else {
-    var {process, require} = window._preload;
-}
-</script>
-<script src="./js/own/step-grid.js"></script>
-<script src="./js/own/step-form.js"></script>
-<script src="./js/own/data-table.js"></script>
-<script src="./ide.js"></script>
+  </script>
+  <script src="./js/own/step-grid.js"></script>
+  <script src="./js/own/step-form.js"></script>
+  <script src="./js/own/data-table.js"></script>
+  <script src="./ide.js"></script>
 </body>
+
 </html>
