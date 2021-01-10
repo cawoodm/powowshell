@@ -6,6 +6,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\AWK.ps1",
     "synopsis": "AWK processes large amounts of text with power and ease",
     "description": "AWK is a powerful text processing tool which can stream process large volumes of data\nextracting and transforming it with ease",
+    "module": "",
+    "examples": true,
     "whatif": true,
     "parameters": [
       {
@@ -84,6 +86,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\CSV2JSON.ps1",
     "synopsis": "Convert CSV data to JSON format",
     "description": "Accepts tabular CSV data and return contents as a JSON Array",
+    "module": "",
+    "examples": true,
     "whatif": false,
     "parameters": [
       {
@@ -122,7 +126,7 @@
     "inputDescription": "A String in CSV format",
     "output": "string",
     "outputFormat": "text/json",
-    "outputDescription": "A JSON array object",
+    "outputDescription": "",
     "POWMessages": []
   },
   {
@@ -132,6 +136,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\CURL.ps1",
     "synopsis": "CURL is a wrapper for Invoke-WebRequest to GET data from the web via HTTP",
     "description": "CURL offers only basic GET functionality with headers",
+    "module": "",
+    "examples": true,
     "whatif": true,
     "parameters": [
       {
@@ -173,7 +179,7 @@
     "inputDescription": null,
     "output": "string",
     "outputFormat": "text/*",
-    "outputDescription": "Text output is the HTTP Response Body",
+    "outputDescription": "",
     "POWMessages": []
   },
   {
@@ -183,6 +189,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\Data2JSON.ps1",
     "synopsis": "Convert input object to JSON format",
     "description": "Accepts any object data about and return contents as JSON",
+    "module": "",
+    "examples": true,
     "whatif": false,
     "parameters": [
       {
@@ -211,7 +219,7 @@
     "inputDescription": "Any PowerShell object",
     "output": "string",
     "outputFormat": "text/json",
-    "outputDescription": "A JSON object corresponding to the input data",
+    "outputDescription": "",
     "POWMessages": []
   },
   {
@@ -221,6 +229,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\Data2JSONArray.ps1",
     "synopsis": "Convert stream of objects to JSON array format",
     "description": "Accepts any object or stream of objects and return a JSON string [{object1}, {object2}, ...]",
+    "module": "",
+    "examples": true,
     "whatif": false,
     "parameters": [
       {
@@ -249,7 +259,7 @@
     "inputDescription": "Any PowerShell object or stream of objects",
     "output": "string",
     "outputFormat": "text/json",
-    "outputDescription": "An JSON array of objects corresponding to the rows of the input data",
+    "outputDescription": "",
     "POWMessages": []
   },
   {
@@ -259,6 +269,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\DateAdder.ps1",
     "synopsis": "Add some days to today's date and return the date",
     "description": "foo bar",
+    "module": "",
+    "examples": false,
     "whatif": false,
     "parameters": [
       {
@@ -287,6 +299,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\DOSCommand.ps1",
     "synopsis": "Run any command with DOS CMD",
     "description": null,
+    "module": "",
+    "examples": false,
     "whatif": false,
     "parameters": [
       {
@@ -303,7 +317,7 @@
     "input": "",
     "inputFormat": null,
     "inputDescription": null,
-    "output": "",
+    "output": "string",
     "outputFormat": "text",
     "outputDescription": "",
     "POWMessages": []
@@ -315,6 +329,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\DOSDir.ps1",
     "synopsis": "List files with DOS CMD",
     "description": null,
+    "module": "",
+    "examples": false,
     "whatif": false,
     "parameters": [
       {
@@ -334,7 +350,12 @@
     "output": "",
     "outputFormat": "text",
     "outputDescription": "",
-    "POWMessages": []
+    "POWMessages": [
+      {
+        "type": "WARNING",
+        "message": "No output type on 'DOSDir'! Consider adding a [OutputType()] annotation."
+      }
+    ]
   },
   {
     "reference": "executecmdlet.ps1",
@@ -343,6 +364,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\ExecuteCmdlet.ps1",
     "synopsis": "Execute any PowerShell Cmdlet",
     "description": "Generic component which allows you to map up to 10 parameters to any cmdlet you like",
+    "module": "",
+    "examples": true,
     "whatif": false,
     "parameters": [
       {
@@ -411,6 +434,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\FieldAdd.ps1",
     "synopsis": "Add a field to each object in an array",
     "description": null,
+    "module": "",
+    "examples": false,
     "whatif": false,
     "parameters": [
       {
@@ -459,6 +484,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\FileList.ps1",
     "synopsis": "Returns a list of files.",
     "description": "Lists files with a specific filter (e.g. *.txt) or\nwithin a specified date range.",
+    "module": "",
+    "examples": true,
     "whatif": false,
     "parameters": [
       {
@@ -497,7 +524,7 @@
     "inputDescription": null,
     "output": "string",
     "outputFormat": "psobj",
-    "outputDescription": "{name,fullName,size(int)}",
+    "outputDescription": "",
     "POWMessages": []
   },
   {
@@ -507,6 +534,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\JSONMapping.ps1",
     "synopsis": "Map one form of JSON to another",
     "description": "Used for transforming JSON between two types.\nLimitation: Resulting object is only 1-level deep",
+    "module": "",
+    "examples": true,
     "whatif": false,
     "parameters": [
       {
@@ -545,7 +574,7 @@
     "inputDescription": "The JSON object to be transformed.",
     "output": "string",
     "outputFormat": "text/json",
-    "outputDescription": "The transformed output JSON object.",
+    "outputDescription": "",
     "POWMessages": []
   },
   {
@@ -555,6 +584,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\ObjectAddField.ps1",
     "synopsis": "Add a field to each object in an array",
     "description": null,
+    "module": "",
+    "examples": false,
     "whatif": false,
     "parameters": [
       {
@@ -603,6 +634,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\ReadFile.ps1",
     "synopsis": "Read text from a file",
     "description": "Read a single text file and return contents as a string.",
+    "module": "",
+    "examples": false,
     "whatif": false,
     "parameters": [
       {
@@ -631,6 +664,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\SelectFields.ps1",
     "synopsis": "Selects only certain fields from the input",
     "description": null,
+    "module": "",
+    "examples": true,
     "whatif": false,
     "parameters": [
       {
@@ -669,6 +704,8 @@
     "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\Table2JSON.ps1",
     "synopsis": "Convert tabular input data to JSON format",
     "description": "Accepts custom tabular data about people and return contents as a JSON Array\nThe data must be in the format:\nNAME|AGE|GENDER\nHowever, the record and field separator can be anything.",
+    "module": "",
+    "examples": true,
     "whatif": false,
     "parameters": [
       {
@@ -707,8 +744,62 @@
     "inputDescription": "Any separated data (e.g. CSV) with newlines between records",
     "output": "string",
     "outputFormat": "text/json",
-    "outputDescription": "An array of JSON objects corresponding to the rows of the input data",
+    "outputDescription": "",
     "POWMessages": []
+  },
+  {
+    "reference": "testmessagetypes.ps1",
+    "name": "TestMessageTypes",
+    "type": "component",
+    "executable": "C:\\Marc\\work\\powershell\\powowshell\\examples\\components\\TestMessageTypes.ps1",
+    "synopsis": "Test component for handling different message types",
+    "description": "Will output warnings and errors for testing error handling.",
+    "module": "",
+    "examples": true,
+    "whatif": false,
+    "parameters": [
+      {
+        "name": "CreateErrorOutput",
+        "type": "switch",
+        "piped": null,
+        "pipedMode": null,
+        "required": false,
+        "default": null,
+        "description": "Write on the error stream",
+        "values": null
+      },
+      {
+        "name": "CreateWarningOutput",
+        "type": "switch",
+        "piped": null,
+        "pipedMode": null,
+        "required": false,
+        "default": null,
+        "description": "Write on the warning stream",
+        "values": null
+      },
+      {
+        "name": "ThrowException",
+        "type": "switch",
+        "piped": null,
+        "pipedMode": null,
+        "required": false,
+        "default": null,
+        "description": null,
+        "values": null
+      }
+    ],
+    "input": "",
+    "inputFormat": null,
+    "inputDescription": null,
+    "output": "string",
+    "outputFormat": "",
+    "outputDescription": "",
+    "POWMessages": [
+      {
+        "type": "WARNING",
+        "message": "No output format on 'TestMessageTypes'! Consider adding a .Outputs annotation."
+      }
+    ]
   }
 ]
-
