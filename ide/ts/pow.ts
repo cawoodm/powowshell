@@ -333,7 +333,7 @@ const pow = (function () {
             throw new POWError(`POWJS102:Invalid JSON Object: ${e.message}`, messages)
             */
             // We can ignore these in prod
-            // messages.push(parseLine(line))
+            messages.push(parseLine(line))
           }
         });
       } else {

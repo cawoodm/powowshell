@@ -26,13 +26,14 @@ app.components = {};
 app.cmdlets = {};
 
 app.getComponent = (reference) => {
-  if (!app.components) return alert("Components not loaded!")
+  if (!app.components) return app.root.showErrorMessage("Components not loaded!")
   let ref = reference.toLowerCase();
   let res = app.components.filter((item) => item.reference === ref);
   if (res.length === 0) {
-    if (!app.cmdlets) return alert("Cmdlets not loaded!")
+    if (!app.cmdlets) return app.root.showErrorMessage("Cmdlets not loaded!")
     res = app.cmdlets.filter((item) => item.reference === ref);
   }
+  if (!res || !res.length) return app.root.showErrorMessage(`Component/Cmdlet '${reference}' not found! Consider reloading the cache with 'pow cmdlets generate'.`)
   return res.length > 0 ? res[0] : null;
 }
 app.DEVMODE = true;
@@ -133,18 +134,10 @@ window.onload = function () {
           })
           .then((res) => {
             this.showMessages(res.messages);
-            if (Array.isArray(res.object) && res.object.length > 0)
+            if (res.success && res.object) {
               dataTableBuilder.showTable(this.$root, { title: "Result", items: res.object });
-            else {
-              if (res.success) {
-                if (res.object) {
-                  // TODO: Display single object
-                  let data = JSON.stringify(res.object, null, 2);
-                  alert("IDE:powBuild" + data)
-                }
-              } else {
-                this.handlePOWError(res)
-              }
+            } else {
+              this.handlePOWError(res)
             }
             this.showLoading(0);
           }).catch((err) => {
@@ -165,12 +158,9 @@ window.onload = function () {
         this.showLongMessage(message, "error");
       },
       showMessages: function (messages, type) {
-        if (!messages || !Array.isArray(messages)) return;
-        let message = "";
-        messages.forEach(msg => {
-          message += this.codeFormat(msg)
-        });
-        this.showLongMessage(message, type, "Messages");
+        if (!messages || !Array.isArray(messages) || !messages.length) return;
+        let message = messages.map(this.codeFormat);
+        this.showLongMessage(message.join('\n'), type, "Messages");
       },
       codeFormat: function (msg) {
         let typeColors = { ERROR: 'red', WARNING: 'orange', INFO: 'green', VERBOSE: 'purple', ABORT: 'darkred' };
@@ -193,6 +183,9 @@ window.onload = function () {
         this.longMessage.color = color;
         this.longMessage.show = true;
       },
+      showErrorMessage: function (msg) {
+        return this.showMessage(msg, "error")
+      },
       showMessage: function (text, color) {
         console.log("showMessage", text, this.message)
         color = color || "info";
@@ -213,7 +206,7 @@ window.onload = function () {
           let component = app.getComponent(step.reference);
           formBuilder.showForm(this.$root, step, component);
         } catch (e) {
-          this.showMessage("IDE100:showStepDialog:" + e.message, "error")
+          this.showLongMessage('<pre>' + e.message + "\n" + e.stack, "error", "IDE100:showStepDialog")
         }
       },
       componentsLoad: function (reload) {
@@ -232,6 +225,7 @@ window.onload = function () {
         return pow.cmdlets()
           .then((obj) => {
             this.showLoading(false);
+            this.showMessages(obj.messages);
             app.cmdlets = obj.object;
             this.$refs.cmdletList.setCmdlets(app.cmdlets);
           })
@@ -309,9 +303,8 @@ window.onload = function () {
         this.redraw();
       });
       this.$root.$on("pipelineFormOK", this.pipelineFormOK);
-      this.$root.$on("componentsLoad", (reload) => {
-        this.componentsLoad(reload);
-      });
+      this.$root.$on("cmdletsLoad", this.cmdletsLoad);
+      this.$root.$on("componentsLoad", this.componentsLoad);
       this.$root.$on("componentHelp", (step, component) => {
         let msg = (component.synopsis || "") + "\n" + (component.description || "")
         this.showLongMessage(msg, null, step.name)
@@ -351,11 +344,13 @@ window.onload = function () {
         pow.execOptions.debug = true;
         //root.componentsLoad();root.cmdletsLoad();return;
         pow.init("!examples")
-          .then(() => root.pipelineLoad("errortest"))
-          //.then(() => root.pipelineLoad("pipelin2"))
+          //.then(() => root.pipelineLoad("errortest"))
+          //.then(() => root.pipelineLoad("pipeline1"))
+          .then(() => root.pipelineLoad("pipeline2"))
+          //.then(() => root.pipelineLoad("pipeline3"))
           //.then(() => root.pipelineLoad("procmon1"))
           //.then(()=>root.check())
-          .then(() => root.run())
+          //.then(() => root.run())
           .then(() => {
             //console.clear();
             root.componentsLoad()

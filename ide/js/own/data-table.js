@@ -9,6 +9,8 @@ const dataTableBuilder = (function () {
       let el = document.createElement("div");
       el.setAttribute("id", "myDataTable");
       document.body.appendChild(el);
+      // Convert single objects to array
+      if (!Array.isArray(data.items)) data.items = [data.items];
       // Convert primitives to objects for display
       data.items = data.items.map(i => typeof i === "object" ? i : { value: i })
       // Make dynamic headers if none specified
