@@ -1,6 +1,5 @@
 {
   "id": "pipeline2",
-  "runtime": "ps5",
   "name": "25 Windows DLLs",
   "description": "List the 25 largest .dll files in the windows\\system32 folder.",
   "parameters": {},
@@ -64,7 +63,7 @@
       "parameters": {
         "ExcludeProperty": null,
         "ExpandProperty": null,
-        "First": "25",
+        "First": "1",
         "Index": null,
         "InputObject": null,
         "Last": null,
@@ -79,5 +78,6 @@
     }
   ],
   "input": {},
-  "output": {}
+  "output": {},
+  "runtime": "ps7"
 }
