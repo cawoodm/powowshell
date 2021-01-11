@@ -1,0 +1,114 @@
+{
+  "terminal.external.windowsExec": "C:\\Prg\\ConEmu\\ConEmu64.exe",
+  "window.zoomLevel": 1,
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "editor.minimap.enabled": false,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "workbench.colorCustomizations": {
+    "editor.findMatchBackground": "#BB8877",
+    "editor.lineHighlightBackground": "#336600",
+    "editor.inactiveSelectionBackground": "#CC0000",
+    "terminal.ansiBrightCyan": "#94f7f7",
+    "terminal.ansiBrightBlue": "#04e3fc",
+    "terminal.ansiBrightYellow": "#fff019",
+    "terminal.ansiBrightGreen": "#78d85a"
+  },
+  "files.associations": {
+    "*.conf": "ruby"
+  },
+  "editor.renderControlCharacters": false,
+  "editor.renderWhitespace": "none",
+  "editor.mouseWheelZoom": true,
+  "editor.scrollbar.verticalScrollbarSize": 30,
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "editor.acceptSuggestionOnCommitCharacter": false,
+  "breadcrumbs.enabled": false,
+  "search.exclude": {
+    "package-lock.json": true
+  },
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "editor.codeLens": false,
+  "terminal.integrated.drawBoldTextInBrightColors": false,
+  "shellLauncher.shells.windows": [
+    {
+      "shell": "c:\\prg\\PowerShell6\\6\\pwsh.exe",
+      "label": "PowerShell 6 Core"
+    },
+    {
+      "shell": "C:\\Windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "label": "PowerShell 5"
+    },
+    {
+      "shell": "C:\\prg\\cmder\\Cmder.exe",
+      "label": "Cmder"
+    },
+    {
+      "shell": "C:\\Users\\u29730\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe",
+      "label": "Windows Terminal"
+    }
+  ],
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "eslint.alwaysShowStatus": true,
+  "eslint.lintTask.enable": true,
+  "eslint.lintTask.options": "./src/",
+  "git.fetchOnPull": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": true,
+  "workbench.startupEditor": "newUntitledFile",
+  "git.confirmSync": false,
+  "terminal.integrated.env.windows": {
+    "MYB_AGENT": "local-localhost-dev"
+  },
+  "todo-tree.tree.showScanModeButton": false,
+  "todo-tree.filtering.excludeGlobs": [
+    "[\"**/node_modules/**\"]"
+  ],
+  "todo-tree.filtering.ignoreGitSubmodules": true,
+  "timeline.excludeSources": [],
+  "editor.columnSelection": false,
+  "extensions.ignoreRecommendations": false,
+  "editor.copyWithSyntaxHighlighting": false,
+  "macros": {
+    "normalizeJson": [
+      "extension.vscode-json-stable-stringify.jsonStableSort",
+      "editor.action.formatDocument"
+    ]
+  },
+  "files.defaultLanguage": "json",
+  "terminal.integrated.shell.windows": "C:\\windows\\System32\\cmd.exe",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "http.proxySupport": "off",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+  "typescript.format.insertSpaceAfterKeywordsInControlFlowStatements": false,
+  "typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
+  "typescript.format.enable": false,
+  "eslint.debug": false,
+  "gitlens.views.search.files.compact": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "workbench.colorTheme": "Visual Studio Dark",
+  "git.autoRepositoryDetection": "subFolders",
+  "editor.foldingStrategy": "indentation",
+  "search.useGlobalIgnoreFiles": true,
+  "[xml]": {
+    "editor.defaultFormatter": "mikeburgh.xml-format"
+  },
+  "powershell.codeFormatting.newLineAfterCloseBrace": false,
+  "powershell.codeFormatting.whitespaceInsideBrace": false,
+  "powershell.codeFormatting.whitespaceBeforeOpenBrace": false,
+  "javascript.preferences.quoteStyle": "single",
+  "editor.formatOnSave": true
+}
