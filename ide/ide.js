@@ -344,11 +344,12 @@ window.onload = function () {
         pow.execOptions.debug = true;
         //root.componentsLoad();root.cmdletsLoad();return;
         pow.init("!examples")
-          //.then(() => root.pipelineLoad("errortest"))
           //.then(() => root.pipelineLoad("pipeline1"))
-          .then(() => root.pipelineLoad("pipeline2"))
+          //.then(() => root.pipelineLoad("pipeline2"))
           //.then(() => root.pipelineLoad("pipeline3"))
           //.then(() => root.pipelineLoad("procmon1"))
+          //.then(() => root.pipelineLoad("errortest"))
+          .then(() => root.pipelineLoad("code"))
           //.then(()=>root.check())
           //.then(() => root.run())
           .then(() => {

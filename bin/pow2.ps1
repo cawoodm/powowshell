@@ -2,7 +2,7 @@
 param(
   [Parameter(Mandatory)][String[]]
   $Command,
-  $p1,$p2,$p3,
+  $p1, $p2, $p3,
   [switch]$Export,
   [switch]$AsArray
 )
@@ -63,8 +63,7 @@ function Invoke-PowowShell {
       }
     }
   } catch {
-    $scriptName = $null;
-    if ($_.InvocationInfo.ScriptName) {(Split-Path -Path $_.InvocationInfo.ScriptName -Leaf)}
+    $scriptName = if ($_.InvocationInfo.ScriptName) {(Split-Path -Path $_.InvocationInfo.ScriptName -Leaf)} else{$null}
     $erresult = @{
       powType          = "X" # Exception
       scriptName       = $scriptName

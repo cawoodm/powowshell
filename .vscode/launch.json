@@ -1,60 +1,70 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "IDE (electron)",
-            "runtimeExecutable": "electron",
-            "args": [
-                "."
-            ]
-        },
-        {
-            "type": "PowerShell",
-            "request": "launch",
-            "name": "AD HOC (PS)",
-            "script": "${workspaceFolder}\\bin\\build2.ps1",
-            "args": ["${workspaceFolder}\\examples\\procmon1"]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Current JS",
-            "program": "${file}"
-        },
-        {
-            "type": "PowerShell",
-            "request": "launch",
-            "name": "Launch Current PS",
-            "script": "${file}",
-            "args": []
-        },
-        {
-            "type": "PowerShell",
-            "request": "launch",
-            "name": "Launch tmp.ps1",
-            "script": "${workspaceFolder}\\bak\\tmp.ps1",
-            "args": []
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Any Program",
-            "program": "${command:prompt-debug.resolve}",
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch pow.tests.js",
-            "program": "${workspaceFolder}\\tests\\pow.tests.js",
-            "args": ["verbose", "debug", "one"],
-            "outFiles": ["ide/js"]
-            //"program": "${workspaceFolder}\\bak\\tmp.js"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "IDE (electron)",
+      "runtimeExecutable": "electron",
+      "args": [
+        "."
+      ]
+    },
+    {
+      "type": "PowerShell",
+      "request": "launch",
+      "name": "AD HOC (PS)",
+      "script": "${workspaceFolder}\\bin\\build2.ps1",
+      "args": [
+        "${workspaceFolder}\\examples\\procmon1"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Current JS",
+      "program": "${file}"
+    },
+    {
+      "type": "PowerShell",
+      "request": "launch",
+      "name": "Launch Current PS",
+      "script": "${file}",
+      "args": []
+    },
+    {
+      "type": "PowerShell",
+      "request": "launch",
+      "name": "Launch tmp.ps1",
+      "script": "${workspaceFolder}\\bin\\pow2.ps1",
+      "args": [
+        "inspect"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Any Program",
+      "program": "${command:prompt-debug.resolve}",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch pow.tests.js",
+      "program": "${workspaceFolder}\\tests\\pow.tests.js",
+      "args": [
+        "",
+        "debug",
+        ""
+      ],
+      "outFiles": [
+        "ide/js"
+      ]
+      //"program": "${workspaceFolder}\\bak\\tmp.js"
+    }
+  ]
 }

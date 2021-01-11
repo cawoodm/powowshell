@@ -24,8 +24,10 @@
 
       if (one) {
         //console.clear();
-        out = await pow.cmdlets();
-        assert(out.object.length > 2, `Should be 2 output lines: got ${out.object.length}`);
+        //out = await pow.run("!code");
+        out = await pow.run("!errortest");
+        assert(out.object.length === 2, `Should be 2 output lines: got ${out.object.length}`);
+        assert(out.messages.length === 4, `Should be 4 messages: got ${out?.messages.length}`);
         console.log("OK")
         process.exit(0)
       }

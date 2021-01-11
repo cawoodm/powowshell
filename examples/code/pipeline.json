@@ -1,0 +1,23 @@
+{
+  "id": "code",
+  "name": "Code Execution",
+  "description": null,
+  "parameters": {},
+  "globals": {},
+  "steps": [
+    {
+      "id": "A1",
+      "reference": "invoke-expression",
+      "name": "Execute Code",
+      "description": null,
+      "stream": null,
+      "parameters": {
+        "Command": "$a=6;\"Hello User\";\"The Meaning of Life is: $($a*7)\""
+      },
+      "input": null
+    }
+  ],
+  "input": {},
+  "output": {},
+  "runtime": "ps*"
+}

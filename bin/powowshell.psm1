@@ -84,8 +84,7 @@ function Invoke-PowowShell {
       }
     }
   } catch {
-    $scriptName = $null;
-    if ($_.InvocationInfo.ScriptName) {(Split-Path -Path $_.InvocationInfo.ScriptName -Leaf)}
+    $scriptName = if ($_.InvocationInfo.ScriptName) {(Split-Path -Path $_.InvocationInfo.ScriptName -Leaf)} else{$null}
     $erresult = @{
       powType          = "X" # Exception
       scriptName       = $scriptName

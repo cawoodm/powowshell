@@ -156,7 +156,7 @@ function main() {
       "synopsis"          = $synopsis;
       "description"       = $description;
       "module"            = $cmd.ModuleName;
-      "examples"          = if($cmd.examples){$true}else{$false};
+      "examples"          = if ($cmd.examples){$true}else{$false};
       "whatif"            = $whatif;
       "parameters"        = $paramsOut;
       "input"             = $inputType;
@@ -193,8 +193,7 @@ function Get-OPReturn($cmd) {
   $result = Get-OP($cmd)
   $result = $result.trim() -split "\r?\n"
   # TODO: Normalize multiple types, exclude None and pick one?
-  Write-Warning ($result | convertto-json)
-  if ($result -is [array]) {
+  if ($result.Count -gt 1) {
     Write-Warning "$($cmd.name) has multiple possible output types ($($result -join ', '))!"
     # If we have multiple object types, just 'any'
     $result = "object"
