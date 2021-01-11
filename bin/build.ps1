@@ -335,7 +335,9 @@ function ReSerializeObject($obj) {
     } else {
       # Parameter is a String
       # TODO: Escape String for PS
-      $res += "`t$($pName) = `"$($pVal)`"`n"
+      $pVal = $pVal -replace "`"", "```""
+      $pVal = $pVal -replace "\`$", "```$"
+      $res += "`t$($pName) = `"$pVal`"`n"
     }
   }
   $res += "};"
@@ -351,16 +353,17 @@ function ReSerializeParams($parameters) {
       $pName = $param.Name
       $pObj = $param.Value
       Set-StrictMode -Off
-      $pVal = if($pObj.default){$pObj.default}else{''}
+      $pVal = if ($pObj.default){$pObj.default}else{''}
       $pType = $pObj.type
+      Write-Verbose $pName
       if ($pType) { $pType = "[$pType]" }
       $pMust = $pObj.mandatory
       if ($pMust -eq $true) { $pMust = "[Parameter(Mandatory=`$true)]" } else { $pMust = "" }
-      if ($pVal.Contains("`{") -and $pVal.EndsWith("}")) {
+      if ($pVal.StartsWith("`{") -and $pVal.EndsWith("}")) {
         # Parameter is code (a PowerShell Expression)
         # TODO: Escape code for PS
         $res += "`t$pMust$pType`$$($pName) = (" + $pVal.SubString(1, $pVal.Length - 2) + "),`n"
-      } elseif($pVal) {
+      } elseif ($pVal) {
         # Parameter is a String
         # TODO: Escape String for PS
         $res += "`t$pMust$pType`$$($pName) = `"$($pVal)`",`n"
