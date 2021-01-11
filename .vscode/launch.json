@@ -39,10 +39,8 @@
       "type": "PowerShell",
       "request": "launch",
       "name": "Launch tmp.ps1",
-      "script": "${workspaceFolder}\\bin\\pow2.ps1",
-      "args": [
-        "inspect"
-      ]
+      "script": "${workspaceFolder}\\bak\\tmp.ps1",
+      "args": []
     },
     {
       "type": "node",
@@ -55,11 +53,11 @@
       "type": "node",
       "request": "launch",
       "name": "Launch pow.tests.js",
-      "program": "${workspaceFolder}\\tests\\pow.tests.js",
+      "program": "${workspaceFolder}\\tests\\pipeline-manager.tests.js",
       "args": [
-        "",
+        "verbose",
         "debug",
-        ""
+        "one"
       ],
       "outFiles": [
         "ide/js"

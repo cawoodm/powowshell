@@ -19,7 +19,7 @@
   Any separated data (e.g. CSV) with newlines between records
 
  .Outputs
-  text/json
+  text/json/any
   An array of JSON objects corresponding to the rows of the input data
 
   .Example
@@ -29,9 +29,9 @@
 [CmdLetBinding()]
 [OutputType([String])]
 param(
-  [Parameter(Mandatory,ValueFromPipeline)]
+  [Parameter(Mandatory, ValueFromPipeline)]
   [String]$InputObject,
-  [String]$Delimiter=",",
+  [String]$Delimiter = ",",
   [String]$RecordSeparator
 )
 
@@ -42,17 +42,18 @@ $str = [string]$InputObject
 
 if ($RecordSeparator) {
   $sep = $RecordSeparator
-} else {
-  if ($str.IndexOf("`r`n") -ge 0) {$sep = "`r`n"} elseif ($str.IndexOf("`r") -ge 0) {$sep = "`r"} else {$sep = "`n"}
+}
+else {
+  if ($str.IndexOf("`r`n") -ge 0) { $sep = "`r`n" } elseif ($str.IndexOf("`r") -ge 0) { $sep = "`r" } else { $sep = "`n" }
 }
 
 $rows = $str -split $sep
 $rows | ForEach-Object {
-    $row = $_ -split $Delimiter, 0, "SimpleMatch"
-    if ($row.Length -gt 1) {
-        $result += '{"name":"' + $row[0] + '", "age":' + $row[1] + ', "gender":"' + $row[2] + '"}'
-        $r++
-    }
+  $row = $_ -split $Delimiter, 0, "SimpleMatch"
+  if ($row.Length -gt 1) {
+    $result += '{"name":"' + $row[0] + '", "age":' + $row[1] + ', "gender":"' + $row[2] + '"}'
+    $r++
+  }
 }
 
 # Format as a JSON Array

@@ -138,13 +138,14 @@ the full power of the .NET framework very easily to do just about anything.
 ## Component Definition
 
 A component is just a script with some basic requirements
-* It must declare its PARAMETERS with types
-* If it accepts INPUT, it gets the data as a String from the pipeline (stdin) with parameter $InputObject
-* If it provides OUTPUT, it writes it's output as a String to the pipeline (stdout) with Write-Output
+* It must declare its INPUT, OUTPUT and PARAMETERS with full types
+* If it accepts INPUT, it gets the data from the pipeline (stdin) with parameter $InputObject
+* If it provides OUTPUT, it writes it's output to the pipeline (stdout) with Write-Output
 * It writes any errors to the pipeline (stderr) with Write-Error
+* It writes any warnings to the pipeline (stderr) with Write-Error
 * It has annotated help describing it's function and parameters
 
-As you can see, PowowShell expects components to behave in a certain way. This may be a pain but it makes things easier later. One of the weaknesses of PowerShell is that very few CmdLets can interact because most have their own special object types. You can't pass the output of one object type to another easily. PowowShell ensures each component can only write a String. This may sound limiting but since you can put JSON (or whatever) into that string, you retain all of the flexibility of objects. Of course if one component outputs JSON, the next component downstream needs to accept JSON or you need to put a Transform component in between.
+As you can see, PowowShell expects components to behave in a certain way. This may be a pain but it makes things easier later. One of the weaknesses of PowerShell is that very few CmdLets can interact because most have their own special object types. You can't pass the output of one object type to another easily. PowowShell allows you to transmogrify objects into other types of objects. You can also just pass strings (e.g. JSON) around. Of course if one component outputs JSON, the next component downstream needs to accept string of type application/json or you need to put a Transform component in between.
 
 To see if your component is valid for PowowShell we have the `inspect` command which parses the component.
 `pow inspect ./examples/components/CSV2JSON.ps1`

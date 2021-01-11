@@ -57,7 +57,7 @@ function main() {
       # If the user doesn't escape backspaces
       if ($Parameters -notlike "*\\*") {
         # Escape them
-       $Parameters = $Parameters.replace("\", "\\")
+        $Parameters = $Parameters.replace("\", "\\")
       }
       $Parameters = ConvertFrom-StringData $Parameters
     }
@@ -71,7 +71,7 @@ function main() {
     if (-not (Test-Path ./build/run_prod.ps1)) { throw "Pipeline is not built!" }
     if (Test-Path .\errors.log) { Remove-Item .\errors.log }
     if (Test-Path .\warnings.log) { Remove-Item .\warnings.log }
-    & ./build/run_prod.ps1 @Parameters -WhatIf
+    & ./build/run_prod.ps1 @Parameters -WhatIf 2> .\errors.log 3> .\warnings.log
     return
     $null = & ./build/run_prod.ps1 @Parameters -WhatIf 2> .\errors.log 3> .\warnings.log
     $outputErr = Get-Content .\errors.log -Raw
@@ -96,7 +96,6 @@ function main() {
     #    #if ($cmd.Parameters[$_].Attributes[0].Mandatory) {"$_ (mandatory)"} else {$_}
     #}
   } catch {
-    Show-Message "!!! PIPELINE VERIFICATION FAILED !!!" Red
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_
   } finally {

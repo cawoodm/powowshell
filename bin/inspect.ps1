@@ -12,6 +12,7 @@
 
 #>
 [CmdletBinding()]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
 param(
   [Parameter(Mandatory)][string]$Path
 )
@@ -20,7 +21,6 @@ function main() {
   try {
     # A necessary evil here so we can query properties without try/catch or other shenanigans
     Set-StrictMode -Off
-    $POWMessages = @();
     if ($Path.indexOf([IO.Path]::DirectorySeparatorChar) -ge 0) {
       $Executable = Resolve-Path -Path $Path
       $CompType = "component"
@@ -31,10 +31,10 @@ function main() {
       $cmd = Get-Help -Full -Name $Executable -ErrorAction SilentlyContinue
       $cmd2 = Get-Command -Name $Executable -ErrorAction SilentlyContinue
       if ($null -eq $cmd) {throw "Invalid POW Component '$Executable'!"}
-      $outputType = Get-OPType($cmd2)
-      if (-not $outputType) {$POWMessages += [PSCustomObject]@{type = "WARNING"; message = "No output type on '$NiceName'! Consider adding a [OutputType()] annotation."}}
+      $output = Get-OPType($cmd2)
+      if (-not $output) {Write-Warning "No output type on '$NiceName'! Consider adding a [OutputType()] annotation."}
       $outputFormat = Get-OutputsAnnotation($cmd)
-      if (-not $outputFormat) {$POWMessages += [PSCustomObject]@{type = "WARNING"; message = "No output format on '$NiceName'! Consider adding a .Outputs annotation."}}
+      if (-not $outputFormat) {Write-Warning "No output format on '$NiceName'! Consider adding a .Outputs annotation."}
     } else {
       $CompType = "cmdlet"
       $Executable = $Path
@@ -57,7 +57,7 @@ function main() {
       }
       if ($null -eq $cmd) {throw "Invalid CmdLet '$Executable'!"}
       $NiceName = $cmd.details.name
-      $outputType = Get-OPReturn($cmd)
+      $output = Get-OPReturn($cmd)
       # CmdLets don't know our output formats like "text/json"
       # TODO: Can we assume PSObj? Or does null mean we don't know and don't care?
       $outputFormat = $null
@@ -69,10 +69,11 @@ function main() {
     $paramsOut = @(); $inputType = $null; $inputFormat = $null; $inputDesc = $null; $outputDesc = $null; $PipedParamCount = 0;
     if ($cmd.PSObject.Properties.item("details")) {
       $boolMap = @{"true" = $true; "false" = $false}
-      $parameters = try {$cmd.parameters.parameter}catch{$null}
+      $parameters = try {$cmd.parameters.parameter}catch {$null}
       # Only Syntax.syntaxItem has parameterValueGroup.parameterValue on each parameter
-      $parameters2 = try {$cmd.Syntax.syntaxItem[0].parameter}catch{$null}
+      $parameters2 = try {$cmd.Syntax.syntaxItem[0].parameter}catch {$null}
       $pipelineInputParam = $false;
+      $paramsOut = @()
       foreach ($parameter in $parameters) {
         $parameter2 = $parameters2 | Where-Object Name -eq $parameter.name
         $paramPipeMode = $null; $paramPipe = $null;
@@ -110,7 +111,7 @@ function main() {
           "pipedMode"   = $paramPipeMode
           "required"    = $boolMap[$parameter.required];
           "default"     = $paramDefault
-          "description" = (& {try{$parameter.description[0].text}catch{$null}})
+          "description" = (& {try {$parameter.description[0].text}catch {$null}})
           "values"      = $paramValues;
         };
       }
@@ -120,20 +121,22 @@ function main() {
           $inputFormat = Get-IPType($cmd); if ($inputFormat -like "none") {$inputFormat = $null}
           $inputDesc = Get-IPDesc($cmd)
         }
-        if ($pipelineInputParam -and -not $inputFormat) {$POWMessages += [PSCustomObject]@{type = "WARNING"; message = "Pipeline input not described properly in annotated comments (.Inputs) of $NiceName!"}}
-        if (-not $pipelineInputParam -and $inputFormat) {$POWMessages += [PSCustomObject]@{type = "WARNING"; message = "Pipeline input not declared properly in parameters (ValueFromPipeline=`$true) of $NiceName!"}}
+        if ($pipelineInputParam -and -not $inputFormat) {Write-Warning "Pipeline input not described properly in annotated comments (.Inputs) of $NiceName!"}
+        if (-not $pipelineInputParam -and $inputFormat) {Write-Warning "Pipeline input not declared properly in parameters (ValueFromPipeline=`$true) of $NiceName!"}
       }
       #if ($PipedParamCount -gt 1) {$POWMessages+=[PSCustomObject]@{type="WARNING";message="We don't support multiple piped parameters in '$NiceName'!"}}
     } else {
-      $POWMessages += [PSCustomObject]@{type = "ERROR"; message = "Invalid CmdLet in component '$Name'!"}
+      Write-Error "Invalid CmdLet in component '$Name'!"
+      return
     }
+
     $synopsis = Get-Synopsis($cmd)
     $description = Get-Description($cmd)
     # Weird "none or" outputs
-    $outputType = $outputType -replace 'None or ', ''
-    $outputType = $outputType -replace 'None, ', ''
+    $output = $output -replace 'None or ', ''
+    $output = $output -replace 'None, ', ''
     # Use 'string' instead of 'system.string'
-    $outputType = $outputType -replace '^system\.', ''
+    $output = $output -replace '^system\.', ''
     $inputType = $inputType -replace '^system\.', ''
     $inputType = $inputType.toLower();
 
@@ -145,7 +148,13 @@ function main() {
       "management.automation.psobject[]" = "object[]"
     }
     if ($MapTypes.Contains($inputType)) {$inputType = $MapTypes[$inputType]}
-    if ($MapTypes.Contains($outputType)) {$outputType = $MapTypes[$outputType]}
+    if ($MapTypes.Contains($output)) {$output = $MapTypes[$output]}
+
+    # # Validate output types
+    if ($outputFormat -eq 'psobject') {
+      if (-not (IsValidType $output)) {Write-Warning "Unknown output type '$output' for output format '$outputFormat'!"} else {Write-Warning 'foo'}
+    } elseif ($outputFormat -eq 'string') {
+    }
 
     if ($CompType -eq "component") {$outputDesc = Get-OPDesc($cmd)}
     $result = [PSCustomObject]@{
@@ -156,29 +165,27 @@ function main() {
       "synopsis"          = $synopsis;
       "description"       = $description;
       "module"            = $cmd.ModuleName;
-      "examples"          = if ($cmd.examples){$true}else{$false};
+      "examples"          = if ($cmd.examples) {$true}else {$false};
       "whatif"            = $whatif;
       "parameters"        = $paramsOut;
       "input"             = $inputType;
       "inputFormat"       = $inputFormat;
       "inputDescription"  = $inputDesc;
-      "output"            = $outputType;
+      "output"            = $output;
       "outputFormat"      = $outputFormat;
       "outputDescription" = $outputDesc;
-      "POWMessages"       = $POWMessages
     }
-    $POWMessages | ForEach-Object {Write-Warning ($_.type + ": " + $_.message)}
     return $result
   } catch {
     #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     throw $_
   }
 }
-function Get-Synopsis($cmd) {try{$cmd.details.description[0].Text}catch{$null}}
-function Get-Description($cmd) {try{return $cmd.description[0].Text}catch{$null}}
-function Get-IPType($cmd) {try{([string](Get-IP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch{$null}}
-function Get-IPDesc($cmd) {try{[string](@(Get-IP($cmd)))[1]}catch{$null}}
-function Get-IP($cmd) {try{@($cmd.inputTypes[0].inputType[0].type.name + "`n" -split "[\r\n]")}catch{$null}}
+function Get-Synopsis($cmd) {try {$cmd.details.description[0].Text}catch {$null}}
+function Get-Description($cmd) {try {return $cmd.description[0].Text}catch {$null}}
+function Get-IPType($cmd) {try {([string](Get-IP($cmd))[0]).ToLower() -replace "[\r\n]", ""}catch {$null}}
+function Get-IPDesc($cmd) {try {[string](@(Get-IP($cmd)))[1]}catch {$null}}
+function Get-IP($cmd) {try {@($cmd.inputTypes[0].inputType[0].type.name + "`n" -split "[\r\n]")}catch {$null}}
 function GetParamValues($param) {
   if ($param.parameterValueGroup.parameterValue) {return $param.parameterValueGroup.parameterValue} elseif ($param.Attributes.ValidValues) {return $param.Attributes.ValidValues}
   # With strictmode on we don't get the ValidValues!
@@ -215,10 +222,11 @@ function Get-OutputsAnnotation($cmd) {
     return [string]$result;
   }
 }
-function Get-OPType($cmd) {try{([string]($cmd.OutputType[0].Name)).ToLower()}catch{$null}}
-function Get-OPDesc($cmd) {try{[string](@(Get-OP($cmd)))[1]}catch{$null}}
-function Get-OP($cmd) {try{@($cmd.returnValues.returnValue | ForEach-Object {$_.type.name})}catch{$null}}
-function Get-OPA($cmd) {try{@($cmd.returnValues[0].returnValue[0].type.name + "`n" -split "`n")}catch{$null}}
+function Get-OPType($cmd) {try {([string]($cmd.OutputType[0].Name)).ToLower()}catch {$null}}
+function Get-OPDesc($cmd) {try {[string](@(Get-OP($cmd)))[1]}catch {$null}}
+function Get-OP($cmd) {try {@($cmd.returnValues.returnValue | ForEach-Object {$_.type.name})}catch {$null}}
+function Get-OPA($cmd) {try {@($cmd.returnValues[0].returnValue[0].type.name + "`n" -split "`n")}catch {$null}}
+function IsValidType($type) {try {(Invoke-Expression "[foo]").Name; $true}catch {$false}}
 
 . "$PSScriptRoot/common.ps1"
 $PSDefaultParameterValues['Out-File:Encoding'] = $_POW.ENCODING

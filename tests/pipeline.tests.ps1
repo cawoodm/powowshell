@@ -1,14 +1,13 @@
 ﻿[CmdletBinding(SupportsShouldProcess)]
 param(
-  [string]$filter = "csv*"
 )
 function main() {
   $StartPath = (Get-Location).Path
   Push-Location $PSScriptRoot
   try {
-    Get-ChildItem -Directory -Path ..\examples\ | 
-      Where-Object {$_.Name -notlike 'components'} |
-      ForEach-Object {
+    Get-ChildItem -Directory -Path ..\examples\ |
+    Where-Object {$_.Name -notlike 'components'} |
+    ForEach-Object {
       $Pipeline = $_.Name
       try {
         Invoke-PowowShell build $_.FullName

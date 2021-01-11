@@ -1,6 +1,5 @@
 {
   "id": "procmon1",
-  "runtime": "ps*",
   "name": "Analyse a process monitoring result",
   "description": "Read csv export from procmon and find stuff.",
   "parameters": {
@@ -56,7 +55,7 @@
       "input": "B1"
     },
     {
-      "id": "D1",
+      "id": "A2",
       "reference": "Select-Object",
       "name": "Top 10",
       "stream": "end",
@@ -69,12 +68,15 @@
         "Unique": null,
         "Last": null,
         "Skip": null,
-        "Wait": null
+        "Wait": null,
+        "Index": null,
+        "SkipIndex": null,
+        "SkipLast": null
       },
       "input": "C1"
     },
     {
-      "id": "E1",
+      "id": "B2",
       "reference": "sort-object",
       "name": "Sort by Duration",
       "description": null,
@@ -85,12 +87,15 @@
         "Unique": null,
         "InputObject": null,
         "Culture": null,
-        "CaseSensitive": null
+        "CaseSensitive": null,
+        "Bottom": null,
+        "Stable": null,
+        "Top": null
       },
-      "input": "D1"
+      "input": "A2"
     },
     {
-      "id": "F1",
+      "id": "C2",
       "reference": "Select-Object",
       "name": "Select Name, Count",
       "stream": "process",
@@ -103,13 +108,17 @@
         "Last": null,
         "First": null,
         "Skip": null,
-        "Wait": null
+        "Wait": null,
+        "Index": null,
+        "SkipIndex": null,
+        "SkipLast": null
       },
-      "input": "E1"
+      "input": "B2"
     }
   ],
   "input": {},
   "output": {
     "type": "object"
-  }
+  },
+  "runtime": "ps*"
 }
