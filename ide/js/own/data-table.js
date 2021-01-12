@@ -6,20 +6,20 @@
 const dataTableBuilder = (function () {
   return {
     showTable: function ($root, data) {
-      let el = document.createElement("div");
-      el.setAttribute("id", "myDataTable");
+      let el = document.createElement('div');
+      el.setAttribute('id', 'myDataTable');
       document.body.appendChild(el);
       // Convert single objects to array
       if (!Array.isArray(data.items)) data.items = [data.items];
       // Convert primitives to objects for display
-      data.items = data.items.map(i => typeof i === "object" ? i : { value: i })
+      data.items = data.items.map(i => typeof i === 'object' ? i : { value: i })
       // Make dynamic headers if none specified
       if (!data.headers && Array.isArray(data.items)) {
         data.headers = Object.keys(data.items[0]).map(field => ({ text: field, value: field }))
       }
       // Check if we have weird powershell dates
       for (let field in data.items[0]) {
-        let val = data.items[0][field] + "";
+        let val = data.items[0][field] + '';
         if (val.match(/\/Date\(/)) {
           for (let i = 0; i < data.items.length; i++) {
             data.items[i][field] = (new Date(parseInt(val.match(/\d+/)[0]))).toISOString();
@@ -29,16 +29,16 @@ const dataTableBuilder = (function () {
       new DataTable({
         parent: $root,
         propsData: {
-          title: data.title || "Data Table",
+          title: data.title || 'Data Table',
           headers: data.headers,
           items: data.items
         }
-      }).$mount("#myDataTable");
+      }).$mount('#myDataTable');
     }
   }
 })();
 const DataTable = Vue.extend({
-  props: ["headers", "items", "title"],
+  props: ['headers', 'items', 'title'],
   data: function () {
     return {
       show: true

@@ -25,6 +25,9 @@ const modCmdletList = function (Vue) {
       this.cmdlets = cmdlets;
       this.loading = false;
     },
+    setLoading(show: boolean) {
+      this.loading = show;
+    },
     refresh: function() {
       this.$root.$emit("cmdletsLoad", true);
     }
@@ -35,8 +38,10 @@ const modCmdletList = function (Vue) {
   },
   template: `
   <v-expansion-panel-content @hook:updated="$root.componentsUpdated">
-    <div slot="header" class="body-2">Cmdlets <v-icon small @click="refresh">refresh</v-icon>
+    <div slot="header" class="body-2">
       <v-progress-linear v-if="loading" indeterminate color="secondary"></v-progress-linear>
+      Cmdlets
+      <v-icon small @click="refresh">refresh</v-icon>
     </div>
     <v-list dense v-if="!loading" style="max-height: 400px; overflow-x: hidden; overflow-y: scroll;">
       <v-list-tile class="search-tile">

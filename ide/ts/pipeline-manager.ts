@@ -214,13 +214,13 @@ let pipelineManager = (function() {
             let res = [];
             let col = parseCol(id);
             let row = parseRow(id);
-            for (let c=1; c<=COLS; c++)
-                for (let r=1; r<=ROWS; r++)
-                    if (c<col || c==col && r < row) {
-                        let step = this.getStep(c, r);
-                        // TODO: Check step as outputs!
-                        if (step.reference) res.push(step.id);
-                    }
+            for (let r=1; r<=ROWS; r++)
+              for (let c=1; c<=COLS; c++)
+                if (c<col || c==col && r < row) {
+                    let step = this.getStep(c, r);
+                    // TODO: Check step as outputs!
+                    if (step.reference) res.push(step.id);
+                }
             return res;
         },
         /**

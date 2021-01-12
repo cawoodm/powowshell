@@ -29,6 +29,18 @@
         "problemMatcher": [],
         "label": "npm: start",
         "detail": "electron ide"
+      },
+      {
+        "type": "typescript",
+        "label": "TypeScript Compiler Watcher Thingy...",
+        "tsconfig": "ide/tsconfig.json",
+        "option": "watch",
+        "problemMatcher": [
+          "$tsc-watch"
+        ],
+        "runOptions": {
+          "runOn": "folderOpen"
+        }
       }
     ]
 }

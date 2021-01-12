@@ -1,31 +1,38 @@
 {
-    "env": {
-        "browser": true,
-        "es6": true,
-        "node": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:vue/essential"
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/essential"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "vue"
+  ],
+  "rules": {
+    "max-len": "off",
+    "quote-props": "off",
+    "block-spacing": "off",
+    "space-before-function-paren": "off",
+    "complexity": [
+      "warn",
+      10
     ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "vue"
-    ],
-    "rules": {
-        "max-len": "off",
-        "quote-props": "off",
-        "block-spacing": "off",
-        "space-before-function-paren": "off",
-        "complexity": ["warn", 10],
-        "no-console": "off"
-    },
-    "root": true
+    "no-console": "off",
+    "quotes": [
+      "error",
+      "single"
+    ]
+  },
+  "root": true
 }

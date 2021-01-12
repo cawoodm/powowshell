@@ -1,42 +1,45 @@
 <html>
-<head>
-<title>TESTING Page</title>
-<link type="text/css" rel="stylesheet" href="./css/fonts.css" />
-<link type="text/css" rel="stylesheet" href="./css/vuetify.css" />
-<link type="text/css" rel="stylesheet" href="./css/dragula.css" />
-<link type="text/css" rel="stylesheet" href="./css/ide.css" />
-</head>
-<body>
-<v-app id="root">
-<test-comps></test-comps>
-</v-app>
 
-<script src="./js/vue.js"></script>
-<script src="./js/vuetify.js"></script>
-<script src='./js/dragula.js'></script>
-<script src="./js/pipeline-manager.js"></script>
-<script src="./js/step-grid.js"></script>
-<script src="./js/step-form.js"></script>
-<script src="./js/main.js"></script>
-<script>
-Vue.component('test-comps', {
-    data: function() {
-        return {components: app.components}
-    },
-    template: `
+<head>
+  <title>TESTING Page</title>
+  <link type="text/css" rel="stylesheet" href="./css/fonts.css" />
+  <link type="text/css" rel="stylesheet" href="./css/vuetify.css" />
+  <link type="text/css" rel="stylesheet" href="./css/dragula.css" />
+  <link type="text/css" rel="stylesheet" href="./css/ide.css" />
+</head>
+
+<body>
+  <v-app id="root">
+    <test-comps></test-comps>
+  </v-app>
+
+  <script src="./js/vue.js"></script>
+  <script src="./js/vuetify.js"></script>
+  <script src='./js/dragula.js'></script>
+  <script src="./js/pipeline-manager.js"></script>
+  <script src="./js/step-grid.js"></script>
+  <script src="./js/step-form.js"></script>
+  <script src="./js/main.js"></script>
+  <script>
+    Vue.component('test-comps', {
+      data: function () {
+        return { components: app.components }
+      },
+      template: `
     <ul>
         <li v-for="component in components">
             <a :href="'javascript:showComponentForm(&quot;'+component.reference+'&quot;)'">{{component.reference}}</a>
         </li>
     </ul>
 `
-});
-function showComponentForm(reference) {
-    let component = app.getComponent(reference);
-    let step = pipelineManager.getStep('A1');
-    formBuilder.showForm(app.root.$root, step, component);
-}
-if (location.hash) window.setTimeout(()=>showComponentForm(location.hash.substring(1)), 500);
-</script>
+    });
+    function showComponentForm(reference) {
+      let component = app.getComponent(reference);
+      let step = pipelineManager.getStep('A1');
+      stepForm.showForm(app.root.$root, step, component);
+    }
+    if (location.hash) window.setTimeout(() => showComponentForm(location.hash.substring(1)), 500);
+  </script>
 </body>
+
 </html>

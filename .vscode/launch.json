@@ -52,7 +52,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch pow.tests.js",
+      "name": "Launch .tests.js",
       "program": "${workspaceFolder}\\tests\\pipeline-manager.tests.js",
       "args": [
         "verbose",

@@ -1,3 +1,4 @@
+/* global Vue pipelineManager */
 Vue.component('step-grid', {
     props: ['store'],
     data: function() {
@@ -26,10 +27,10 @@ Vue.component('step-grid', {
             this.$root.showStepDialog(id)
         },
         preview(id) {
-            this.$root.$emit("stepPreview", id);
+            this.$root.$emit('stepPreview', id);
         },
         remove(id) {
-            this.$root.$emit("stepRemove", id);
+            this.$root.$emit('stepRemove', id);
         },
         doUpdate: function() {
             this.rows = pipelineManager.getRows();

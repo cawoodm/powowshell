@@ -24,6 +24,9 @@ let modComponentList = function (Vue) {
         this.components = components;
         this.loading = false;
       },
+      setLoading(show: boolean) {
+        this.loading = show;
+      },
       refresh: function() {
         this.$root.$emit("componentsLoad", true);
       }
@@ -34,8 +37,10 @@ let modComponentList = function (Vue) {
     },
     template: `
     <v-expansion-panel-content @hook:updated="$root.componentsUpdated">
-      <div slot="header" class="body-2">Components <v-icon small @click="refresh">refresh</v-icon>
-      <v-progress-linear v-if="loading" indeterminate color="secondary"></v-progress-linear>
+      <div slot="header" class="body-2">
+        <v-progress-linear v-if="loading" indeterminate color="secondary"></v-progress-linear>
+        Components
+        <v-icon small @click="refresh">refresh</v-icon>
       </div>
       <v-list dense v-if="!loading">
       <v-list-tile class="search-tile">

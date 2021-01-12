@@ -38,7 +38,7 @@ function main() {
     if ($cmd.PSObject.Properties["examples"] -and $cmd.examples) {
       foreach ($example in $cmd.examples.example) {
         $res = [PSCustomObject]@{
-          title       = $example.title -replace '-', '';
+          title       = ($example.title -replace '-', '').Trim();
           code        = $example.code;
           description = "";
         }

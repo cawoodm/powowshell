@@ -8,7 +8,8 @@
   "main": "ide/app.js",
   "scripts": {
     "start": "electron ide",
-    "test": "pwsh -f ./tests/allTests.ps1"
+    "test": "pwsh -f ./tests/allTests.ps1",
+    "lint": "eslint ./ide/js/own/*.js --fix"
   },
   "keywords": [
     "PowerShell"
