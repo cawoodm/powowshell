@@ -1,14 +1,16 @@
-/* global Vue dragula formBuilder dataTableBuilder pipelineManager */
+/* global Vue dragula stepForm dataTableBuilder pipelineManager */
+
 // Load modules depending on environment
-if (typeof process !== "undefined") {
+if (typeof process !== 'undefined') {
   // Electron/Node environment
-  var pow = require("./js/pow").pow;
+  var pow = require('./js/pow').pow;
   modComponentList = require("./js/component-list") //  eslint-disable-line
   modCmdletList = require("./js/cmdlet-list") //  eslint-disable-line
   pipelineManager = require("./js/pipeline-manager") //  eslint-disable-line
   pipelineForm = require("./js/pipeline-form") //  eslint-disable-line
+  stepForm = require("./js/step-form") //  eslint-disable-line
   modLoading = require("./js/loading") //  eslint-disable-line
-  const electron = require("electron");
+  const electron = require('electron');
   var { dialog } = electron.remote;
 } else {
   // Browser/demo environment
@@ -21,16 +23,17 @@ modComponentList(Vue), modCmdletList(Vue), modLoading(Vue);
 let app = {};
 // eslint-disable-next-line no-undef
 app.pipelineForm = pipelineForm(Vue);
+app.stepForm = stepForm(Vue, pipelineManager);
 pipelineManager.reset();
 app.components = {};
 app.cmdlets = {};
 
 app.getComponent = (reference) => {
-  if (!app.components) return app.root.showErrorMessage("Components not loaded!")
+  if (!app.components) return app.root.showErrorMessage('Components not loaded!')
   let ref = reference.toLowerCase();
   let res = app.components.filter((item) => item.reference === ref);
   if (res.length === 0) {
-    if (!app.cmdlets) return app.root.showErrorMessage("Cmdlets not loaded!")
+    if (!app.cmdlets) return app.root.showErrorMessage('Cmdlets not loaded!')
     res = app.cmdlets.filter((item) => item.reference === ref);
   }
   if (!res || !res.length) return app.root.showErrorMessage(`Component/Cmdlet '${reference}' not found! Consider reloading the cache with 'pow cmdlets generate'.`)
@@ -42,19 +45,19 @@ Vue.config.productionTip = false;
 
 window.onload = function () {
   app.root = new Vue({
-    el: "#root",
+    el: '#root',
     data: {
       panels: [false, false, false],
       message: {
         show: false,
-        message: "",
-        color: "primary",
+        message: '',
+        color: 'primary',
         timeout: 3000
       },
       longMessage: {
         show: false,
-        message: "",
-        color: "error"
+        message: '',
+        color: 'error'
       },
       pipeline: {}
     },
@@ -65,12 +68,12 @@ window.onload = function () {
         const dragOpts = {
           revertOnSpill: true, // true=Go back if not dropped
           accepts: function (el, target) {
-            return target.className.indexOf("drop") >= 0;
+            return target.className.indexOf('drop') >= 0;
           }
         };
-        app.dragula = dragula([].slice.call(document.querySelectorAll(".drag,.drop")), dragOpts).on("drop", function (el, space) {
-          let id = el.getAttribute("d-id");
-          let ref = el.getAttribute("d-ref");
+        app.dragula = dragula([].slice.call(document.querySelectorAll('.drag,.drop')), dragOpts).on('drop', function (el, space) {
+          let id = el.getAttribute('d-id');
+          let ref = el.getAttribute('d-ref');
           if (ref) {
             // This is a component
             let component = app.getComponent(ref);
@@ -93,19 +96,19 @@ window.onload = function () {
       },
       check: function () {
         let root = this;
-        if (pipelineManager.isDirty() && confirm("Do you want to save before checking?")) {
+        if (pipelineManager.isDirty() && confirm('Do you want to save before checking?')) {
           return root.pipelineSave().then(root.check);
         }
-        this.showLoading("Building " + this.pipeline.id, "Checking...")
-        return pow.build("!" + this.pipeline.id)
+        this.showLoading('Building ' + this.pipeline.id, 'Checking...')
+        return pow.build('!' + this.pipeline.id)
           .then(() => {
             this.showLoading(false);
-            this.showLoading("Verifying " + this.pipeline.id, "Checking...")
-            return pow.verify("!" + this.pipeline.id);
+            this.showLoading('Verifying ' + this.pipeline.id, 'Checking...')
+            return pow.verify('!' + this.pipeline.id);
           })
           .then((obj) => {
             if (obj.success) {
-              this.showMessage("Validation OK", "green")
+              this.showMessage('Validation OK', 'green')
             } else {
               this.handlePOWError(obj)
             }
@@ -117,11 +120,11 @@ window.onload = function () {
       },
       run: function () {
         let root = this;
-        if (pipelineManager.isDirty() && confirm("Do you want to save before running?")) {
+        if (pipelineManager.isDirty() && confirm('Do you want to save before running?')) {
           return root.pipelineSave().then(root.run);
         }
-        this.showLoading("Building " + this.pipeline.id, "Build and Run")
-        return pow.build("!" + this.pipeline.id)
+        this.showLoading('Building ' + this.pipeline.id, 'Build and Run')
+        return pow.build('!' + this.pipeline.id)
           // .then(()=>{
           //     this.showLoading(false);
           //     this.showLoading("Verifying "+this.pipeline.id, "Build and Run")
@@ -129,13 +132,13 @@ window.onload = function () {
           // })
           .then(() => {
             this.showLoading(false);
-            this.showLoading("Running " + this.pipeline.id, "Build and Run")
-            return pow.run("!" + this.pipeline.id)
+            this.showLoading('Running ' + this.pipeline.id, 'Build and Run')
+            return pow.run('!' + this.pipeline.id)
           })
           .then((res) => {
             this.showMessages(res.messages);
             if (res.success && res.object) {
-              dataTableBuilder.showTable(this.$root, { title: "Result", items: res.object });
+              dataTableBuilder.showTable(this.$root, { title: 'Result', items: res.object });
             } else {
               this.handlePOWError(res)
             }
@@ -146,35 +149,35 @@ window.onload = function () {
           });
       },
       handlePOWError: function (err) {
-        let message = "";
-        console.log("handlePOWError", typeof err.message, typeof err.messages)
-        if (err.constructor.name === "POWError") message += "POWError:\n";
-        if (err.message) message += err.message + "\n";
+        let message = '';
+        console.log('handlePOWError', typeof err.message, typeof err.messages)
+        if (err.constructor.name === 'POWError') message += 'POWError:\n';
+        if (err.message) message += err.message + '\n';
         if (err.messages && Array.isArray(err.messages))
           err.messages.forEach(msg => {
-            message += "\n" + msg.type + ": " + (msg.obj ? "(" + msg.obj.scriptName + ") " : "") + msg.message
+            message += '\n' + msg.type + ': ' + (msg.obj ? '(' + msg.obj.scriptName + ') ' : '') + msg.message
           });
         console.log(err);
-        this.showLongMessage(message, "error");
+        this.showLongMessage(message, 'error');
       },
       showMessages: function (messages, type) {
         if (!messages || !Array.isArray(messages) || !messages.length) return;
         let message = messages.map(this.codeFormat);
-        this.showLongMessage(message.join('\n'), type, "Messages");
+        this.showLongMessage(message.join('\n'), type, 'Messages');
       },
       codeFormat: function (msg) {
         let typeColors = { ERROR: 'red', WARNING: 'orange', INFO: 'green', VERBOSE: 'purple', ABORT: 'darkred' };
         let color = typeColors[msg.type] || 'black';
-        return `<font face="consolas,couriere new" color="${color}">` + msg.type + ": " + (msg.obj ? "(" + msg.obj.scriptName + ") " : "") + msg.message + '</font><br>'
+        return `<font face="consolas,couriere new" color="${color}">` + msg.type + ': ' + (msg.obj ? '(' + msg.obj.scriptName + ') ' : '') + msg.message + '</font><br>'
       },
       showLongMessage: function (text, color, title) {
-        console.log("showLongMessage", text)
-        color = color || "info";
-        title = title || "Error";
+        console.log('showLongMessage', text)
+        color = color || 'info';
+        title = title || 'Error';
         if (this.longMessage.show) {
           // Already visible, add to the message
           this.longMessage.show = false;
-          this.showLongMessage(this.longMessage.text + " " + text, color);
+          this.showLongMessage(this.longMessage.text + ' ' + text, color);
           return;
         }
         this.longMessage.title = title;
@@ -184,15 +187,15 @@ window.onload = function () {
         this.longMessage.show = true;
       },
       showErrorMessage: function (msg) {
-        return this.showMessage(msg, "error")
+        return this.showMessage(msg, 'error')
       },
       showMessage: function (text, color) {
-        console.log("showMessage", text, this.message)
-        color = color || "info";
+        console.log('showMessage', text, this.message)
+        color = color || 'info';
         if (this.message.show) {
           // Already visible, add to the message
           this.message.show = false;
-          this.showMessage(this.message.text + " " + text, color);
+          this.showMessage(this.message.text + ' ' + text, color);
           return;
         }
         this.message.text = text;
@@ -204,13 +207,13 @@ window.onload = function () {
           let step = pipelineManager.getStep(id);
           if (!step.reference) return;
           let component = app.getComponent(step.reference);
-          formBuilder.showForm(this.$root, step, component);
+          app.stepForm.showForm(this.$root, step, component);
         } catch (e) {
-          this.showLongMessage('<pre>' + e.message + "\n" + e.stack, "error", "IDE100:showStepDialog")
+          this.showLongMessage('<pre>' + e.message + '\n' + e.stack, 'error', 'IDE100:showStepDialog')
         }
       },
       componentsLoad: function (reload) {
-        this.showLoading("Loading POW Components")
+        this.showLoading('Loading POW Components')
         return pow.components(null, reload)
           .then((obj) => {
             this.showLoading(false);
@@ -221,7 +224,7 @@ window.onload = function () {
           .finally(() => this.showLoading(false));
       },
       cmdletsLoad: function () {
-        this.showLoading("Loading PowerShell Cmdlets")
+        this.showLoading('Loading PowerShell Cmdlets')
         return pow.cmdlets()
           .then((obj) => {
             this.showLoading(false);
@@ -235,12 +238,12 @@ window.onload = function () {
       pipelineLoad: function (id) {
         // Load pipeline definition
         let root = this;
-        if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and load a new pipeline?")) return;
+        if (pipelineManager.isDirty() && !confirm('Are you sure you want to clear the grid and load a new pipeline?')) return;
         this.showLoading(`Loading pipeline (${id})...`);
         return pow.pipeline(`${id}`)
           .then((res) => {
             pipelineManager.import(res.object);
-            pow.execOptions.PSCore = res.object.runtime == "ps5" ? "powershell" : "pwsh";
+            pow.execOptions.PSCore = res.object.runtime == 'ps5' ? 'powershell' : 'pwsh';
             if (root.$refs.stepGrid) root.$refs.stepGrid.doUpdate();
             this.pipeline = res.object;
             this.showLoading(false);
@@ -256,17 +259,17 @@ window.onload = function () {
         Object.assign(this.pipeline, def);
       },
       pipelineNew: function () {
-        if (pipelineManager.isDirty() && !confirm("Are you sure you want to clear the grid and start a new pipeline?")) return;
+        if (pipelineManager.isDirty() && !confirm('Are you sure you want to clear the grid and start a new pipeline?')) return;
         pipelineManager.reset();
         this.pipeline = pipelineManager.getDefinition()
         app.pipelineForm.showForm(this.$root, pipelineManager.getDefinition());
         this.redraw();
       },
       pipelineOpen: function () {
-        if (typeof dialog === "undefined") return alert("Not implemented in the demo!\nTry download the app and run it with electron for all the features.")
+        if (typeof dialog === 'undefined') return alert('Not implemented in the demo!\nTry download the app and run it with electron for all the features.')
         dialog.showOpenDialog({
-          properties: ["openFile"],
-          filters: { name: "Pipelines", extensions: ["json"] }
+          properties: ['openFile'],
+          filters: { name: 'Pipelines', extensions: ['json'] }
         }).then(data => {
           const file = data.filePaths;
           if (!file) return;
@@ -282,7 +285,7 @@ window.onload = function () {
         let root = this;
         let pipeline = pipelineManager.export();
         // TODO: Use existing pipeline id or generate a new one
-        let pipelineId = pipeline.id || ("pipeline" + Math.random().toString(36).substring(7));
+        let pipelineId = pipeline.id || ('pipeline' + Math.random().toString(36).substring(7));
         return pow.save(pipeline, pipelineId)
           .then(() => {
             pipelineManager.setClean();
@@ -298,58 +301,58 @@ window.onload = function () {
     mounted: function () {
       let root = this;
       // Listen for events
-      this.$root.$on("stepSave", (newStep) => {
+      this.$root.$on('stepSave', (newStep) => {
         pipelineManager.setStep(newStep);
         this.redraw();
       });
-      this.$root.$on("pipelineFormOK", this.pipelineFormOK);
-      this.$root.$on("cmdletsLoad", this.cmdletsLoad);
-      this.$root.$on("componentsLoad", this.componentsLoad);
-      this.$root.$on("componentHelp", (step, component) => {
-        let msg = (component.synopsis || "") + "\n" + (component.description || "")
+      this.$root.$on('pipelineFormOK', this.pipelineFormOK);
+      this.$root.$on('cmdletsLoad', this.cmdletsLoad);
+      this.$root.$on('componentsLoad', this.componentsLoad);
+      this.$root.$on('componentHelp', (step, component) => {
+        let msg = (component.synopsis || '') + '\n' + (component.description || '')
         this.showLongMessage(msg, null, step.name)
       });
-      this.$root.$on("componentExamples", (reference, type) => {
-        let ref = type === "cmdlet" ? reference : "!" + reference;
+      this.$root.$on('componentExamples', (reference, type) => {
+        let ref = type === 'cmdlet' ? reference : '!' + reference;
         pow.examples(ref)
           .then((res) => {
-            if (!res.object || res.object.length === 0) return alert("No examples found!")
+            if (!res.object || res.object.length === 0) return alert('No examples found!')
             res.object.forEach((o) => {
-              let msg = o.title + "\n" + o.code;
-              msg = msg.replace("`n", "\n");
-              this.showLongMessage(msg, null, "Examples")
+              let msg = o.title + '\n' + o.code;
+              msg = msg.replace('`n', '\n');
+              this.showLongMessage(msg, null, 'Examples')
             });
           }).catch(this.handlePOWError);
       });
-      this.$root.$on("stepPreview", (step) => {
-        if (typeof step === "string") { step = pipelineManager.getStep(step); }
+      this.$root.$on('stepPreview', (step) => {
+        if (typeof step === 'string') { step = pipelineManager.getStep(step); }
         let component = app.getComponent(step.reference);
-        pow.preview("!" + this.pipeline.id, step, component).then((obj) => {
+        pow.preview('!' + this.pipeline.id, step, component).then((obj) => {
           if (obj.object)
-            this.showLongMessage(JSON.stringify(obj.object, null, 2), null, "Preview")
+            this.showLongMessage(JSON.stringify(obj.object, null, 2), null, 'Preview')
           else
-            this.showLongMessage(obj.output, null, "Preview")
+            this.showLongMessage(obj.output, null, 'Preview')
         }).catch(this.handlePOWError);
       });
-      this.$root.$on("stepRemove", (step) => {
-        if (typeof step === "string") { step = pipelineManager.getStep(step); }
-        if (confirm("Are you sure you want to remove this step?")) {
+      this.$root.$on('stepRemove', (step) => {
+        if (typeof step === 'string') { step = pipelineManager.getStep(step); }
+        if (confirm('Are you sure you want to remove this step?')) {
           pipelineManager.removeStep(step.id);
           this.redraw();
         }
       });
       if (app.DEVMODE) {
         //console.clear(); // Vue/electron junk warnings
-        pow.execOptions.PSCore = "pwsh"; // Testing PowerShell Core (v6)
+        pow.execOptions.PSCore = 'pwsh'; // Testing PowerShell Core (v6)
         pow.execOptions.debug = true;
         //root.componentsLoad();root.cmdletsLoad();return;
-        pow.init("!examples")
+        pow.init('!examples')
           //.then(() => root.pipelineLoad("pipeline1"))
           //.then(() => root.pipelineLoad("pipeline2"))
           //.then(() => root.pipelineLoad("pipeline3"))
           //.then(() => root.pipelineLoad("procmon1"))
           //.then(() => root.pipelineLoad("errortest"))
-          .then(() => root.pipelineLoad("code"))
+          .then(() => root.pipelineLoad('code'))
           //.then(()=>root.check())
           //.then(() => root.run())
           .then(() => {
