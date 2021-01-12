@@ -216,7 +216,7 @@ let pipelineManager = (function() {
             let row = parseRow(id);
             for (let r=1; r<=ROWS; r++)
               for (let c=1; c<=COLS; c++)
-                if (c<col || c==col && r < row) {
+                if (r < row || r==row && c<col) {
                     let step = this.getStep(c, r);
                     // TODO: Check step as outputs!
                     if (step.reference) res.push(step.id);

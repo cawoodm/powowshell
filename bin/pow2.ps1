@@ -72,7 +72,9 @@ function Invoke-PowowShell {
       stack            = $PSItem.ScriptStackTrace
     }
     if ($Export -or $Options -contains "export") {
-      $Host.UI.WriteErrorLine(($erresult | ConvertTo-Json -Compress -Depth 2))
+      # We can't write to stderr until node-powershell supports it
+      #$Host.UI.WriteErrorLine(($erresult | ConvertTo-Json -Compress -Depth 2))
+      $erresult | ConvertTo-Json -Compress -Depth 2
     } else {
       $Host.UI.WriteErrorLine("ABORT in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
     }

@@ -149,13 +149,13 @@ window.onload = function () {
           });
       },
       handlePOWError: function (err) {
-        let message = '';
+        let message = '<pre>';
         console.log('handlePOWError', typeof err.message, typeof err.messages)
         if (err.constructor.name === 'POWError') message += 'POWError:\n';
-        if (err.message) message += err.message + '\n';
+        if (err.message) message += err.message + '\n' + err.stack;
         if (err.messages && Array.isArray(err.messages))
           err.messages.forEach(msg => {
-            message += '\n' + msg.type + ': ' + (msg.obj ? '(' + msg.obj.scriptName + ') ' : '') + msg.message
+            message += '\n' + msg.type + ': ' + (msg.obj ? '(' + msg.obj.scriptName + ') ' : '') + msg.message + ' ' + (msg.stack)
           });
         console.log(err);
         this.showLongMessage(message, 'error');
@@ -349,11 +349,11 @@ window.onload = function () {
           //.then(() => root.pipelineLoad("pipeline1"))
           //.then(() => root.pipelineLoad("pipeline2"))
           //.then(() => root.pipelineLoad("pipeline3"))
-          .then(() => root.pipelineLoad('procmon1'))
-          //.then(() => root.pipelineLoad("errortest"))
+          //.then(() => root.pipelineLoad('procmon1'))
+          .then(() => root.pipelineLoad('errortest'))
           //.then(() => root.pipelineLoad("code"))
           //.then(()=>root.check())
-          //.then(() => root.run())
+          .then(() => root.run())
           .then(() => {
             //console.clear();
             root.componentsLoad()

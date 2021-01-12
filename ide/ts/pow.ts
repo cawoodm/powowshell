@@ -341,6 +341,7 @@ const pow = (function () {
         messages.push(...outlines.map(parseLine))
       }
     }
+    if (messages.find(m => m.type ==='ABORT')) success = false;
 
     return new POWResult(success, out.stdout, messages, obj)
   }

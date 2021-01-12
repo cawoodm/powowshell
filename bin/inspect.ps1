@@ -62,7 +62,8 @@ function main() {
       # TODO: Can we assume PSObj? Or does null mean we don't know and don't care?
       $outputFormat = $null
     }
-    $reference = $Name
+    # PS1: Should we use extension or not ???
+    $reference = $Name.ToLower()
 
     $whatif = $false; #$confirm=$false; $passthru=$false;
     $paramsOut = @(); $inputType = $null; $inputFormat = $null; $inputDesc = $null; $outputDesc = $null; $PipedParamCount = 0;

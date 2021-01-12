@@ -7,7 +7,7 @@
   "main": "app.js",
   "scripts": {
     "start": "electron .",
-    "build": "tsc",
+    "build": "cd ide; tsc",
     "lint": "eslint ./ts --ext .ts"
   },
   "repository": "https://github.com/cawoodm/powowshell",
