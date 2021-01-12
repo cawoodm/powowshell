@@ -14,7 +14,7 @@
       let s = "";
       for (let c = 1; c <= pipelineManager.columnCount(); c++) {
         let step = pipelineManager.getStep(c, r);
-        s += step.id + " (" + step.name + ") ";
+        s += step.id + " (" + step.reference + ") ";
       }
       console.log(s);
     }
@@ -51,8 +51,11 @@
     assert(() => PM.setStep(step), "Set step works");
 
     // Available inputs
-    let avail = PM.getAvailableInputs("C1");
-    assert(() => avail.length == 3, "Step 3 has 3 available inputs (A1 B1 and B2)");
+    let avail = PM.getAvailableInputs("B2");
+    assert(() => avail.length === 3, "Step 3 has 3 available inputs (A1 B1 and C1)");
+    assert(() => avail[0] === "A1", "First available input is A1");
+    assert(() => avail[1] === "B1", "Next available input is B1");
+    assert(() => avail[2] === "C1", "Next available input is C1");
 
     // Moving steps
     assert(() => PM.moveStep("C3", "A1"), "Step can't be moved over existing step", true);
