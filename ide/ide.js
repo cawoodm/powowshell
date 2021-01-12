@@ -210,7 +210,7 @@ window.onload = function () {
         }
       },
       componentsLoad: function (reload) {
-        this.showLoading("Loading POW Components")
+        this.$refs.componentList.setLoading(true);
         return pow.components(null, reload)
           .then((obj) => {
             this.showLoading(false);
@@ -218,10 +218,10 @@ window.onload = function () {
             this.$refs.componentList.setComponents(app.components);
           })
           .catch(this.handlePOWError)
-          .finally(() => this.showLoading(false));
+          .finally(() => this.$refs.componentList.setLoading(false));
       },
       cmdletsLoad: function () {
-        this.showLoading("Loading PowerShell Cmdlets")
+        this.$refs.cmdletList.setLoading(true);
         return pow.cmdlets()
           .then((obj) => {
             this.showLoading(false);
@@ -230,7 +230,7 @@ window.onload = function () {
             this.$refs.cmdletList.setCmdlets(app.cmdlets);
           })
           .catch(this.handlePOWError)
-          .finally(() => this.showLoading(false));
+          .finally(() => this.$refs.cmdletList.setLoading(false));
       },
       pipelineLoad: function (id) {
         // Load pipeline definition
@@ -314,11 +314,10 @@ window.onload = function () {
         pow.examples(ref)
           .then((res) => {
             if (!res.object || res.object.length === 0) return alert("No examples found!")
-            res.object.forEach((o) => {
-              let msg = o.title + "\n" + o.code;
-              msg = msg.replace("`n", "\n");
-              this.showLongMessage(msg, null, "Examples")
+            let examples = res.object.map((o) => {
+              return '<h4>' + o.title + "</h4><pre>" + o.code.replace("`n", "\n") + '</pre>';
             });
+            this.showLongMessage(examples.join('<hr>'), "yellow darken-1", "Examples")
           }).catch(this.handlePOWError);
       });
       this.$root.$on("stepPreview", (step) => {
@@ -347,9 +346,9 @@ window.onload = function () {
           //.then(() => root.pipelineLoad("pipeline1"))
           //.then(() => root.pipelineLoad("pipeline2"))
           //.then(() => root.pipelineLoad("pipeline3"))
-          //.then(() => root.pipelineLoad("procmon1"))
+          .then(() => root.pipelineLoad("procmon1"))
           //.then(() => root.pipelineLoad("errortest"))
-          .then(() => root.pipelineLoad("code"))
+          //.then(() => root.pipelineLoad("code"))
           //.then(()=>root.check())
           //.then(() => root.run())
           .then(() => {
