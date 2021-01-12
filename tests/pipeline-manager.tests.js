@@ -26,7 +26,7 @@
   // @ts-ignore
   let testPipeline = fs.readFileSync(path.resolve(__dirname, "../examples/pipeline1/pipeline.json"), "utf8").trim();
   // @ts-ignore
-  let testComponent = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./CSV2JSON.json"), "utf8").trim());
+  let testComponent = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./csv2json.json"), "utf8").trim());
   let testComponent2 = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./FileList.json"), "utf8").trim());
 
   try {
