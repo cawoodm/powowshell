@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron ide",
     "test": "pwsh -f ./tests/allTests.ps1",
-    "lint": "eslint ./ide/js/own/*.js --fix"
+    "lint": "eslint ./ide/js/own/*.js --fix",
+    "build": "cd ide && tsc"
   },
   "keywords": [
     "PowerShell"
