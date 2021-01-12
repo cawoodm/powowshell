@@ -10,13 +10,13 @@ function main() {
     ForEach-Object {
       $Pipeline = $_.Name
       try {
-        Invoke-PowowShell build $_.FullName
-        $result = Invoke-PowowShell verify $_.FullName
+        & "../bin/pow2.ps1" build $_.FullName
+        $result = & "../bin/pow2.ps1" verify $_.FullName
         #$result = Invoke-PowowShell verify $_.FullName
         #if (($PipelineExec)[1].age -eq "100") { "Pipeline: OK" } else { ErrMsg "Pipeline: FAIL" }
         #else {Write-Warning "Not testing missing pipeline build: $PipelineExec"}
       } catch {
-        Write-Warning "ERROR: Pipeline '$Pipeline': " + $_.Exception.Message
+        Write-Warning "ERROR: Pipeline '$Pipeline': $($_.Exception.Message)"
       }
     }
   } catch {

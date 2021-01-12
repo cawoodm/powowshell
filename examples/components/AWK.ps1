@@ -36,56 +36,55 @@
 [OutputType([string])]
 [CmdletBinding(SupportsShouldProcess)]
 param(
-    [Parameter(ValueFromPipeline)][string]$InputObject,
-    [string]$Begin,
-    [string[]]$Process,
-    [string]$End,
-    [string]$Delimiter
+  [Parameter(ValueFromPipeline)][string]$InputObject,
+  [string]$Begin,
+  [string[]]$Process,
+  [string]$End,
+  [string]$Delimiter
 )
 function main() {
 
-    
-    try {
-        # Our temporary AWK program
-        $awkfile = "$env:TEMP\tmp.awk"
-        Write-Verbose "`$awkfile: $awkfile"
+  try {
+    # Our temporary AWK program
+    $awkfile = "$([IO.Path]::GetTempPath())/tmp.awk"
+    Write-Verbose "`$awkfile: $awkfile"
 
-        # Our AWK program code
-        $awkcode = @();
+    # Our AWK program code
+    $awkcode = @();
 
-        # AWK Variables
-        $vars = @()
-        if ($Delimiter) {$vars+="FS=`"$Delimiter`";"}
-        $vars = $vars -join "`n"
-        Write-Verbose "`$vars: $vars"
+    # AWK Variables
+    $vars = @()
+    if ($Delimiter) {$vars += "FS=`"$Delimiter`";"}
+    $vars = $vars -join "`n"
+    Write-Verbose "`$vars: $vars"
 
-        if ($Begin -or $vars) {
-            $Begin = $vars + "`n" + $Begin;
-            $awkcode += "BEGIN {`n" + $Begin + "`n}`n";
-        }
-        if ($Process) {
-            foreach ($proc in $Process) {
-                $awkcode += $proc
-            }
-        }
-        if ($End) {
-            $awkcode += "END {`n" + $End + "`n}`n";
-        }
-
-        $awkcode = $awkcode -join "`n";
-
-        Write-Verbose "`$awkcode:`n$awkcode"
-        $awkcode | Set-Content -Path $awkfile -Encoding Ascii
-
-        # Pipe STDIN to AWK
-        if ($PSCmdlet.ShouldProcess("Should AWK be run?")) {
-            $InputObject | AWK -f $awkfile $args
-        }
-
-    } catch {
-        #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
-        throw $_
+    if ($Begin -or $vars) {
+      $Begin = $vars + "`n" + $Begin;
+      $awkcode += "BEGIN {`n" + $Begin + "`n}`n";
     }
+    if ($Process) {
+      foreach ($proc in $Process) {
+        $awkcode += $proc
+      }
+    }
+    if ($End) {
+      $awkcode += "END {`n" + $End + "`n}`n";
+    }
+
+    $awkcode = $awkcode -join "`n";
+
+    Write-Verbose "`$awkcode:`n$awkcode"
+    $awkcode | Set-Content -Path $awkfile -Encoding Ascii
+
+    # Pipe STDIN to AWK
+    if ($PSCmdlet.ShouldProcess("Should AWK be run?")) {
+      $InputObject | awk -f $awkfile $args
+    }
+
+  } catch {
+    #$Host.UI.WriteErrorLine("ERROR in $($_.InvocationInfo.ScriptName):$($_.InvocationInfo.ScriptLineNumber) : $($_.Exception.Message)")
+    throw $_
+  }
 }
 
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
