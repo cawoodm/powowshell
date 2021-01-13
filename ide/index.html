@@ -78,8 +78,10 @@
           <v-icon @click="longMessage.show = false" color="white">cancel</v-icon>
         </v-toolbar>
         <v-card-text>
-          <div v-if="longMessage.html" v-html="longMessage.html"></div>
-          <pre v-if="longMessage.text" style="white-space: pre-wrap;">{{ longMessage.text }}</pre>
+          <div style="overflow-y:scroll">
+            <div v-if="longMessage.html" v-html="longMessage.html"></div>
+            <pre v-if="longMessage.text" style="white-space: pre-wrap;">{{ longMessage.text }}</pre>
+          </div>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
