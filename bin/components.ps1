@@ -2,7 +2,6 @@
  .Synopsis
  Run through all components in a directory and:
  * Validate OUTPUT
- * TODO: Generate a JSON definition from the components/ directory
 
  .Description
  Will list each .ps1 file inside the components/ folder and

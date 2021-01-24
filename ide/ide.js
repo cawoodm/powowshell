@@ -31,7 +31,7 @@ app.cmdlets = {};
 app.getComponent = (reference) => {
   if (!app.components) return app.root.showErrorMessage('Components not loaded!')
   let ref = reference.toLowerCase();
-  let res = app.components.filter((item) => item.reference === ref);
+  let res = app.components.filter((item) => item.reference.toLowerCase() === ref);
   if (res.length === 0) {
     if (!app.cmdlets) return app.root.showErrorMessage('Cmdlets not loaded!')
     res = app.cmdlets.filter((item) => item.reference === ref);
@@ -168,7 +168,7 @@ window.onload = function () {
       codeFormat: function (msg) {
         let typeColors = { ERROR: 'red', WARNING: 'orange', INFO: 'green', VERBOSE: 'purple', ABORT: 'darkred' };
         let color = typeColors[msg.type] || 'black';
-        return `<font face="consolas,couriere new" color="${color}">` + msg.type + ': ' + (msg.obj ? '(' + msg.obj.scriptName + ') ' : '') + msg.message + '</font><br>'
+        return `<font face="consolas,courier new" color="${color}">` + msg.type + ': ' + (msg.obj ? '(' + msg.obj.scriptName + ') ' : '') + msg.message + '</font><br>'
       },
       showLongMessage: function (text, color, title) {
         console.log('showLongMessage', text)
@@ -309,8 +309,9 @@ window.onload = function () {
       this.$root.$on('cmdletsLoad', this.cmdletsLoad);
       this.$root.$on('componentsLoad', this.componentsLoad);
       this.$root.$on('componentHelp', (step, component) => {
-        let msg = (component.synopsis || '') + '\n' + (component.description || '')
-        this.showLongMessage(msg, null, step.name)
+        pow.exec(`Get-Help ${component.executable} -Full`).then(out => {
+          this.showLongMessage(`<code>${out.output}</code>`, null, component.name);
+        })
       });
       this.$root.$on('componentExamples', (reference, type) => {
         let ref = type === 'cmdlet' ? reference : '!' + reference;
@@ -353,11 +354,15 @@ window.onload = function () {
           .then(() => root.pipelineLoad('errortest'))
           //.then(() => root.pipelineLoad("code"))
           //.then(()=>root.check())
-          .then(() => root.run())
+          //.then(() => root.run())
           .then(() => {
             //console.clear();
-            root.componentsLoad()
             root.cmdletsLoad()
+            return root.componentsLoad()
+          })
+          .then(() => {
+            console.log('***********************1')
+            root.$emit('componentHelp', null, app.getComponent('csv2json.ps1'))
           })
           .catch(this.handlePOWError);
       } else {

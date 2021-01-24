@@ -48,10 +48,6 @@ function main() {
         $cmd = Get-Help -Full -Name $Name -ErrorAction SilentlyContinue
         # Help returns prefix match so "Get-Item" => ["Get-Item", "Get-Item2"]
         if ($cmd -is [array]) {$cmd = $cmd | Where-Object {$_.Name -like $Name}}
-        # if ($cmd.details.name -notlike $Name) {
-        #   Write-Warning "'$Name' is an alias, please inspect the full name $($cmd.details.name)!"
-        #   return
-        # }
         # Cache help because Get-Help can be slow
         $cmd | ConvertTo-Json -Depth 7 | Set-Content -Encoding UTF8 -Path "$CachePath/$($cmd.details.name).json"
       }
@@ -62,7 +58,7 @@ function main() {
       # TODO: Can we assume PSObj? Or does null mean we don't know and don't care?
       $outputFormat = $null
     }
-    # PS1: Should we use extension or not ???
+    # Must be lower case for IDE to find it getComponent
     $reference = $Name.ToLower()
 
     $whatif = $false; #$confirm=$false; $passthru=$false;
