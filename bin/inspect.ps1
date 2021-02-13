@@ -55,8 +55,8 @@ function main() {
       $NiceName = $cmd.details.name
       $output = Get-OPReturn($cmd)
       # CmdLets don't know our output formats like "text/json"
-      # TODO: Can we assume PSObj? Or does null mean we don't know and don't care?
-      $outputFormat = $null
+      # All cmdlets ultimately emit objects even if they are primitives like strings
+      $outputFormat = "psobj"
     }
     # Must be lower case for IDE to find it getComponent
     $reference = $Name.ToLower()

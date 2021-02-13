@@ -27,6 +27,9 @@
           <v-list-tile @click="pipelineSave">
             <v-list-tile-title>Save</v-list-tile-title>
           </v-list-tile>
+          <v-list-tile @click="pipelineBuild">
+            <v-list-tile-title>Build</v-list-tile-title>
+          </v-list-tile>
         </v-list>
       </v-menu>
       <div v-if="pipeline.id">{{pipeline.name}} ({{pipeline.id}} for {{pipeline.runtime}}) <v-icon @click="pipelineEdit"
