@@ -1,0 +1,28 @@
+{
+  "id": "elasticsearch",
+  "name": "ElasticSearch",
+  "description": "Functions available into ElasticSearch",
+  "parameters": {},
+  "globals": {},
+  "steps": [
+    {
+      "id": "A1",
+      "reference": "esindexlist.ps1",
+      "name": "List of Indices",
+      "description": null,
+      "stream": null,
+      "parameters": {
+        "Url": null,
+        "Username": "elastic",
+        "Password": "test123",
+        "Filter": null,
+        "Confirm": null
+      },
+      "input": null,
+      "output": null
+    }
+  ],
+  "input": {},
+  "output": {},
+  "runtime": "ps*"
+}

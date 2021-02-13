@@ -59,6 +59,11 @@ window.onload = function () {
         message: '',
         color: 'error'
       },
+      codeEditor: {
+        show: false,
+        message: '',
+        color: 'info'
+      },
       pipeline: {}
     },
     methods: {
@@ -202,6 +207,11 @@ window.onload = function () {
         this.message.color = color;
         this.message.show = true;
       },
+      showCodeEditor({code, title}) {
+        this.codeEditor.title = title;
+        this.codeEditor.text = code;
+        this.codeEditor.show = true;
+      },
       showStepDialog: function (id) {
         try {
           let step = pipelineManager.getStep(id);
@@ -281,6 +291,30 @@ window.onload = function () {
         }).catch(this.handlePOWError);
 
       },
+      pipelineBuild: function () {
+        let root = this;
+        if (pipelineManager.isDirty() && confirm('Do you want to save before building?')) {
+          return root.pipelineSave().then(root.check);
+        }
+        this.showLoading('Building ' + this.pipeline.id, 'Building...')
+        return pow.build('!' + this.pipeline.id)
+          .then(() => {
+            this.showLoading(false);
+            this.showLoading('Verifying ' + this.pipeline.id, 'Building...')
+            return pow.verify('!' + this.pipeline.id);
+          })
+          .then((obj) => {
+            if (obj.success) {
+              this.showMessage('Built and verified OK', 'green')
+            } else {
+              this.handlePOWError(obj)
+            }
+            this.showLoading(0);
+          }).catch((err) => {
+            this.showLoading(0);
+            this.handlePOWError(err)
+          });
+      },
       pipelineSave: function () {
         let root = this;
         let pipeline = pipelineManager.export();
@@ -313,6 +347,7 @@ window.onload = function () {
           this.showLongMessage(`<code>${out.output}</code>`, null, component.name);
         })
       });
+      this.$root.$on('codeEditor', this.showCodeEditor);
       this.$root.$on('componentExamples', (reference, type) => {
         let ref = type === 'cmdlet' ? reference : '!' + reference;
         pow.examples(ref)
@@ -327,11 +362,12 @@ window.onload = function () {
       this.$root.$on('stepPreview', (step) => {
         if (typeof step === 'string') { step = pipelineManager.getStep(step); }
         let component = app.getComponent(step.reference);
-        pow.preview('!' + this.pipeline.id, step, component).then((obj) => {
-          if (obj.object)
-            this.showLongMessage(JSON.stringify(obj.object, null, 2), null, 'Preview')
+        pow.preview('!' + this.pipeline.id, step, component).then((res) => {
+          if (res.object)
+            dataTableBuilder.showTable(this.$root, { title: 'Result', items: res.object });
+            //this.showLongMessage(JSON.stringify(obj.object, null, 2), null, 'Preview')
           else
-            this.showLongMessage(obj.output, null, 'Preview')
+            this.showLongMessage(res.output, null, 'Preview')
         }).catch(this.handlePOWError);
       });
       this.$root.$on('stepRemove', (step) => {
@@ -341,9 +377,9 @@ window.onload = function () {
           this.redraw();
         }
       });
+      pow.execOptions.PSCore = 'pwsh';
       if (app.DEVMODE) {
         //console.clear(); // Vue/electron junk warnings
-        pow.execOptions.PSCore = 'pwsh'; // Testing PowerShell Core (v6)
         pow.execOptions.debug = true;
         //root.componentsLoad();root.cmdletsLoad();return;
         pow.init('!examples')
@@ -351,18 +387,22 @@ window.onload = function () {
           //.then(() => root.pipelineLoad("pipeline2"))
           //.then(() => root.pipelineLoad("pipeline3"))
           //.then(() => root.pipelineLoad('procmon1'))
-          .then(() => root.pipelineLoad('errortest'))
-          //.then(() => root.pipelineLoad("code"))
+          //.then(() => root.pipelineLoad('errortest'))
+          //.then(() => root.pipelineLoad('code'))
+          .then(() => root.pipelineLoad('elasticsearch'))
           //.then(()=>root.check())
           //.then(() => root.run())
           .then(() => {
-            //console.clear();
-            root.cmdletsLoad()
-            return root.componentsLoad()
+            //root.$emit('codeEditor', {title: 'foo', code: 'console.log("Hello, world!");'})
           })
           .then(() => {
-            console.log('***********************1')
-            root.$emit('componentHelp', null, app.getComponent('csv2json.ps1'))
+            //console.clear();
+            return root.cmdletsLoad().then(()=>{
+              return root.componentsLoad()
+            })
+          })
+          .then(() => {
+            root.showStepDialog('A1');
           })
           .catch(this.handlePOWError);
       } else {

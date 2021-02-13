@@ -100,7 +100,7 @@ let stepForm = function(Vue, pipelineManager) {
                 <v-btn color="yellow darken-1" v-if="component.examples" @click="examples()">Examples</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="red"            dark @click="cancel()"><v-icon dark>cancel</v-icon>Cancel</v-btn>
-                <v-btn color="green darken-1" dark @click="preview()" :disabled="!!component.input" ><v-icon dark>find_in_page</v-icon>Preview</v-btn>
+                <v-btn color="green darken-1" dark @click="preview()" :disabled="!!step.input" ><v-icon dark>find_in_page</v-icon>Preview</v-btn>
                 <v-btn color="blue darken-1"  dark @click="save()"><v-icon dark>done</v-icon>OK</v-btn>
             </v-card-actions>
         </v-card>
