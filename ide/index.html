@@ -35,6 +35,7 @@
       <div v-if="pipeline.id">{{pipeline.name}} ({{pipeline.id}} for {{pipeline.runtime}}) <v-icon @click="pipelineEdit"
           small>edit</v-icon>
       </div>
+      <v-switch v-model="autosave" label="Autosave"></v-switch>
       <v-spacer></v-spacer>
       <v-btn color="green" @click="check">Check</v-btn>
       <v-btn color="orange" @click="run">Run</v-btn>

@@ -64,7 +64,8 @@ window.onload = function () {
         message: '',
         color: 'info'
       },
-      pipeline: {}
+      pipeline: {},
+      autosave: true
     },
     methods: {
       componentsUpdated: function () {
@@ -101,7 +102,8 @@ window.onload = function () {
       },
       check: function () {
         let root = this;
-        if (pipelineManager.isDirty() && confirm('Do you want to save before checking?')) {
+        if (pipelineManager.isDirty())
+          if (root.autosave || confirm('Do you want to save before checking?')) {
           return root.pipelineSave().then(root.check);
         }
         this.showLoading('Building ' + this.pipeline.id, 'Checking...')
@@ -337,7 +339,10 @@ window.onload = function () {
       // Listen for events
       this.$root.$on('stepSave', (newStep) => {
         pipelineManager.setStep(newStep);
-        this.redraw();
+        if(root.autosave)
+          this.pipelineSave().then(this.redraw);
+        else
+          this.redraw();
       });
       this.$root.$on('pipelineFormOK', this.pipelineFormOK);
       this.$root.$on('cmdletsLoad', this.cmdletsLoad);
@@ -362,12 +367,13 @@ window.onload = function () {
       this.$root.$on('stepPreview', (step) => {
         if (typeof step === 'string') { step = pipelineManager.getStep(step); }
         let component = app.getComponent(step.reference);
+        this.showLoading('Generating preview...')
         pow.preview('!' + this.pipeline.id, step, component).then((res) => {
           if (res.object)
             dataTableBuilder.showTable(this.$root, { title: 'Result', items: res.object });
-            //this.showLongMessage(JSON.stringify(obj.object, null, 2), null, 'Preview')
-          else
+          else // TODO: Check preview of non-object output?
             this.showLongMessage(res.output, null, 'Preview')
+          this.showLoading(false);
         }).catch(this.handlePOWError);
       });
       this.$root.$on('stepRemove', (step) => {
@@ -397,12 +403,15 @@ window.onload = function () {
           })
           .then(() => {
             //console.clear();
-            return root.cmdletsLoad().then(()=>{
-              return root.componentsLoad()
-            })
+            return root.componentsLoad()
+            /*
+            return root.componentsLoad().then(()=>{
+              return root.cmdletsLoad()
+            })*/
           })
           .then(() => {
-            root.showStepDialog('A1');
+            root.$emit('stepPreview', 'B1')
+            //root.showStepDialog('B1');
           })
           .catch(this.handlePOWError);
       } else {
