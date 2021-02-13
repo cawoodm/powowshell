@@ -182,7 +182,16 @@ const pow = (function () {
   async function preview(pipelineId, step, component): Promise<POWResult> {
     let path = component.executable;
     //if (component.type=="component") path = "!"+path;
-    let params = JSON.stringify(step.parameters).replace(/"/g, "`\"").replace(/\$/g, "`$");
+    let parsedParams = {};
+    console.log("component", component)
+    Object.keys(step.parameters).forEach(p => {
+      let val = step.parameters[p];
+      let paramDef = component.parameters.find(cp => cp.name === p) || {type: ''};
+      if (paramDef.type.match(/\[]$/)) val = val.split(/,\s*/);
+      console.log(p, val, paramDef && paramDef.type);
+      parsedParams[p] = val;
+    })
+    let params = JSON.stringify(parsedParams).replace(/"/g, "`\"").replace(/\$/g, "`$");
     //console.log(`pow preview "${path}" "${params}"`)
     //if (component.output.match(/text\/json/))
       // JSON Component returns an object

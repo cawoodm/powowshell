@@ -63,7 +63,7 @@ let stepForm = function(Vue, pipelineManager) {
                             <v-text-field label="Name" placeholder="A label for this step" v-model="step.name" :rules="[value => !!value || 'Required parameter!']" ref="focusMe" autofocus></v-text-field>
                         </v-flex>
                         <v-flex xs12>
-                            <v-text-field label="Description" placeholder="A description for this step" v-model="step.descriptions"></v-text-field>
+                            <v-text-field label="Description" placeholder="A description for this step" v-model="step.description"></v-text-field>
                         </v-flex>
                         <v-flex xs4>
                             <v-select :items="inputs" :label="'Piped Input (' + component.input + ')'" v-model="step.input" v-if="component.input"></v-select>

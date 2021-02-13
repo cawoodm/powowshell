@@ -15,18 +15,21 @@
  Optional Password for Basic Authentication
 
  .Parameter Filter
- Optional wildcard filter for limiting index names (e.g. myindex-*)
+ Optional wildcard filter for limiting index names (e.g. only myindex-*)
+
+ .Parameter Exclude
+ Optional wildcard filter for hiding index names (e.g. not .*)
 
  .Inputs
  none
 
  .Outputs
  PSObj
- {name,fullName,size(int)}
+ {index,health,status,uuid,"docs.count"(int),"pri.store.size"(int)}
 
  .Example
- .\ESIndexList.ps1 -Filter .kibana*
- Get Kibana Indices on Localhost without authentication
+ .\ESIndexList.ps1 -Filter *customer* -Exclude .*
+ Get Customer Indices (except those beginning with '.') without authentication (server localhost)
 
 #>
 [OutputType([object])]
@@ -35,7 +38,8 @@ param(
   [string]$Url = "http://localhost:9200",
   [string]$Username,
   [string]$Password,
-  [string]$Filter
+  [string]$Filter,
+  [string]$Exclude
 )
 function main() {
   
@@ -56,6 +60,11 @@ function main() {
     if ($Filter) {
       Write-Verbose "Filtering indices by name '$Filter'..."
       $res = $res | Where-Object {$_.index -like $Filter}
+    }
+
+    if ($Exclude) {
+      Write-Verbose "Excluding indices by name '$Exclude'..."
+      $res = $res | Where-Object {$_.index -notlike $Exclude}
     }
 
     return $res

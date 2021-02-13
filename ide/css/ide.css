@@ -29,8 +29,6 @@ div.step {width: 100%;height: 100%;}
     display: flex;
     flex-direction: column;
 }
-.stepFilled {
-}
 .stepEmpty {
     border-style: dashed;
     border-color: #ddd;
@@ -38,3 +36,5 @@ div.step {width: 100%;height: 100%;}
 }
 /* Vuetify Hacks */
 .v-card__title {background-color: #1565c0; color: white;}
+.v-table__overflow {overflow-x: hidden;}
+.expandfully {overflow-y: auto;}

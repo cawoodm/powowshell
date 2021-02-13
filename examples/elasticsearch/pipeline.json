@@ -9,17 +9,37 @@
       "id": "A1",
       "reference": "esindexlist.ps1",
       "name": "List of Indices",
-      "description": null,
+      "description": "List of all non-system indices on the local ES server.",
       "stream": null,
       "parameters": {
         "Url": null,
         "Username": "elastic",
         "Password": "test123",
         "Filter": null,
-        "Confirm": null
+        "Confirm": null,
+        "Exclude": ".*"
       },
-      "input": null,
-      "output": null
+      "input": null
+    },
+    {
+      "id": "B1",
+      "reference": "esdocsearch.ps1",
+      "name": "ESDocSearch",
+      "description": "List of all parts",
+      "stream": null,
+      "parameters": {
+        "Url": null,
+        "Username": "elastic",
+        "Password": "test123",
+        "Filter": null,
+        "Confirm": null,
+        "Index": "parts-dev",
+        "Query": "*",
+        "PageSize": "3",
+        "Page": "2",
+        "Fields": "part, text_en"
+      },
+      "input": null
     }
   ],
   "input": {},

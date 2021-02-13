@@ -54,10 +54,10 @@ Vue.component('step-grid', {
                         <v-flex>
                         <v-card height="200px" v-if="step.reference" class="flexcard">
                             <v-card-title class="blue white--text stepName" :title="step.reference">
-                                {{ step.reference }}
+                                {{ step.name }}
                             </v-card-title>
                             <v-card-text class="grow">
-                                <div class="stepReference">{{step.name}}</div>
+                                <div class="stepReference">{{step.description}}</div>
                             </v-card-text>
                             <v-card-actions dark>
                                 <v-spacer></v-spacer>

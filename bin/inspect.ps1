@@ -74,7 +74,7 @@ function main() {
         $parameter2 = $parameters2 | Where-Object Name -eq $parameter.name
         $paramPipeMode = $null; $paramPipe = $null;
         if ($parameter.name -eq "WhatIf") {$whatif = $true; continue; }
-        #if ($parameter.name -eq "Confirm") {$confirm = $true; continue;}
+        if ($parameter.name -eq "Confirm") {$confirm = $true; continue; }
         #if ($parameter.name -eq "PassThru") {$passthru = $true; continue;}
         $paramType = Get-ParamType $parameter
         if ($parameter.pipelineInput -like "true*") {

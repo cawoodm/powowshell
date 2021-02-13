@@ -61,7 +61,7 @@ const DataTable = Vue.extend({
                 <v-spacer></v-spacer>
                 <v-icon @click="close()" color="white">close</v-icon>
             </v-toolbar>
-            <v-card-text>
+            <v-card-text class="expandfully">
                 <v-data-table :headers="headers" :items="items" class="elevation-1" total-items="100" hide-actions>
                     <template slot="items" slot-scope="myprops">
                         <td v-for="header in headers">
