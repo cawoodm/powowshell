@@ -92,6 +92,9 @@ window.onload = function () {
           app.dragula.cancel(true)
         });
       },
+      hideLoading: function () {
+        this.showLoading(false);
+      },
       showLoading: function (msg, title) {
         if (msg === 0)
           this.$refs.loading.close();
@@ -119,11 +122,10 @@ window.onload = function () {
             } else {
               this.handlePOWError(obj)
             }
-            this.showLoading(0);
           }).catch((err) => {
-            this.showLoading(0);
             this.handlePOWError(err)
-          });
+          })
+          .finally(this.hideLoading);
       },
       run: function () {
         let root = this;
@@ -149,11 +151,10 @@ window.onload = function () {
             } else {
               this.handlePOWError(res)
             }
-            this.showLoading(0);
           }).catch((err) => {
-            this.showLoading(0);
             this.handlePOWError(err)
-          });
+          })
+          .finally(this.hideLoading);
       },
       handlePOWError: function (err) {
         let message = '<pre>';
@@ -373,8 +374,8 @@ window.onload = function () {
             dataTableBuilder.showTable(this.$root, { title: 'Result', items: res.object });
           else // TODO: Check preview of non-object output?
             this.showLongMessage(res.output, null, 'Preview')
-          this.showLoading(false);
-        }).catch(this.handlePOWError);
+        }).catch(this.handlePOWError)
+        .finally(this.hideLoading);
       });
       this.$root.$on('stepRemove', (step) => {
         if (typeof step === 'string') { step = pipelineManager.getStep(step); }
