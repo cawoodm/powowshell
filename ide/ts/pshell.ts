@@ -17,6 +17,7 @@ interface SearchFunc {
 export function PShell() {
   // ../ide/node_modules/node-powershell/lib/index.js
   const shell = require("node-powershell");
+  const child_process = require("child_process");
   let PowerShell;
   return {
     init: function(options: ShellOpts) {
@@ -29,6 +30,22 @@ export function PShell() {
         pwsh: options.pwsh || false
       });
       return PowerShell.pid;
+    },
+    exec2: async function(command, args) {
+      return new Promise(function(resolve, reject) {
+        command = command.replace(/"/g, "\\\"")
+        command = "[Console]::OutputEncoding=[System.Text.Utf8Encoding]::new();" + command;
+        // TODO: Pass command base64 encoded
+        console.log(command)
+        let res = child_process.exec(`pwsh -c "${command}"`, {
+          encoding: 'utf8'
+        }, (error: any, stdout: string, stderr: string) =>{
+          if (error)
+            reject(error);
+          else
+            resolve({stdout, stderr});
+        });
+      })
     },
     exec: async function(command, args) {
       return new Promise(function(resolve, reject) {

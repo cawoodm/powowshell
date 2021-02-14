@@ -93,7 +93,7 @@ const pow = (function () {
   async function pipeline(path) {
     // If we don't have a !* or a */* path, add the ! prefix
     if (!path.match(/^!/) && !path.match(/[\\/]/)) path = "!" + path;
-    const result = await execStrictJSON(`pow pipeline "${path}" -Export`);
+    const result = await execStrictJSON(`pow pipeline '${path}' -Export`);
     result.object = result?.object && result.object[0];
     return result;
   }
@@ -140,7 +140,7 @@ const pow = (function () {
    * @returns {Promise<POWResult>} Promise with a POWResult
    */
   async function build(pipelineId): Promise<POWResult> {
-    return execStrict(`pow build "${pipelineId}"`);
+    return execStrict(`pow build '${pipelineId}'`);
   }
 
   /**
@@ -149,7 +149,7 @@ const pow = (function () {
    * @returns {Promise} Promise with a POWResult
    */
   async function verify(pipelineId): Promise<POWResult> {
-    return execStrictJSON(`pow verify "${pipelineId}" $null -Export`);
+    return execStrictJSON(`pow verify '${pipelineId}' $null -Export`);
   }
 
   /**
@@ -159,7 +159,7 @@ const pow = (function () {
    */
   async function run(path): Promise<POWResult> {
     // TODO: We should only execStrict if the pipeline has $ErrorActionPreference="Stop"
-    return execStrictJSON(`pow run "${path}" $null -Export`);
+    return execStrictJSON(`pow run '${path}' $null -Export`);
   }
 
   /**
@@ -169,7 +169,7 @@ const pow = (function () {
    */
   async function trace(path): Promise<POWResult> {
     // TODO: We should only execStrict if the pipeline has $ErrorActionPreference="Stop"
-    return execStrictJSON(`pow run "${path}" '' trace -Export`);
+    return execStrictJSON(`pow run '${path}' '' trace -Export`);
   }
 
   /**
@@ -191,15 +191,16 @@ const pow = (function () {
       console.log(p, val, paramDef && paramDef.type);
       parsedParams[p] = val;
     })
-    let params = JSON.stringify(parsedParams).replace(/"/g, "`\"").replace(/\$/g, "`$");
-    //console.log(`pow preview "${path}" "${params}"`)
+    //let params = JSON.stringify(parsedParams).replace(/"/g, "`\"").replace(/\$/g, "`$");
+    let params = JSON.stringify(parsedParams).replace(/'/g, "''");
+    //console.log(`pow preview '${path}' "${params}"`)
     //if (component.output.match(/text\/json/))
       // JSON Component returns an object
-      return execStrictJSON(`pow preview "${pipelineId}" "${path}" "${params}" -Export`);
+      return execStrictJSON(`pow preview '${pipelineId}' '${path}' '${params}' -Export`);
     /*
     else
       // Normal component returns a string
-      return execStrict(`pow preview "${pipelineId}" "${path}" "${params}"`);
+      return execStrict(`pow preview "${pipelineId}" '${path}' "${params}"`);
       */  
   }
 
@@ -209,7 +210,7 @@ const pow = (function () {
    * @returns {Promise} Promise with a POWResult (.object=component definition)
    */
   async function inspect(path) {
-    const result = await execStrictJSON(`pow inspect "${path}" -Export`);
+    const result = await execStrictJSON(`pow inspect '${path}' -Export`);
     result.object = result?.object && result.object[0];
     return result;
   }
@@ -221,7 +222,8 @@ const pow = (function () {
    * @returns {Promise} Promise with a POWResult (.object=Array of component definitions)
    */
   async function components(path, reload = false) {
-    return execStrictJSON(`pow components "${path || "!"}" ${reload ? "generate" : ""} -Export`);
+    path = path || '!';
+    return execStrictJSON(`pow components '${path}' ${reload ? "generate" : ""} -Export`);
   }
 
   /**
@@ -229,7 +231,7 @@ const pow = (function () {
    * @returns {Promise} Promise with a POWResult (.object=Array of cmdlet definitions)
    */
   async function cmdlets(filter = "") {
-    const result = await execStrictJSON(`pow cmdlets export "${filter}"`);
+    const result = await execStrictJSON(`pow cmdlets export '${filter}'`);
     result.object = result?.object && result.object[0];
     return result;
   }
@@ -240,7 +242,7 @@ const pow = (function () {
    * @returns {Promise} Promise with a POWResult(.object=Array of examples)
    */
   async function examples(path: string) {
-    return execStrictJSON(`pow examples "${path}" -Export`);
+    return execStrictJSON(`pow examples '${path}' -Export`);
   }
 
   /**
@@ -259,7 +261,7 @@ const pow = (function () {
       });
       command = command + (verbosePreference?' -Verbose':'');
       if (execOptions.debug) console.log("EXEC", pid, command);
-      pshell.exec(command, [])
+      pshell.exec2(command, [])
         .then((out: any) => {
           try {
             if (execOptions.debug) console.log("STDOUT", pid, out.stdout.substring(0, 200));
