@@ -1,5 +1,7 @@
 # TODO
 
+https://github.com/rannn505/node-powershell/blob/master/docs/api/Shell/dispose.md
+
 * pow.exec vs pow.execStrict error handling
 * Decide whether adaptors work on data type (cmdlet.output) or format (cmdlet.outputFormat)
   * `pow components ! | select name, output, outputFormat`
