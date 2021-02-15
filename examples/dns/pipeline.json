@@ -1,0 +1,39 @@
+{
+  "id": "dns",
+  "name": "DNS Lookup Functions",
+  "description": null,
+  "parameters": {},
+  "globals": {},
+  "steps": [
+    {
+      "id": "A1",
+      "reference": "resolve-dnsname",
+      "name": "Lookup Name",
+      "description": "Visual nslookup",
+      "stream": null,
+      "parameters": {
+        "CacheOnly": null,
+        "DnsOnly": null,
+        "DnssecCd": null,
+        "DnssecOk": null,
+        "LlmnrFallback": null,
+        "LlmnrNetbiosOnly": null,
+        "LlmnrOnly": null,
+        "Name": "google.com",
+        "NetbiosFallback": null,
+        "NoHostsFile": null,
+        "NoIdn": null,
+        "NoRecursion": null,
+        "QuickTimeout": null,
+        "Server": null,
+        "TcpOnly": null,
+        "Type": null
+      },
+      "input": null,
+      "output": null
+    }
+  ],
+  "input": {},
+  "output": {},
+  "runtime": "ps*"
+}
