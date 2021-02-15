@@ -187,7 +187,7 @@ const pow = (function () {
     Object.keys(step.parameters).forEach(p => {
       let val = step.parameters[p];
       let paramDef = component.parameters.find(cp => cp.name === p) || {type: ''};
-      if (paramDef.type.match(/\[]$/)) val = val.split(/,\s*/);
+      if (paramDef.type.match(/\[]$/)) val = (val || '').split(/,\s*/);
       console.log(p, val, paramDef && paramDef.type);
       parsedParams[p] = val;
     })
@@ -310,14 +310,15 @@ const pow = (function () {
     //  One complete JSON object
     if (out.stderr) {
       success = false;
-      if (out.stderr === "object") {
+      if (out.stderr.trim().match(/^{.*}$/)) try {out.stderr = JSON.parse(out.stderr)}catch{}
+      if (typeof out.stderr === "object") {
         messages.push(new POWMessage(MessageTypes[out.stderr.powType], out.stderr.message, out.stderr))
       } else {
         // Drop trailing newlines which make primitives like "foo" into "foo\n"
         out.stderr = out.stderr.trim();
         // Split output by newline, skipping empty lines
         let outlines = out.stderr.split(/\r?\n/).filter(l => !!l);
-        messages.push(...outlines.map(parseLine));
+        messages.push(...outlines.map(parseErrorLine));
       }
     }
 
@@ -346,7 +347,7 @@ const pow = (function () {
             throw new POWError(`POWJS102:Invalid JSON Object: ${e.message}`, messages)
             */
             // We can ignore these in prod
-            messages.push(parseLine(line))
+            messages.push(parseErrorLine(line))
           }
         });
       } else {
@@ -358,9 +359,13 @@ const pow = (function () {
 
     return new POWResult(success, out.stdout, messages, obj)
   }
-  function parseLine(line) {
+  function parseErrorLine(line) {
+    return parseLine(line, "ERROR")
+  }
+  function parseLine(line, type) {
     const parsedLine = line.match(/^((ERROR)|(WARNING)|(INFO)|(VERBOSE)): (.*)/);
-    return new POWMessage(parsedLine ? parsedLine[1] : "OUTPUT", parsedLine ? parsedLine[parsedLine.length - 1] : line, null)
+    let msgType: string = type || (parsedLine ? parsedLine[1] : "OUTPUT");
+    return new POWMessage(msgType, parsedLine ? parsedLine[parsedLine.length - 1] : line, null)
   }
 
   return {

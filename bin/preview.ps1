@@ -52,6 +52,7 @@ function main() {
       $Parameters = "@ParamHash"
     } elseif ($Parameters -like "{*") {
       # Decode JSON and convert JSON Object to HashTable for Splatting
+      Write-Verbose $Parameters
       $Parameters = ConvertFrom-Json $Parameters
       $ParamHash = @{}
       $Parameters.psobject.properties | Where-Object Value -ne $null | ForEach-Object { $ParamHash[$_.Name] = $_.Value }

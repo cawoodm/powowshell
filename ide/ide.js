@@ -29,11 +29,11 @@ app.components = {};
 app.cmdlets = {};
 
 app.getComponent = (reference) => {
-  if (!app.components) return app.root.showErrorMessage('Components not loaded!')
+  if (!app.components || Object.keys(app.components).length === 0) throw new Error('Components not loaded!')
   let ref = reference.toLowerCase();
   let res = app.components.filter((item) => item.reference.toLowerCase() === ref);
   if (res.length === 0) {
-    if (!app.cmdlets) return app.root.showErrorMessage('Cmdlets not loaded!')
+    if (!app.cmdlets || Object.keys(app.cmdlets).length === 0) throw new Error('Cmdlets not loaded!')
     res = app.cmdlets.filter((item) => item.reference === ref);
   }
   if (!res || !res.length) return app.root.showErrorMessage(`Component/Cmdlet '${reference}' not found! Consider reloading the cache with 'pow cmdlets generate'.`)
@@ -80,14 +80,18 @@ window.onload = function () {
         app.dragula = dragula([].slice.call(document.querySelectorAll('.drag,.drop')), dragOpts).on('drop', function (el, space) {
           let id = el.getAttribute('d-id');
           let ref = el.getAttribute('d-ref');
-          if (ref) {
-            // This is a component
-            let component = app.getComponent(ref);
-            root.$refs.stepGrid.addComponent(space.id, component)
-            root.showStepDialog(space.id);
-          } else if (id) {
-            // This is a step
-            root.$refs.stepGrid.moveStep(id, space.id);
+          try {
+            if (ref) {
+              // This is a component
+              let component = app.getComponent(ref);
+              root.$refs.stepGrid.addComponent(space.id, component)
+              root.showStepDialog(space.id);
+            } else if (id) {
+              // This is a step
+              root.$refs.stepGrid.moveStep(id, space.id);
+            }
+          } catch(e) {
+            this.showError('drag', e)
           }
           app.dragula.cancel(true)
         });
@@ -162,9 +166,10 @@ window.onload = function () {
         if (err.constructor.name === 'POWError') message += 'POWError:\n';
         if (err.message) message += err.message + '\n' + err.stack;
         if (err.messages && Array.isArray(err.messages))
-          err.messages.forEach(msg => {
+          message = err.messages.map(this.codeFormat).join('\n');
+          /*err.messages.forEach(msg => {
             message += '\n' + msg.type + ': ' + (msg.obj ? '(' + msg.obj.scriptName + ') ' : '') + msg.message + ' ' + (msg.stack)
-          });
+          });*/
         console.log(err);
         this.showLongMessage(message, 'error');
       },
@@ -193,6 +198,9 @@ window.onload = function () {
         this.longMessage.html = text.match(/</) ? text : '';
         this.longMessage.color = color;
         this.longMessage.show = true;
+      },
+      showError: function (title, e) {
+        this.showLongMessage(e.message + '\n' + e.stack, 'error', title);
       },
       showErrorMessage: function (msg) {
         return this.showMessage(msg, 'error')
@@ -285,7 +293,7 @@ window.onload = function () {
           filters: { name: 'Pipelines', extensions: ['json'] }
         }).then(data => {
           const file = data.filePaths;
-          if (!file) return;
+          if (!file || !file.length || !file[0]) return;
           pow.load(file[0]).then((res) => {
             pipelineManager.import(res.object);
             if (this.$refs.stepGrid) this.$refs.stepGrid.doUpdate();
@@ -367,15 +375,20 @@ window.onload = function () {
       });
       this.$root.$on('stepPreview', (step) => {
         if (typeof step === 'string') { step = pipelineManager.getStep(step); }
-        let component = app.getComponent(step.reference);
-        this.showLoading('Generating preview...')
-        pow.preview('!' + this.pipeline.id, step, component).then((res) => {
-          if (res.object)
-            dataTableBuilder.showTable(this.$root, { title: 'Result', items: res.object });
-          else // TODO: Check preview of non-object output?
-            this.showLongMessage(res.output, null, 'Preview')
-        }).catch(this.handlePOWError)
-        .finally(this.hideLoading);
+        if (!step.reference) return this.showErrorMessage('Unknown step to preview: ' + step);
+        try {
+          let component = app.getComponent(step.reference);
+          this.showLoading('Generating preview...')
+          pow.preview('!' + this.pipeline.id, step, component).then((res) => {
+            if (res.object)
+              dataTableBuilder.showTable(this.$root, { title: 'Result', items: res.object });
+            else // TODO: Check preview of non-object output?
+              this.showLongMessage(res.output, null, 'Preview')
+          }).catch(this.handlePOWError)
+          .finally(this.hideLoading);
+        } catch(e) {
+          this.showError('stepPreview', e)
+        }
       });
       this.$root.$on('stepRemove', (step) => {
         if (typeof step === 'string') { step = pipelineManager.getStep(step); }
@@ -396,7 +409,8 @@ window.onload = function () {
           //.then(() => root.pipelineLoad('procmon1'))
           //.then(() => root.pipelineLoad('errortest'))
           //.then(() => root.pipelineLoad('code'))
-          .then(() => root.pipelineLoad('elasticsearch'))
+          //.then(() => root.pipelineLoad('elasticsearch'))
+          .then(() => root.pipelineLoad('dns'))
           //.then(()=>root.check())
           //.then(() => root.run())
           .then(() => {
@@ -404,14 +418,16 @@ window.onload = function () {
           })
           .then(() => {
             //console.clear();
-            return root.componentsLoad()
+            return Promise.all([root.componentsLoad(),root.cmdletsLoad()]);
             /*
+            return root.componentsLoad()
             return root.componentsLoad().then(()=>{
               return root.cmdletsLoad()
-            })*/
+            })
+            */
           })
           .then(() => {
-            root.$emit('stepPreview', 'B1')
+            root.$emit('stepPreview', 'A1')
             //root.showStepDialog('B1');
           })
           .catch(this.handlePOWError);
