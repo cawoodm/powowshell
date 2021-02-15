@@ -33,12 +33,13 @@ export function PShell() {
     },
     exec2: async function(command, args) {
       return new Promise(function(resolve, reject) {
+        console.log("PSHELL COMMAND:", command)
         command = command.replace(/"/g, "\\\"")
         command = "[Console]::OutputEncoding=[System.Text.Utf8Encoding]::new();" + command;
         // TODO: Pass command base64 encoded
-        console.log(command)
         let res = child_process.exec(`pwsh -c "${command}"`, {
-          encoding: 'utf8'
+          encoding: 'utf8',
+          maxBuffer: 6000000 // 6MB
         }, (error: any, stdout: string, stderr: string) =>{
           if (error)
             reject(error);
