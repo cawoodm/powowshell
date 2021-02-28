@@ -35,7 +35,9 @@ let stepForm = function(Vue, pipelineManager) {
         form2Step() {
             for (let i=0; i < this.component.parameters.length; i++) {
                 let compParam = this.component.parameters[i];
-                this.step.parameters[compParam.name] = compParam.stepValue;
+                let val = compParam.stepValue;
+                if (val === '') val = null;
+                this.step.parameters[compParam.name] = val;
             }
         }
     },
