@@ -14,16 +14,16 @@
  .Parameter Password
  Optional Password for Basic Authentication
 
- .Parameter $Query
+ .Parameter Query
  LucenesSearch string like 'moby AND dick AND type: book'
 
- .Parameter $PageSize
+ .Parameter PageSize
  Page size for paging results (e.g. 10)
 
- .Parameter $Page
+ .Parameter Page
  Page number for paging results (e.g. 1)
 
- .Parameter $Fields
+ .Parameter Fields
  Array of field names to return, else entire _source object is returned
 
  .Inputs
@@ -51,13 +51,13 @@ param(
   [string[]]$Fields
 )
 function main() {
-  
+
   if (-not $Url) {throw "Parameter -Url not supplied!"}
   if (-not $Index) {throw "Parameter -Index not supplied!"}
 
   if (-not $Page){$Page = 1}
   if (-not $PageSize){$PageSize = 25}
-    
+
   try {
 
     $Headers = @{}

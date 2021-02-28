@@ -18,7 +18,7 @@
       "parameters": {
         "CreateErrorOutput": true,
         "CreateWarningOutput": true,
-        "ThrowException": false
+        "ThrowException": true
       },
       "input": null
     }

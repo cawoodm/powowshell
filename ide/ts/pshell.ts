@@ -38,7 +38,8 @@ export function PShell() {
         // TODO: Pass command base64 encoded
         console.log(command)
         let res = child_process.exec(`pwsh -c "${command}"`, {
-          encoding: 'utf8'
+          encoding: 'utf8',
+          maxBuffer: 1024 * 1024 * 10 // 10 MB
         }, (error: any, stdout: string, stderr: string) =>{
           if (error)
             reject(error);
