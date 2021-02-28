@@ -21,10 +21,10 @@
 [CmdletBinding(SupportsShouldProcess)]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
 param(
-    [Parameter(Mandatory)][String]$Path,
-    $Parameters=@{},
-    [ValidateSet("trace")]
-      [string[]]$Options
+  [Parameter(Mandatory)][String]$Path,
+  $Parameters = @{},
+  [ValidateSet("trace")]
+  [string[]]$Options
 )
 function main() {
 
@@ -41,25 +41,25 @@ function main() {
       # If the user doesn't escape backspaces
       if ($Parameters -notlike "*\\*") {
         # Escape them
-       $Parameters = $Parameters.replace("\", "\\")
+        $Parameters = $Parameters.replace("\", "\\")
       }
       $Parameters = ConvertFrom-StringData $Parameters
     }
     #$p = $ExecutionContext.InvokeCommand.ExpandString($Parameters)
   }
-  Write-Verbose $Parameters
+  if ($null -ne $Parameters) {Write-Verbose $Parameters}
   $Path = (Resolve-Path -Path $Path).Path
   Push-Location $Path
   try {
     $exec = "./build/run_prod.ps1"
-    if ($Options -contains "trace") {$exec="./build/run_trace.ps1"}
+    if ($Options -contains "trace") {$exec = "./build/run_trace.ps1"}
     if (-not (Test-Path $exec)) {throw "POW101: Pipeline has not been built!"}
     if (Test-Path .\errors.log) { Remove-Item .\errors.log }
     if (Test-Path .\warnings.log) { Remove-Item .\warnings.log }
-    & "$exec" @Parameters
+    if ($null -ne $Parameters) {& "$exec" @Parameters} else {& "$exec"}
     return
     $exec = "./build/run_prod.ps1"
-    if ($Options -contains "trace") {$exec="./build/run_trace.ps1"}
+    if ($Options -contains "trace") {$exec = "./build/run_trace.ps1"}
     if (-not (Test-Path $exec)) {throw "POW101: Pipeline has not been built!"}
     if ($Parameters -and $Parameters.Count -gt 0) {
       Write-Verbose "POW:RUN: & $exec $($parameters | ConvertTo-Json)"
