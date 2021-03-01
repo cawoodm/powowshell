@@ -376,19 +376,22 @@ window.onload = function () {
       this.$root.$on('stepPreview', (step) => {
         if (typeof step === 'string') { step = pipelineManager.getStep(step); }
         if (!step.reference) return this.showErrorMessage('Unknown step to preview: ' + step);
-        try {
-          let component = app.getComponent(step.reference);
-          this.showLoading('Generating preview...')
-          pow.preview('!' + this.pipeline.id, step, component).then((res) => {
-            if (res.object)
-              dataTableBuilder.showTable(this.$root, { title: 'Result', items: res.object });
-            else // TODO: Check preview of non-object output?
-              this.showLongMessage(res.output, null, 'Preview')
-          }).catch(this.handlePOWError)
-          .finally(this.hideLoading);
-        } catch(e) {
-          this.showError('stepPreview', e)
-        }
+        return pow.build('!' + this.pipeline.id)
+          .then(() => {
+            try {
+              let component = app.getComponent(step.reference);
+              this.showLoading('Generating preview...')
+              pow.preview('!' + this.pipeline.id, step, component).then((res) => {
+                if (res.object)
+                  dataTableBuilder.showTable(this.$root, { title: 'Result', items: res.object });
+                else // TODO: Check preview of non-object output?
+                  this.showLongMessage(res.output, null, 'Preview')
+              }).catch(this.handlePOWError)
+              .finally(this.hideLoading);
+            } catch(e) {
+              this.showError('stepPreview', e)
+            }
+          });
       });
       this.$root.$on('stepRemove', (step) => {
         if (typeof step === 'string') { step = pipelineManager.getStep(step); }
@@ -409,9 +412,9 @@ window.onload = function () {
           //.then(() => root.pipelineLoad('procmon1'))
           //.then(() => root.pipelineLoad('errortest'))
           //.then(() => root.pipelineLoad('code'))
-          //.then(() => root.pipelineLoad('elasticsearch'))
+          .then(() => root.pipelineLoad('elasticsearch'))
           //.then(() => root.pipelineLoad('dns'))
-          .then(() => root.pipelineLoad('cmdlets'))
+          //.then(() => root.pipelineLoad('cmdlets'))
           //.then(()=>root.check())
           //.then(() => root.run())
           .then(() => {
@@ -428,8 +431,8 @@ window.onload = function () {
             */
           })
           .then(() => {
-            root.$emit('stepPreview', 'A1')
-            //root.showStepDialog('B1');
+            //root.$emit('stepPreview', 'A1')
+            root.showStepDialog('B1');
           })
           .catch(this.handlePOWError);
       } else {
