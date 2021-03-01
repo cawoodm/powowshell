@@ -29,6 +29,12 @@
       "program": "${file}"
     },
     {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch tmp.js",
+      "program": "${workspaceFolder}/ide/tmp.js"
+    },
+    {
       "type": "PowerShell",
       "request": "launch",
       "name": "Launch Current PS",

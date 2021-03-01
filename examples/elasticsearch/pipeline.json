@@ -12,10 +12,10 @@
       "description": "List of all non-system indices on the local ES server.",
       "stream": null,
       "parameters": {
-        "Url": null,
+        "Url": "http://msa.mybdev.buhler-ltd.com:8080/es/test",
         "Username": "elastic",
         "Password": "test123",
-        "Filter": null,
+        "Filter": "*-dev*",
         "Confirm": null,
         "Exclude": ".*"
       },
@@ -25,19 +25,19 @@
       "id": "B1",
       "reference": "esdocsearch.ps1",
       "name": "ESDocSearch",
-      "description": "List of all parts",
+      "description": "List some parts",
       "stream": null,
       "parameters": {
-        "Url": null,
-        "Username": "elastic",
-        "Password": "test123",
+        "Url": "http://msa.mybdev.buhler-ltd.com:8080/es/test",
+        "Username": null,
+        "Password": null,
         "Filter": null,
         "Confirm": null,
         "Index": "parts-dev",
         "Query": "*",
-        "PageSize": "3",
-        "Page": "2",
-        "Fields": "part, text_en"
+        "PageSize": "30",
+        "Page": "1",
+        "Fields": "part, text_en, material_status"
       },
       "input": null
     }
