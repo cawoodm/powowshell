@@ -95,7 +95,7 @@
       "input": "A2"
     },
     {
-      "id": "C2",
+      "id": "A3",
       "reference": "Select-Object",
       "name": "Select Name, Count",
       "stream": "process",

@@ -1,0 +1,85 @@
+{
+  "id": "cmdlets",
+  "name": "List Cmdlet Modules",
+  "description": "List the top modules with the most cmdlets.",
+  "parameters": {},
+  "globals": {},
+  "steps": [
+    {
+      "id": "A1",
+      "reference": "invoke-powowshell",
+      "name": "List Cmdlets",
+      "description": null,
+      "stream": null,
+      "parameters": {
+        "Command": "cmdlets",
+        "p1": null,
+        "p2": null,
+        "p3": null,
+        "Confirm": null
+      },
+      "input": null
+    },
+    {
+      "id": "B1",
+      "reference": "group-object",
+      "name": "By Module",
+      "description": null,
+      "stream": "end",
+      "parameters": {
+        "AsHashTable": null,
+        "AsString": null,
+        "CaseSensitive": null,
+        "Culture": null,
+        "InputObject": null,
+        "NoElement": null,
+        "Property": "module"
+      },
+      "input": "A1"
+    },
+    {
+      "id": "C1",
+      "reference": "select-object",
+      "name": "Selecting the",
+      "description": null,
+      "stream": "process",
+      "parameters": {
+        "ExcludeProperty": null,
+        "ExpandProperty": null,
+        "First": null,
+        "Index": null,
+        "InputObject": null,
+        "Last": null,
+        "Property": "{\"Name\", \"Count\"}",
+        "Skip": null,
+        "SkipIndex": null,
+        "SkipLast": null,
+        "Unique": null,
+        "Wait": null
+      },
+      "input": "B1"
+    },
+    {
+      "id": "D1",
+      "reference": "sort-object",
+      "name": "Top 25",
+      "description": null,
+      "stream": "end",
+      "parameters": {
+        "Bottom": null,
+        "CaseSensitive": null,
+        "Culture": null,
+        "Descending": true,
+        "InputObject": null,
+        "Property": "Count",
+        "Stable": null,
+        "Top": "25",
+        "Unique": null
+      },
+      "input": "C1"
+    }
+  ],
+  "input": {},
+  "output": {},
+  "runtime": "ps*"
+}

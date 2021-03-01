@@ -1,4 +1,5 @@
 [CmdletBinding(SupportsShouldProcess)]
+[OutputType([object])]
 param(
   [Parameter(Mandatory)][String[]]
   $Command,

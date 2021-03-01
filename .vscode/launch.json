@@ -17,9 +17,9 @@
       "type": "PowerShell",
       "request": "launch",
       "name": "AD HOC (PS)",
-      "script": "${workspaceFolder}\\bin\\build2.ps1",
+      "script": "${workspaceFolder}\\bin\\inspect.ps1",
       "args": [
-        "${workspaceFolder}\\examples\\procmon1"
+        "invoke-powowshell"
       ]
     },
     {

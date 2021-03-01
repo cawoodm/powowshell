@@ -194,6 +194,7 @@ function Get-ParamType($param) {
 }
 function Get-OPReturn($cmd) {
   $result = Get-OP($cmd)
+  if ($null -eq $result) {return ""}
   $result = $result.trim() -split "\r?\n"
   # TODO: Normalize multiple types, exclude None and pick one?
   if ($result.Count -gt 1) {
