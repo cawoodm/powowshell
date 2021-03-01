@@ -37,6 +37,7 @@ let stepForm = function(Vue, pipelineManager) {
                 let compParam = this.component.parameters[i];
                 let val = compParam.stepValue;
                 if (val === '') val = null;
+                if (compParam.type.match(/\[]$/)) val = val.split(/,\s*/);
                 this.step.parameters[compParam.name] = val;
             }
         }
@@ -117,6 +118,7 @@ let stepForm = function(Vue, pipelineManager) {
           for(let p = 0; p<component.parameters.length; p++) {
               let compParam = component.parameters[p];
               compParam.stepValue = step.parameters[compParam.name]||null;
+              if (compParam.type.match(/\[]$/) && Array.isArray(compParam.stepValue)) compParam.stepValue = compParam.stepValue.join(', ')
               compParam.rules=compParam.required?[value => !!value || 'Required parameter!']:[];
               compParam.label = compParam.name + (compParam.required?'*':'');
           }
